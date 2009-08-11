@@ -28,11 +28,11 @@ public final class Constants {
 	public static final int _unlimited = -1;
 
 	public static final String UnknownString = "Unknown";
-	
+
 	// **** Deafult waiting times (in milliseconds)
 	public static final long _default_sleep_time = 100;
-	public static final long _default_wait_message_time = 2000; 
-	
+	public static final long _default_wait_message_time = 2000;
+
 	// **** For dispatcher
 	public static final String _dispatchers_posfix = "Dispatcher";
 	public static final String _dispatchers_back_path = "org.supposition.dispatchers.back.";
@@ -55,8 +55,8 @@ public final class Constants {
 	public static String GetCurrentDateTime(String inFormat) {
 		SimpleDateFormat sdf = new SimpleDateFormat(inFormat);
 		return String.format(sdf.format(new Date()));
-	};	
-	
+	};
+
 	public static String GetUUID() {
 		return java.util.UUID.randomUUID().toString();
 
@@ -76,12 +76,19 @@ public final class Constants {
 	public static boolean isValidEmailAddress(String aEmailAddress) {
 		Matcher m = p.matcher(aEmailAddress);
 		return m.matches();
-	}	
+	}
+
+	public static boolean isValidString(String str) {
+		if ((str == null) || str.matches("^\\s*$")) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	public static String defaultSign() {
 		return UnknownString;
 	}
-
 
 	public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
 	private static final int DefaultStringTrimLength = 50;
@@ -96,7 +103,7 @@ public final class Constants {
 		return sdf.format(cal.getTime());
 
 	}
-	
+
 	public static String trimString(String inString) {
 		return trimString(inString, DefaultStringTrimLength,
 				DefaultStringTrimLengthGap);
@@ -112,19 +119,17 @@ public final class Constants {
 			return inString.substring(0, inMaxCount).trim() + "...";
 		return inString;
 	}
-	
+
 	public static String getDefaultDispatcherName(String messageClassName) {
-		return _dispatchers_back_path + messageClassName
-				+ _dispatchers_posfix;
+		return _dispatchers_back_path + messageClassName + _dispatchers_posfix;
 	}
-	
+
 	public static String getDefaultFrontDispatcherName(String messageClassName) {
-		return _dispatchers_front_path + messageClassName
-				+ _dispatchers_posfix;
+		return _dispatchers_front_path + messageClassName + _dispatchers_posfix;
 	}
 
 	public static String translate(String string) {
 		return string;
 	}
-		
+
 }
