@@ -28,4 +28,12 @@ public class TestUtils {
 		Assert.assertTrue(!Constants.isValidEmailAddress("test_user#tester.com"));
 	}
 
+	@Test
+	public void testForEmptyString(){
+		Assert.assertTrue(Constants.isValidString("test"));
+		Assert.assertFalse(Constants.isValidString(""));
+		Assert.assertFalse(Constants.isValidString("    "));
+		Assert.assertFalse(Constants.isValidString(null));		
+	}
+	
 }

@@ -25,8 +25,8 @@ public final class DBUtils {
 	}
 
 	public static String validatePassword(UserBean inUser){
-		if(!isValidString(inUser.getNewpassword()) ||
-				!isValidString(inUser.getNewpassword2())){
+		if(!Constants.isValidString(inUser.getNewpassword()) ||
+				!Constants.isValidString(inUser.getNewpassword2())){
 			return MessagesManager.getText("message.data.NOT.saved") + ":\n" 
 					+ "\t - " + MessagesManager.getText("errors.invalid.password") + "\n"
 					+ "\t - " + MessagesManager.getText("errors.passwords.is.empty");
@@ -38,15 +38,5 @@ public final class DBUtils {
 					+ "\t - " +  MessagesManager.getText("errors.passwords.not.equals");
 		}
 		return null;
-	}	
-	
-	private static boolean isValidString(String inString) {
-		if(inString == null){
-			return false;
-		}
-		if(inString.isEmpty()){
-			return false;
-		}
-		return true;
 	}		
 }

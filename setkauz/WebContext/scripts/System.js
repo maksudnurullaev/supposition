@@ -27,6 +27,19 @@ System.showNewDefaultForm = function() {
 	return false;
 }
 
-System.addNewDefaultkeyValue = function(){
-	alert("System.addDefaultkeyValue");
+System.addNewDefaultKeyValue = function(){
+	KeyValue = {key:null, value:null}
+
+	dwr.util.getValues(KeyValue);
+	
+	System.addDBOKeyValue(KeyValue, function(result) {
+		alert(result);
+		if (isOK(result)) {
+			System.updateDefaultsTable();
+			KeyValue = {key:null, value:null}
+			dwr.util.setValues(KeyValue);
+		}
+
+	});
+	return false;
 }

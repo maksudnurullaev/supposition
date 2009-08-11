@@ -5,8 +5,6 @@ import java.util.List;
 import org.apache.cayenne.exp.ExpressionFactory;
 import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.supposition.db.User;
 import org.supposition.db.proxy.abstracts.ADBProxyObject;
 import org.supposition.utils.Constants;
@@ -17,7 +15,6 @@ import org.supposition.utils.SessionManager;
 public class UserProxy extends ADBProxyObject<User> {
 	
 	private static final long serialVersionUID = 1L;
-	private Log _log = LogFactory.getLog(this.getClass());
 	
 	public UserProxy(){
 		super();
@@ -48,7 +45,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		try {
 			user = createNew();
 		} catch (Exception e) {
-			return Constants._web_error_result_prefix + MessagesManager.getText("errors.could.not.create.user");
+			return Constants._web_error_result_prefix + MessagesManager.getText("errors.could.not.create.dbobject");
 		}
 		
 		user.setUser(inUser);
