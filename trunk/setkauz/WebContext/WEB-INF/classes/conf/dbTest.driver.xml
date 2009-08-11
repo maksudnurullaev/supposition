@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driver project-version="3.0" class="org.sqlite.JDBC">
+	<url value="jdbc:sqlite:WebContext/WEB-INF/conf/dbTest.sqlite3"/>
+	<connectionPool min="1" max="1"/>
+	<login/>
+</driver>
