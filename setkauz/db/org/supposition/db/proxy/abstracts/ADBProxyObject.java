@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.cayenne.CayenneDataObject;
+import org.apache.cayenne.DataObjectUtils;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
 import org.apache.cayenne.query.SelectQuery;
@@ -24,10 +25,20 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	public void setEClass(Class<E> eClass) {
 		_eclass = eClass;
 	}
-
-	@Override
-	public DataContext getContext() {
+	
+	@Override	
+	public E getDBObjectByIntPk(int pk) {
+		return DataObjectUtils.objectForPK(getObjectContext(), _eclass, pk);
+	}		
+	
+	@Override 
+	public DataContext getObjectContext(){
 		return _context;
+	}
+	
+	@Override
+	public void commitChanges() {
+		_context.commitChanges();
 	}
 	
 	@Override
@@ -49,14 +60,19 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	public E createNew() throws Exception {
 		if(_eclass == null)
 			throw new Exception("Null _eClass, should be assigned some DBObject class ");
-		return (E) getContext().newObject(_eclass);
+		return (E)_context.newObject(_eclass);
 	}
 	
+	@Override
+	public void deleteObject(E object){
+		_context.deleteObject(object);
+		_context.commitChanges();
+	}	
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<E> getAll() {
-		return getContext().performQuery(getSelectQuery());
+		return _context.performQuery(getSelectQuery());
 	}
 
 	@Override
@@ -95,6 +111,12 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	public int getCount() {
 		SelectQuery query = getSelectQuery();
 		query.setPageSize(1);
-		return getContext().performQuery(query).size();
+		return _context.performQuery(query).size();
+	}
+
+	@Override
+	public void deleteObjects(List<E> objects) {
+		_context.deleteObjects(objects);
+		
 	}	
 }

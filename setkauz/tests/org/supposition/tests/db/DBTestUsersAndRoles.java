@@ -53,8 +53,8 @@ public class DBTestUsersAndRoles {
 		List<User> users = users_proxy.getAll();
 		System.out.println("Count = " + users.size());
 		if (users.size() > 0) {
-			users_proxy.getContext().deleteObjects(users);
-			users_proxy.getContext().commitChanges();
+			users_proxy.deleteObjects(users);
+			users_proxy.commitChanges();
 		}
 	}	
 	

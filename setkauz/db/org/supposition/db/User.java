@@ -86,14 +86,14 @@ public class User extends _User {
 		if (usersList.size() > 0) {
 			if (usersList.size() > 1) {
 				validationResult.addFailure(new SimpleValidationFailure(this,
-						"errors.mail.already.registered"));
+						"errors.dbobject.already.registered"));
 				_log.warn("Database has too many users record with same mail - "
 								+ getMail());
 				return false;
 			} else {
 				if (!usersList.get(0).getID().equals(getID())) {
 					validationResult.addFailure(new SimpleValidationFailure(
-							this, "errors.mail.already.registered"));
+							this, "errors.dbobject.already.registered"));
 					return false;
 				}
 			}

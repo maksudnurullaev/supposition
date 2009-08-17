@@ -26,6 +26,7 @@
 		<db-attribute name="UserID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
 	<obj-entity name="Default" className="org.supposition.db.Default" dbEntityName="Defaults">
+		<obj-attribute name="ID" type="java.lang.Integer" lock="true" db-attribute-path="ID"/>
 		<obj-attribute name="key" type="java.lang.String" db-attribute-path="Key"/>
 		<obj-attribute name="value" type="java.lang.String" db-attribute-path="Value"/>
 	</obj-entity>

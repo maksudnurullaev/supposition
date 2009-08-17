@@ -24,4 +24,5 @@ public class Defaults extends ADBProxyObject<Default> {
 		return getAll().size();
 	}
 
+
 }

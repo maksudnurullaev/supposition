@@ -36,7 +36,7 @@ public class DBTestDefaults {
 		Default def = defaults.createNew();
 		def.setKey(null);
 		def.setValue("null");
-		defaults.getContext().commitChanges();
+		defaults.commitChanges();
 	}
 	
 	@Test(expected = ValidationException.class)
@@ -45,26 +45,49 @@ public class DBTestDefaults {
 		Default def = defaults.createNew();
 		def.setKey("null");
 		def.setValue(null);
-		defaults.getContext().commitChanges();
+		defaults.commitChanges();
 	}
 	
-//	@Test(expected = ValidationException.class)
-//	public void test_empty_key(){
-//		Defaults defaults = new Defaults();
-//		Default def = defaults.createNew();
-//		def.setKey(null);
-//		def.setValue("null");
-//		defaults.getContext().commitChanges();
-//	}
-//	
-//	@Test(expected = ValidationException.class)
-//	public void test_empty_value(){
-//		Defaults defaults = new Defaults();
-//		Default def = defaults.createNew();
-//		def.setKey("null");
-//		def.setValue(null);
-//		defaults.getContext().commitChanges();
-//	}	
+	@Test(expected = ValidationException.class)
+	public void test_empty_key() throws Exception{
+		Defaults defaults = new Defaults();
+		Default def = defaults.createNew();
+		def.setKey(null);
+		def.setValue("null");
+		defaults.commitChanges();
+	}
+	
+	@Test(expected = ValidationException.class)
+	public void test_exist_key() throws Exception{
+		// 1.
+		Defaults defaults = new Defaults();
+		Default def = defaults.createNew();
+		def.setKey("test_exist_key");
+		def.setValue("null");
+		
+		defaults.commitChanges();
+		
+		// 2.
+		def = defaults.createNew();
+		def.setKey("test_exist_key");
+		def.setValue("null");
+		
+		// 3.
+		def = defaults.createNew();
+		def.setKey("test_exist_key");
+		def.setValue("null");		
+				
+		defaults.commitChanges();		
+	}	
+	
+	@Test(expected = ValidationException.class)
+	public void test_empty_value() throws Exception{
+		Defaults defaults = new Defaults();
+		Default def = defaults.createNew();
+		def.setKey("null");
+		def.setValue(null);
+		defaults.commitChanges();
+	}	
 	
 	public static void create_test_objects(int inCount) {
 		Default dbobject = null;
@@ -83,8 +106,8 @@ public class DBTestDefaults {
 		defaults_proxy.setPageSize(0);		
 		
 		for(Default defaultVal:defaults_proxy.getAll()){
-			defaults_proxy.getContext().deleteObject(defaultVal);
-			defaults_proxy.getContext().commitChanges();		
+			defaults_proxy.deleteObject(defaultVal);
+			defaults_proxy.commitChanges();		
 		}
 		
 	}

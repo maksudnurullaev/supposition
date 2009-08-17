@@ -3,7 +3,6 @@ package org.supposition.db.proxy;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.cayenne.DataObjectUtils;
 import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.User;
@@ -27,13 +26,9 @@ public class Users extends ADBProxyObject<User> {
 		return Arrays.asList(result);
 	}
 
-	public User getDBObjectByPk(int userPk) {
-		return DataObjectUtils.objectForPK(getContext(), User.class, userPk);
-	}	
-
 	public String getFormUpdate(int userPk) {
 		String result;
-		User user = getDBObjectByPk(userPk);
+		User user = getDBObjectByIntPk(userPk);
 		
 		if (user != null)
 			result = String.format(MessagesManager
@@ -68,7 +63,7 @@ public class Users extends ADBProxyObject<User> {
 		_log.debug("Mail:" + inUser.getMail());
 		_log.debug("Additionals:" + inUser.getAdditionals());
 
-		User user =getDBObjectByPk(inUser.getId());
+		User user =getDBObjectByIntPk(inUser.getId());
 		user.setUser(inUser);
 
 		ValidationResult validationResult = new ValidationResult();
@@ -87,7 +82,7 @@ public class Users extends ADBProxyObject<User> {
 			return failResult;
 		}
 
-		getContext().commitChanges();
+		commitChanges();
 		return MessagesManager.getText("message.data.saved");
 	}
 
@@ -97,7 +92,7 @@ public class Users extends ADBProxyObject<User> {
 		if (result != null)
 			return Constants._web_error_result_prefix + result;
 
-		User user = getDBObjectByPk(inUser.getId());
+		User user = getDBObjectByIntPk(inUser.getId());
 
 		// Check for valid OLD password
 		_log.debug("user.сheckPassword(inUser.getPassword()) = "
@@ -127,7 +122,7 @@ public class Users extends ADBProxyObject<User> {
 			return Constants._web_error_result_prefix + failResult;
 		}
 
-		getContext().commitChanges();
+		commitChanges();
 		return Constants._web_ok_result_prefix
 				+ MessagesManager.getText("message.new.password.saved");
 	}
