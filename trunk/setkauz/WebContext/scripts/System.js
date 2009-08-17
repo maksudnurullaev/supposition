@@ -43,3 +43,30 @@ System.addNewDefaultKeyValue = function(){
 	});
 	return false;
 }
+
+System.updateDefault = function(id){
+	alert("Update " + id);
+	return false;
+}
+
+System.deleteDefault = function(id){
+	Intro.getTextByKey("message.are.you.sure", function(result){
+		if (confirm(result)) {
+			System.deleteDBOKeyValue(id, function(result) {
+				alert(result);
+				if (isOK(result)) {
+					System.updateDefaultsTable();
+				}						
+				
+			});
+		}
+		
+	});
+	return false;
+	
+
+	
+	
+	
+}
+

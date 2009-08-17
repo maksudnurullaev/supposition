@@ -24,23 +24,31 @@ public class SystemProxy extends ADBProxyObject<Default>
 {
 	private Log _log = LogFactory.getLog(this.getClass());		
 
-	@SuppressWarnings("unchecked")
 	public String getDefaultsAsHTMLTable(){
 		String format = MessagesManager.getText("main.admin.defaults.table.tr");
 		String result = "";		
 		_log.debug("Get Session as HTML Table");
 		
-		Enumeration<String> attributeNames = SessionManager.getHttpSession().getAttributeNames();
+		Defaults defaults = new Defaults();
+		List<Default> list = defaults.getAll();
 		
-//		for (Enumeration<String> e =attributeNames; e.hasMoreElements();){
-//			String name  = e.nextElement();
-//			result += String.format(format, name, SessionManager.getHttpSession().getAttribute(name));
-//		}
+		_log.debug("Found " + list.size() + " DBObject(s)");
+		
+		for (Default df:list){
+			result += String.format(format, df.getKey(), df.getValue(), df.getID(), df.getID());
+		}
 		
 		return MessagesManager.getText("main.admin.defaults.table.header")
 		+ result
 		+ MessagesManager.getText("main.admin.defaults.table.footer");	
     }
+	
+	public String deleteDBOKeyValue(int ID){
+		Defaults defaults = new Defaults();
+		_log.debug("Delete object ID = " + ID);
+		defaults.deleteObject(defaults.getDBObjectByIntPk(ID));
+		return Constants._web_ok_result_prefix + MessagesManager.getText("message.data.saved");
+	}
 	
 	public String addDBOKeyValue(KeyValueBean inKeyValue){
 		if(inKeyValue == null)
@@ -74,8 +82,9 @@ public class SystemProxy extends ADBProxyObject<Default>
 			return Constants._web_error_result_prefix + failResult;
 		}		
 		
-		getContext().commitChanges();
+		defaults.commitChanges();
 		_log.debug("Changes commited");		
+		_log.debug(DBUtils.getState(keyValue.getPersistenceState()));		
 		return Constants._web_ok_result_prefix + MessagesManager.getText("message.data.saved");		
 		
 	}

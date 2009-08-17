@@ -15,10 +15,14 @@ public interface IDBProxyCollection<E> {
 	boolean hasExpressions();
 	void addExpression(Expression inExpression);
 	List<Expression> getExpressions();
-	DataContext getContext();
+	void commitChanges();
 	void attachExpressions(SelectQuery inQuery);
 	SelectQuery getSelectQuery();
 	List<E> getAll();
 	void setEClass(Class<E> class1);
 	E createNew() throws Exception;
+	void deleteObject(E object);
+	void deleteObjects(List<E> objects);
+	DataContext getObjectContext();
+	E getDBObjectByIntPk(int pk);
 }

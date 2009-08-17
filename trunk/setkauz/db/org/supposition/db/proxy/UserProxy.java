@@ -64,7 +64,7 @@ public class UserProxy extends ADBProxyObject<User> {
 			return Constants._web_error_result_prefix + failResult;
 		}		
 		
-		getContext().commitChanges();		
+		commitChanges();		
 		return Constants._web_ok_result_prefix + MessagesManager.getText("message.data.saved");		
 	}
 
@@ -84,7 +84,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		} else {
 			if (userList.size() > 1) {
 				_log.warn("Database has too many users record with same mail - " + inUser.getMail());
-				return Constants._web_error_result_prefix + MessagesManager.getText("errors.mail.already.registered") ;
+				return Constants._web_error_result_prefix + MessagesManager.getText("errors.dbobject.already.registered") ;
 			} else {
 				if (!userList.get(0).checkPassword(inUser.getPassword())) {
 					return Constants._web_error_result_prefix + MessagesManager.getText("errors.wrong.mail.or.password");
