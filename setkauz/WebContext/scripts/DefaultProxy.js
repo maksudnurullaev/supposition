@@ -19,14 +19,14 @@ DefaultProxy.updateDefaultsTable = function() {
 };
 
 DefaultProxy.showNewDefaultForm = function() {
-	KeyValue = {key:null, value:null, id:null}
-	dwr.util.getValues(KeyValue);
-	
+	KeyValue = {key:null, value:null, id:-1} //new 
+
 	DefaultProxy.getDefaultForm(KeyValue, function(result){
 		dwr.util.setValue("main.admin.defaults.table", 
 				result, 
 				{escapeHtml :false});
 	});
+	
 	return false;
 }
 
@@ -34,13 +34,12 @@ DefaultProxy.showEditDefaultForm = function(ID) {
 	KeyValue = {key:null, value:null, id:ID}
 	dwr.util.getValues(KeyValue);
 	
-	alert(KeyValue.id)
-	
 	DefaultProxy.getDefaultForm(KeyValue, function(result){
 		dwr.util.setValue("main.admin.defaults.table", 
 				result, 
 				{escapeHtml :false});
 	});
+	
 	return false;
 }
 
@@ -48,7 +47,6 @@ DefaultProxy.updateDefault = function(){
 	KeyValue = {key:null, value:null, id:null};
 	dwr.util.getValues(KeyValue);
 
-	// alert(KeyValue.id);
 	DefaultProxy.updateDBODefault(KeyValue, function(result) {
 		alert(result);
 		if (isOK(result)) {
