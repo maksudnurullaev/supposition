@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.User;
-import org.supposition.db.proxy.Users;
+import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.DBUtils;
 
 /**
@@ -42,14 +42,14 @@ public class DBTestUsersProxyPassword {
 	
 	@Test
 	public void testSimple() throws Exception {
-		Users users = new Users();
+		UserProxy users = new UserProxy();
 		User user = users.createNew();
 		Assert.assertTrue(user instanceof User);
 	}
 
 	@Test
 	public void testOldPassword() {
-		Users users = new Users();
+		UserProxy users = new UserProxy();
 		List<User> usersList = users.getAll();
 		
 		// Check oldPassword
@@ -59,7 +59,7 @@ public class DBTestUsersProxyPassword {
 
 	@Test
 	public void testNewPassword() {
-		Users users = new Users();
+		UserProxy users = new UserProxy();
 		List<User> usersList = users.getAll();
 		
 		User user = usersList.get(0);
@@ -99,7 +99,7 @@ public class DBTestUsersProxyPassword {
 	}
 
 	private static void delete_test_users() {
-		Users users_proxy = new Users();
+		UserProxy users_proxy = new UserProxy();
 		
 		users_proxy.setPageSize(0);
 		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail",

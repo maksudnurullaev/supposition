@@ -46,6 +46,7 @@ public final class Constants {
 	public static final String _web_error_result_prefix = "ERROR:";
 	public static String _web_ok_result_prefix = "OK:";
 	public static String _string_userId = "userId";
+	public static int _default_id_for_new_dbo = -1;
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);

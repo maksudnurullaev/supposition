@@ -7,7 +7,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.Default;
-import org.supposition.db.proxy.Defaults;
+import org.supposition.db.proxy.DefaultProxy;
 import org.supposition.utils.DBUtils;
 
 public class DBTestDefaults {
@@ -32,61 +32,61 @@ public class DBTestDefaults {
 
 	@Test(expected = ValidationException.class)
 	public void test_null_key() throws Exception{
-		Defaults defaults = new Defaults();
-		Default def = defaults.createNew();
+		DefaultProxy DefaultProxy = new DefaultProxy();
+		Default def = DefaultProxy.createNew();
 		def.setKey(null);
 		def.setValue("null");
-		defaults.commitChanges();
+		DefaultProxy.commitChanges();
 	}
 	
 	@Test(expected = ValidationException.class)
 	public void test_null_value() throws Exception{
-		Defaults defaults = new Defaults();
-		Default def = defaults.createNew();
+		DefaultProxy DefaultProxy = new DefaultProxy();
+		Default def = DefaultProxy.createNew();
 		def.setKey("null");
 		def.setValue(null);
-		defaults.commitChanges();
+		DefaultProxy.commitChanges();
 	}
 	
 	@Test(expected = ValidationException.class)
 	public void test_empty_key() throws Exception{
-		Defaults defaults = new Defaults();
-		Default def = defaults.createNew();
+		DefaultProxy DefaultProxy = new DefaultProxy();
+		Default def = DefaultProxy.createNew();
 		def.setKey(null);
 		def.setValue("null");
-		defaults.commitChanges();
+		DefaultProxy.commitChanges();
 	}
 	
 	@Test(expected = ValidationException.class)
 	public void test_exist_key() throws Exception{
 		// 1.
-		Defaults defaults = new Defaults();
-		Default def = defaults.createNew();
+		DefaultProxy DefaultProxy = new DefaultProxy();
+		Default def = DefaultProxy.createNew();
 		def.setKey("test_exist_key");
 		def.setValue("null");
 		
-		defaults.commitChanges();
+		DefaultProxy.commitChanges();
 		
 		// 2.
-		def = defaults.createNew();
+		def = DefaultProxy.createNew();
 		def.setKey("test_exist_key");
 		def.setValue("null");
 		
 		// 3.
-		def = defaults.createNew();
+		def = DefaultProxy.createNew();
 		def.setKey("test_exist_key");
 		def.setValue("null");		
 				
-		defaults.commitChanges();		
+		DefaultProxy.commitChanges();		
 	}	
 	
 	@Test(expected = ValidationException.class)
 	public void test_empty_value() throws Exception{
-		Defaults defaults = new Defaults();
-		Default def = defaults.createNew();
+		DefaultProxy DefaultProxy = new DefaultProxy();
+		Default def = DefaultProxy.createNew();
 		def.setKey("null");
 		def.setValue(null);
-		defaults.commitChanges();
+		DefaultProxy.commitChanges();
 	}	
 	
 	public static void create_test_objects(int inCount) {
@@ -102,12 +102,12 @@ public class DBTestDefaults {
 
 	
 	private static void delete_test_objects() {
-		Defaults defaults_proxy = new Defaults();
-		defaults_proxy.setPageSize(0);		
+		DefaultProxy defaultProxy = new DefaultProxy();
+		defaultProxy.setPageSize(0);		
 		
-		for(Default defaultVal:defaults_proxy.getAll()){
-			defaults_proxy.deleteObject(defaultVal);
-			defaults_proxy.commitChanges();		
+		for(Default defaultVal:defaultProxy.getAll()){
+			defaultProxy.deleteObject(defaultVal);
+			defaultProxy.commitChanges();		
 		}
 		
 	}

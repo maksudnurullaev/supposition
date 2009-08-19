@@ -1,6 +1,6 @@
-Namespace("db.proxy.userproxy");
+Namespace("LocalUserProxy");
 
-db.proxy.userproxy.addNewUser = function() {
+LocalUserProxy.addNewUser = function() {
 	var User = {
 		mail :null,
 		additionals :null,
@@ -26,7 +26,7 @@ db.proxy.userproxy.addNewUser = function() {
 	return false;
 };
 
-db.proxy.userproxy.enterUser = function() {
+LocalUserProxy.enterUser = function() {
 	var User = {
 		mail :null,
 		password :null

@@ -6,7 +6,7 @@ import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._Default;
-import org.supposition.db.proxy.Defaults;
+import org.supposition.db.proxy.DefaultProxy;
 import org.supposition.db.proxy.KeyValueBean;
 import org.supposition.utils.Constants;
 
@@ -50,10 +50,10 @@ public class Default extends _Default {
 		}
 		
 		// Check key existanse
-		Defaults defaults = new Defaults();
+		DefaultProxy defaults = new DefaultProxy();
 		defaults.addExpression(ExpressionFactory.matchExp("key", getKey()));
 		if(this.getPersistenceState() != org.apache.cayenne.PersistenceState.NEW){
-			defaults.addExpression(ExpressionFactory.matchExp("ID", getID()));
+			defaults.addExpression(ExpressionFactory.noMatchExp("ID", getID()));
 		}
 		
 		if (defaults.getAll().size() != 0) {

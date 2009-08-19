@@ -1,7 +1,7 @@
 import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Default;
-import org.supposition.db.proxy.Defaults;
+import org.supposition.db.proxy.DefaultProxy;
 import org.supposition.utils.Constants;
 
 
@@ -12,7 +12,7 @@ public class Class4Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Defaults defaults = new Defaults();
+		DefaultProxy defaults = new DefaultProxy();
 		Default keyValue = null;
 		
 		try {

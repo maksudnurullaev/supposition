@@ -1,5 +1,6 @@
 package org.supposition.db.proxy;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.cayenne.exp.ExpressionFactory;
@@ -20,15 +21,10 @@ public class UserProxy extends ADBProxyObject<User> {
 		super();
 		setEClass(User.class);
 	}
-	
-	@Override
-	public List<String> getColumnNames() {
-		return null;
-	}
 
 	@Override
 	public int getCount() {
-		return 0;
+		return getAll().size();
 	}
 
 	public String addUser(UserBean inUser){
@@ -73,10 +69,9 @@ public class UserProxy extends ADBProxyObject<User> {
 		_log.debug("Password:" + inUser.getPassword());
 		
 		// Validate for existing user (by mail)
-		Users users = new Users();
-		users.addExpression(ExpressionFactory.matchExp("Mail", inUser.getMail()));
+		addExpression(ExpressionFactory.matchExp("Mail", inUser.getMail()));
 		
-		List<User> userList = users.getAll();
+		List<User> userList = getAll();
 		
 		if(userList.size() == 0){
 			_log.warn("Users not found with mail - " + inUser.getMail());
@@ -96,4 +91,112 @@ public class UserProxy extends ADBProxyObject<User> {
 		return Constants._web_ok_result_prefix + MessagesManager.getText("message.data.saved");		
 	}
 
+	// ############################
+	@Override
+	public List<String> getColumnNames() {
+		String[] result = { "#", "Mail", "Created", "Updated" };
+		return Arrays.asList(result);
+	}
+
+	public String getFormUpdate(int userPk) {
+		String result;
+		User user = getDBObjectByIntPk(userPk);
+		
+		if (user != null)
+			result = String.format(MessagesManager
+					.getText("main.admin.users.formUpdate"), user.getMail(),
+					user.getAdditionals(), user.getID());
+		else
+			result = String.format(MessagesManager
+					.getText("main.admin.users.user_not_found_text"), userPk);
+
+		return String.format(result, userPk);
+	}
+
+	// ######################################################################
+	public String getPageAsHTMLTable(int inPage) {
+		String format = MessagesManager.getText("main.admin.users.table.tr");
+		String result = "";
+		List<User> users = getAll();
+		int i = 0;
+		for (User user : users) {
+			result = result
+					+ String.format(format, ++i, user.getMail(), user
+							.getAdditionals(), user.getCreated(), user
+							.getUpdated(), user.getID());
+		}
+		return MessagesManager.getText("main.admin.users.table.header")
+				+ result
+				+ MessagesManager.getText("main.admin.users.table.footer");
+	}
+
+	public String updateUserData(UserBean inUser) {
+		_log.debug("ID:" + inUser.getId());
+		_log.debug("Mail:" + inUser.getMail());
+		_log.debug("Additionals:" + inUser.getAdditionals());
+
+		User user =getDBObjectByIntPk(inUser.getId());
+		user.setUser(inUser);
+
+		ValidationResult validationResult = new ValidationResult();
+		user.validateForUpdate(validationResult);
+
+		if (validationResult.hasFailures()) {
+			System.out.println("### Validation Failed ###");
+			String failResult = MessagesManager
+					.getText("message.data.NOT.saved")
+					+ ":\n";
+			for (ValidationFailure fail : validationResult.getFailures()) {
+				System.out.println("Fails: " + fail.getDescription());
+				failResult += "\t - "
+						+ MessagesManager.getText(fail.getDescription()) + "\n";
+			}
+			return failResult;
+		}
+
+		commitChanges();
+		return MessagesManager.getText("message.data.saved");
+	}
+
+	public String updateUserPassword(UserBean inUser) {
+		// Check for valid NEW passwords
+		String result = DBUtils.validatePassword(inUser);
+		if (result != null)
+			return Constants._web_error_result_prefix + result;
+
+		User user = getDBObjectByIntPk(inUser.getId());
+
+		// Check for valid OLD password
+		_log.debug("user.сheckPassword(inUser.getPassword()) = "
+				+ user.checkPassword(inUser.getPassword()));
+		if (!user.checkPassword(inUser.getPassword())) {
+			return Constants._web_error_result_prefix
+					+ MessagesManager.getText("message.data.NOT.saved") + ":\n"
+					+ "\t - "
+					+ MessagesManager.getText("errors.invalid.old.password");
+		}
+
+		// Trying to update real password of Database Object
+		_log.debug("New password:" + inUser.getNewpassword());
+		ValidationResult validationResult = new ValidationResult();
+		user.setPassword(inUser.getNewpassword());
+		user.validateForUpdate(validationResult);
+		if (validationResult.hasFailures()) {
+			System.out.println("### Validation Failed ###");
+			String failResult = MessagesManager
+					.getText("message.data.NOT.saved")
+					+ ":\n";
+			for (ValidationFailure fail : validationResult.getFailures()) {
+				System.out.println("Fails: " + fail.getDescription());
+				failResult += "\t - "
+						+ MessagesManager.getText(fail.getDescription());
+			}
+			return Constants._web_error_result_prefix + failResult;
+		}
+
+		commitChanges();
+		return Constants._web_ok_result_prefix
+				+ MessagesManager.getText("message.new.password.saved");
+	}	
+	
 }

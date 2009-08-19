@@ -1,5 +1,6 @@
-package org.dwr;
+package org.supposition.db.proxy;
 
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -8,8 +9,6 @@ import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.Default;
-import org.supposition.db.proxy.Defaults;
-import org.supposition.db.proxy.KeyValueBean;
 import org.supposition.db.proxy.abstracts.ADBProxyObject;
 import org.supposition.utils.Constants;
 import org.supposition.utils.DBUtils;
@@ -20,17 +19,32 @@ import org.supposition.utils.SessionManager;
  * Used by the default webapp landing page to check basic functionallity
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class SystemProxy extends ADBProxyObject<Default>
+public class DefaultProxy extends ADBProxyObject<Default>
 {
 	private Log _log = LogFactory.getLog(this.getClass());		
 
+	public DefaultProxy(){
+		super();
+		setEClass(Default.class);
+	}
+	
+	@Override
+	public List<String> getColumnNames() {
+		String[] result = { "Key", "Value" };
+		return Arrays.asList(result);
+	}	
+	
+	@Override
+	public int getCount() {
+		return getAll().size();
+	}	
+	
 	public String getDefaultsAsHTMLTable(){
 		String format = MessagesManager.getText("main.admin.defaults.table.tr");
 		String result = "";		
 		_log.debug("Get Session as HTML Table");
 		
-		Defaults defaults = new Defaults();
-		List<Default> list = defaults.getAll();
+		List<Default> list = getAll();
 		
 		_log.debug("Found " + list.size() + " DBObject(s)");
 		
@@ -44,17 +58,15 @@ public class SystemProxy extends ADBProxyObject<Default>
     }
 	
 	public String deleteDBOKeyValue(int ID){
-		Defaults defaults = new Defaults();
 		_log.debug("Delete object ID = " + ID);
-		defaults.deleteObject(defaults.getDBObjectByIntPk(ID));
+		deleteObject(getDBObjectByIntPk(ID));
 		return Constants._web_ok_result_prefix + MessagesManager.getText("message.data.saved");
 	}
 	
-	public String addDBOKeyValue(KeyValueBean inKeyValue){
+	public String updateDBODefault(KeyValueBean inKeyValue){
 		if(inKeyValue == null)
 			return Constants._web_error_result_prefix + MessagesManager.getText("errors.null.object");
 		
-		Defaults defaults = new Defaults();
 		Default keyValue = null;
 		
 		_log.debug(String.format("Tring to create DBO Default with key(%s) and value(%s)",
@@ -62,10 +74,16 @@ public class SystemProxy extends ADBProxyObject<Default>
 				inKeyValue.getValue()));
 		
 		try {
-			keyValue = defaults.createNew();
+			if(inKeyValue.isNew())
+				keyValue = createNew();
+			else
+				keyValue = getDBObjectByIntPk(inKeyValue.getId());
 		} catch (Exception e) {
 			return Constants._web_error_result_prefix + MessagesManager.getText("errors.could.not.create.dbobject");
 		}
+		
+		if(keyValue == null)
+			return Constants._web_error_result_prefix + MessagesManager.getText("errors.null.object");
 		
 		keyValue.setBean(inKeyValue);
 		
@@ -82,7 +100,7 @@ public class SystemProxy extends ADBProxyObject<Default>
 			return Constants._web_error_result_prefix + failResult;
 		}		
 		
-		defaults.commitChanges();
+		commitChanges();
 		_log.debug("Changes commited");		
 		_log.debug(DBUtils.getState(keyValue.getPersistenceState()));		
 		return Constants._web_ok_result_prefix + MessagesManager.getText("message.data.saved");		
@@ -107,10 +125,30 @@ public class SystemProxy extends ADBProxyObject<Default>
 		+ MessagesManager.getText("main.admin.session.table.footer");	
     }
 
-	@Override
-	public List<String> getColumnNames() {
-		return null;
+	public String getDefaultForm(KeyValueBean inKeyValue){	
+		if(inKeyValue == null)
+			return Constants._web_error_result_prefix + MessagesManager.getText("errors.null.object");
+		// New
+		_log.debug("KeyValue.ID = " + inKeyValue.getId());
+		if(inKeyValue.isNew()){
+			return MessagesManager.getText("main.admin.system.defaults.formHeaderNew")
+				+ String.format(MessagesManager.getText("main.admin.system.defaults.form")
+						, ""
+						, ""
+						, -1);
+		}
+		
+		// Update
+		Default keyValue = getDBObjectByIntPk(inKeyValue.getId());
+		if(keyValue == null){
+			return MessagesManager.getText("errors.object.not.found");
+		}
+		
+		return MessagesManager.getText("main.admin.system.defaults.formHeaderUpdate")
+		+ String.format(MessagesManager.getText("main.admin.system.defaults.form")
+				, keyValue.getKey()
+				, keyValue.getValue()
+				, keyValue.getID());
 	}
-	
 	
 }

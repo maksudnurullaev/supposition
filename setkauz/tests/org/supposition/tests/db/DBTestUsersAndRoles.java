@@ -11,7 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.Role;
 import org.supposition.db.User;
-import org.supposition.db.proxy.Users;
+import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.Constants;
 import org.supposition.utils.DBUtils;
 
@@ -45,7 +45,7 @@ public class DBTestUsersAndRoles {
 	}	
 	
 	private static void delete_test_objects() {
-		Users users_proxy = new Users();
+		UserProxy users_proxy = new UserProxy();
 		
 		users_proxy.setPageSize(0);
 		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail",
