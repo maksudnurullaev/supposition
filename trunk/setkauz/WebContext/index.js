@@ -3,7 +3,7 @@ Load ("dwr/util.js");
 Load ("dwr/interface/Intro.js");
 Load ("tabs/tabs.js");
 Load ("dwr/interface/UserProxy.js");
-Load ("scripts/user.js");
+Load ("scripts/LocalUserProxy.js");
 
 function init() {
 	// This turns off the no-javascript message

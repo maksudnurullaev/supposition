@@ -7,17 +7,13 @@
 		<create creator="new" javascript="Intro">
 			<param name="class" value="org.dwr.Intro" />
 		</create>
-		
-		<create creator="new" javascript="Users">
-			<param name="class" value="org.supposition.db.proxy.Users" />
-		</create>
 
 		<create creator="new" javascript="UserProxy">
 			<param name="class" value="org.supposition.db.proxy.UserProxy" />
 		</create>
 		
-		<create creator="new" javascript="System">
-			<param name="class" value="org.dwr.SystemProxy" />
+		<create creator="new" javascript="DefaultProxy">
+			<param name="class" value="org.supposition.db.proxy.DefaultProxy" />
 		</create>		
 		
 		<convert match="org.supposition.db.proxy.UserBean" converter="bean"/>

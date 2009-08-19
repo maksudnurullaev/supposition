@@ -9,7 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._User;
 import org.supposition.db.proxy.UserBean;
-import org.supposition.db.proxy.Users;
+import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.Constants;
 import org.supposition.utils.CryptoManager;
 
@@ -78,7 +78,7 @@ public class User extends _User {
 			return false;
 		}
 		// Validate for existing mail
-		Users users = new Users();
+		UserProxy users = new UserProxy();
 		users.addExpression(ExpressionFactory.matchExp("Mail", getMail()));
 
 		List<User> usersList = users.getAll();

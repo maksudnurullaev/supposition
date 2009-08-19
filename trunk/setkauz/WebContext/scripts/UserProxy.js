@@ -1,6 +1,6 @@
-Namespace("db.proxy.users");
-db.proxy.users.updateTable = function() {
-	Users.getPageAsHTMLTable(0, function(table) {
+Namespace("UserProxy");
+UserProxy.updateTable = function() {
+	UserProxy.getPageAsHTMLTable(0, function(table) {
 		dwr.util.setValue('main.admin.users.table', table, {
 			escapeHtml :false
 		});
@@ -8,8 +8,8 @@ db.proxy.users.updateTable = function() {
 	return false;
 };
 
-db.proxy.users.editUser = function(id) {
-	Users.getFormUpdate(id, function(form) {
+UserProxy.editUser = function(id) {
+	UserProxy.getFormUpdate(id, function(form) {
 		dwr.util.setValue('main.admin.users.table', form, {
 			escapeHtml :false
 		});
@@ -17,20 +17,20 @@ db.proxy.users.editUser = function(id) {
 	return false;
 };
 
-db.proxy.users.updateUserData = function() {
+UserProxy.updateUserData = function() {
 	var User = {
 		id :null,
 		mail :null,
 		additionals :null
 	};
 	dwr.util.getValues(User);
-	Users.updateUserData(User, function(result) {
+	UserProxy.updateUserData(User, function(result) {
 		alert(result);
 	});
 	return false;
 };
 
-db.proxy.users.updateUserPassword = function() {
+UserProxy.updateUserPassword = function() {
 	var User = {
 		id :null,
 		password :null,
@@ -38,7 +38,7 @@ db.proxy.users.updateUserPassword = function() {
 		newpassword2 :null
 	};
 	dwr.util.getValues(User);
-	Users.updateUserPassword(User, function(result) {
+	UserProxy.updateUserPassword(User, function(result) {
 		alert(result);
 		var User = {
 			password :null,
