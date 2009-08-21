@@ -42,7 +42,13 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	}
 	
 	@Override
+	public void rollbackChanges() {
+		_context.rollbackChanges();
+	}
+
+	@Override
 	public void addExpression(Expression inExpression) {
+		_log.debug("->addExpression: " + inExpression.toString());
 		_expressions.add(inExpression);
 	}
 	

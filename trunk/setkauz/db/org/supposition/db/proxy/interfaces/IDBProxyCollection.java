@@ -16,6 +16,7 @@ public interface IDBProxyCollection<E> {
 	void addExpression(Expression inExpression);
 	List<Expression> getExpressions();
 	void commitChanges();
+	void rollbackChanges();
 	void attachExpressions(SelectQuery inQuery);
 	SelectQuery getSelectQuery();
 	List<E> getAll();

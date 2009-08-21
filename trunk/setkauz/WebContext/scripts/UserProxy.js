@@ -24,7 +24,7 @@ UserProxy.updateUserData = function() {
 		additionals :null
 	};
 	dwr.util.getValues(User);
-	UserProxy.updateUserData(User, function(result) {
+	UserProxy.updateDBOUser(User, function(result) {
 		alert(result);
 	});
 	return false;
@@ -38,7 +38,7 @@ UserProxy.updateUserPassword = function() {
 		newpassword2 :null
 	};
 	dwr.util.getValues(User);
-	UserProxy.updateUserPassword(User, function(result) {
+	UserProxy.updateDBOUserPassword(User, function(result) {
 		alert(result);
 		var User = {
 			password :null,
