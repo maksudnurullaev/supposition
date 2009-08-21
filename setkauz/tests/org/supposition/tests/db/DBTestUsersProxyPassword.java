@@ -54,34 +54,39 @@ public class DBTestUsersProxyPassword {
 		
 		// Check oldPassword
 		User user = usersList.get(0);
+		System.out.println("oldPassword = " + oldPassword);		
 		Assert.assertTrue(user.checkPassword(oldPassword));		
 	}
 
 	@Test
 	public void testNewPassword() {
 		UserProxy users = new UserProxy();
+		
+		users.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
+
 		List<User> usersList = users.getAll();
 		
-		User user = usersList.get(0);
-		
-		ValidationResult validationResult = new ValidationResult();
+		User user = usersList.get(0);	
 		
 		// Set newPassword	
 		user.setPassword(newPassword);
 		
-		user.validateForUpdate(validationResult);		
-		if(!validationResult.hasFailures())
+		ValidationResult validationResult = user.getValidationResult();		
+		if(!validationResult.hasFailures()){
+			user.postValidationSave();
 			_context.commitChanges();
+		}
 		
 		// Check newPassword
 		Assert.assertTrue(user.checkPassword(newPassword));		
 
 		// Set newPassword2
-		validationResult = new ValidationResult();
 		user.setPassword(newPassword2);
-		user.validateForUpdate(validationResult);		
-		if(!validationResult.hasFailures())
+		validationResult = user.getValidationResult();		
+		if(!validationResult.hasFailures()){
+			user.postValidationSave();
 			_context.commitChanges();
+		}
 		
 		// Check newPassword2
 		Assert.assertTrue(user.checkPassword(newPassword2));		
@@ -93,17 +98,23 @@ public class DBTestUsersProxyPassword {
 			user = _context.newObject(User.class);
 			user.setMail(String.format("test_user%d@admin.com", i));
 			user.setPassword(oldPassword);	
+			user.postValidationSave();
 		}
+		
 		// batch update
+//		System.out.println("user.getSalt() = " + user.getSalt());
+//		System.out.println("_context.commitChanges();");
 		_context.commitChanges();
+//		System.out.println("oldPassword = " + oldPassword);		
+//		System.out.println("user.getSalt() = " + user.getSalt());		
+// 		System.out.println("user.checkPassword(oldPassword) = " + user.checkPassword(oldPassword));
 	}
 
 	private static void delete_test_users() {
 		UserProxy users_proxy = new UserProxy();
 		
 		users_proxy.setPageSize(0);
-		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail",
-				"test%"));
+		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
 		List<User> users = users_proxy.getAll();
 		System.out.println("Count = " + users.size());
 		if (users.size() > 0) {

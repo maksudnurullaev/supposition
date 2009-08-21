@@ -19,6 +19,7 @@ public abstract class _User extends CayenneDataObject {
     public static final String MAIL_PROPERTY = "Mail";
     public static final String PASSWORD_PROPERTY = "Password";
     public static final String SALT_PROPERTY = "Salt";
+    public static final String STATUS_PROPERTY = "Status";
     public static final String UPDATED_PROPERTY = "Updated";
     public static final String VERIFY_FOR_PROPERTY = "VerifyFor";
     public static final String VERIFY_STRING_PROPERTY = "VerifyString";
@@ -66,6 +67,13 @@ public abstract class _User extends CayenneDataObject {
     }
     public String getSalt() {
         return (String)readProperty("Salt");
+    }
+
+    public void setStatus(String Status) {
+        writeProperty("Status", Status);
+    }
+    public String getStatus() {
+        return (String)readProperty("Status");
     }
 
     public void setUpdated(String Updated) {

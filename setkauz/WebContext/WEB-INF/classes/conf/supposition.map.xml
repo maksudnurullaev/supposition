@@ -17,6 +17,7 @@
 		<db-attribute name="Mail" type="VARCHAR" isMandatory="true" length="50"/>
 		<db-attribute name="Password" type="VARCHAR" isMandatory="true" length="64"/>
 		<db-attribute name="Salt" type="VARCHAR" length="128"/>
+		<db-attribute name="Status" type="VARCHAR" length="16"/>
 		<db-attribute name="Updated" type="VARCHAR" length="23"/>
 		<db-attribute name="VerifyFor" type="VARCHAR" length="32"/>
 		<db-attribute name="VerifyString" type="VARCHAR" length="64"/>
@@ -40,11 +41,11 @@
 		<obj-attribute name="Mail" type="java.lang.String" db-attribute-path="Mail"/>
 		<obj-attribute name="Password" type="java.lang.String" db-attribute-path="Password"/>
 		<obj-attribute name="Salt" type="java.lang.String" db-attribute-path="Salt"/>
+		<obj-attribute name="Status" type="java.lang.String" db-attribute-path="Status"/>
 		<obj-attribute name="Updated" type="java.lang.String" db-attribute-path="Updated"/>
 		<obj-attribute name="VerifyFor" type="java.lang.String" db-attribute-path="VerifyFor"/>
 		<obj-attribute name="VerifyString" type="java.lang.String" db-attribute-path="VerifyString"/>
 		<pre-persist method-name="onNew"/>
-		<pre-update method-name="onUpdate"/>
 	</obj-entity>
 	<db-relationship name="ToUsersRoles" source="Roles" target="Users_Roles" toMany="true">
 		<db-attribute-pair source="ID" target="RoleID"/>

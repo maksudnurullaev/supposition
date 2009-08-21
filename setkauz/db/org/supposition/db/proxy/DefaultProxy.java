@@ -91,10 +91,10 @@ public class DefaultProxy extends ADBProxyObject<Default>
 		keyValue.validateForSave(validationResult);
 		
 		if(validationResult.hasFailures()){
-			System.out.println("### Validation Failed ###");
+			_log.warn("Validation Failed");
 			String failResult = MessagesManager.getText("message.data.NOT.saved") + ":\n";
 			for(ValidationFailure fail: validationResult.getFailures()){
-				System.out.println("Fails: " + fail.getDescription());
+				_log.warn("Fails: " + fail.getDescription());
 				failResult += "\t - " + MessagesManager.getText(fail.getDescription()) + "\n";;
 			}			
 			return Constants._web_error_result_prefix + failResult;

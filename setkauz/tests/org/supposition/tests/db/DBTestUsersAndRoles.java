@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.ExpressionFactory;
-import org.apache.cayenne.validation.ValidationException;
+import org.apache.cayenne.validation.ValidationResult;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -77,22 +77,30 @@ public class DBTestUsersAndRoles {
 		user.setMail("testme@test.com");
 		user.setPassword(password);
 		
+		ValidationResult validationResult = user.getValidationResult();
+		
+		Assert.assertFalse(validationResult.hasFailures());
+		
+		user.postValidationSave();
 		_context.commitChanges();
 		
-		Assert.assertTrue(user.getPassword() == Constants._password_salted);
+		Assert.assertTrue(user.getPassword() == "");
+		Assert.assertTrue(user.getStatus() == Constants._password_salted);
 		Assert.assertTrue(user.checkPassword(password));
-		System.out.println(String.format("%s == salt(%s)", password, user.getSalt()));
 		
 		// Change password
 		user.setPassword(password2);
 
+		validationResult = user.getValidationResult();		
+		Assert.assertFalse(validationResult.hasFailures());
+
+		user.postValidationSave();
 		_context.commitChanges();
 		
-		Assert.assertTrue(user.getPassword() == Constants._password_salted);
-		Assert.assertTrue(!user.checkPassword(password));
-		System.out.println(String.format("%s != salt(%s)", password, user.getSalt()));
-		Assert.assertTrue(user.checkPassword(password2));				
-		System.out.println(String.format("%s == salt(%s)", password2, user.getSalt()));
+		Assert.assertTrue(user.getPassword() == "");
+		Assert.assertTrue(user.getStatus() == Constants._password_salted);
+		Assert.assertTrue(user.checkPassword(password2));
+
 	}
 
 	@Test
@@ -144,23 +152,16 @@ public class DBTestUsersAndRoles {
 	
 	// Test exceptions
 	@Test
-	public void test_empty_fields(){
-		DataContext _context = DBUtils.getInstance().getDBContext();
+	public void test_empty_fields() throws Exception{
+		UserProxy users = new UserProxy();
 		
-		User user = _context.newObject(User.class);
+		User user = users.createNew();
 		user.setMail("");
 		user.setPassword("");
 		
-		boolean exceptionCatched = false;
-		try {
-			_context.commitChanges();			
-		} catch (ValidationException e) {
-			exceptionCatched = true;
-		} catch (Exception e) {
-		}
-		Assert.assertTrue(exceptionCatched);
-		user = null;
-		_context.rollbackChanges();
+		ValidationResult validationResult = user.getValidationResult();
+		Assert.assertTrue(validationResult.hasFailures());
+		Assert.assertTrue(validationResult.getFailures().size() == 2);
 	}
 	
 	@Test
@@ -171,15 +172,10 @@ public class DBTestUsersAndRoles {
 		user.setMail("test_invalid_mail#test.com");
 		user.setPassword("test_invalid_mail");
 		
-		boolean exceptionCatched = false;
-		try {
-			_context.commitChanges();			
-		} catch (ValidationException e) {
-			exceptionCatched = true;
-		} catch (Exception e) {
-		}
-		Assert.assertTrue(exceptionCatched);
-		user = null;
-		_context.rollbackChanges();
+		ValidationResult validationResult = user.getValidationResult();		
+		
+		Assert.assertTrue(validationResult.hasFailures());
+		Assert.assertTrue(validationResult.getFailures().size() == 1);
+		Assert.assertTrue(validationResult.getFailures().get(0).getDescription() == "errors.invalid.mail");		
 	}	
 }

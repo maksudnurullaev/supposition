@@ -8,6 +8,10 @@
 			<param name="class" value="org.dwr.Intro" />
 		</create>
 
+		<create creator="new" javascript="LocalUserProxy">
+			<param name="class" value="org.supposition.db.proxy.LocalUserProxy" />
+		</create>
+
 		<create creator="new" javascript="UserProxy">
 			<param name="class" value="org.supposition.db.proxy.UserProxy" />
 		</create>

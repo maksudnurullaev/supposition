@@ -1,8 +1,8 @@
 Load ("dwr/engine.js");  
 Load ("dwr/util.js");
 Load ("dwr/interface/Intro.js");
+Load ("dwr/interface/LocalUserProxy.js");
 Load ("tabs/tabs.js");
-Load ("dwr/interface/UserProxy.js");
 Load ("scripts/LocalUserProxy.js");
 
 function init() {
@@ -33,22 +33,26 @@ function showMainRegisterForm(){
 	hideAll();
 	getTextFromServerToDiv("main.user.formNew", "mainBody2", false);
 	$("mainBody2").style.display = "block";
+	return false;
 }
 
 function showMainEnterForm(){
 	hideAll();
 	getTextFromServerToDiv("main.user.formEnter", "mainBody2", false);
 	$("mainBody2").style.display = "block";
+	return false;
 }
 
 function hideAll(){
 	$("mainTabList").style.display = "none";
 	$("mainBody2").style.display = "none";
+	return false;
 }
 
 function showMainTabList(){
 	hideAll();
 	$("mainTabList").style.display = "block";
+	return false;
 }
 
 // ##################
@@ -60,17 +64,20 @@ function Stack(){}
 Stack.hideShow =  function (hideElemId, showElemId){
 	Stack.setToStack(hideElemId);
 	Stack.showInMainBody(showElemId);
+	return false;
 }
 
 Stack.setToStack = function (elemId){
 	$(elemId).style.display == "none";
 	$("stack").appendChild($(elemId));
+	return false;
 }
 
 Stack.showInMainBody = function (elemId){
 	$("mainBody").appendChild($(elemId));
 	if($(elemId).style.display == "none")
 		$(elemId).style.display = "block";
+	return false;
 }
 
 // #################
@@ -78,6 +85,7 @@ function loadPageContext() {
 	Tabs.clearStack();	
 	getTextFromServer('mainTitle', false);
 	getTextFromServer('mainTabList', false);
+	return false;
 }
 
 function getTextFromServer(key, nonFormat){
@@ -85,6 +93,7 @@ function getTextFromServer(key, nonFormat){
 		dwr.util.setValue(key, data, {escapeHtml :nonFormat});
 		evaluateItByKey(key);
 	});	
+	return false;
 }
 
 function getTextFromServerToDiv(key, divId, nonFormat){
@@ -92,6 +101,7 @@ function getTextFromServerToDiv(key, divId, nonFormat){
 		dwr.util.setValue(divId, data, {escapeHtml :nonFormat});
 		evaluateItByKey(key);
 	});	
+	return false;
 }
 
 function evaluateItByKey(key){
@@ -103,6 +113,7 @@ function evaluateItByKey(key){
 				});			
 		}
 	});	
+	return false;
 }
 
 
@@ -110,6 +121,7 @@ function loadFooter(data) {
 	dwr.util.setValue("footer", data, {
 		escapeHtml :false
 	});
+	return false;
 }
 
 function isOK(result){

@@ -16,68 +16,75 @@ import org.supposition.utils.CryptoManager;
 public class User extends _User {
 	private static final long serialVersionUID = 1L;
 	private Log _log = LogFactory.getLog(this.getClass());
+	private boolean is_new = false;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.cayenne.CayenneDataObject#validateForSave(org.apache.cayenne
-	 * .validation.ValidationResult)
-	 */
-	@Override
-	protected void validateForSave(ValidationResult validationResult) {
-		super.validateForSave(validationResult);
-
+	private void validateBeforeSave(ValidationResult validationResult) {
 		_log.debug("->validateForSave");
-
-		validateMail(validationResult);
-
-		if (validatePassword(validationResult) && isNeedToChangePassword())
+		super.validateForSave(validationResult);
+				
+		validateMail(validationResult);		
+		
+		if(is_new){
+			validatePassword(validationResult);
+			validateFor2Mail(validationResult);
+		}else{
+			if(isNeedToChangePassword()) validatePassword(validationResult);
+		}
+	}
+	
+	public ValidationResult getValidationResult(){
+		ValidationResult validationResult = new ValidationResult();
+		validateBeforeSave(validationResult);
+		return validationResult;
+	}
+	
+	
+	public void postValidationSave(){
+		_log.debug("->validateForSave");
+		
+		if(is_new) {
 			updatePassword();
+			setCreated(Constants.GetCurrentDateTime());
+		}
+		else{
+			if(isNeedToChangePassword()) updatePassword();
+			setUpdated(Constants.GetCurrentDateTime());
+		}
 	}
 
 	private boolean isNeedToChangePassword() {
-		return (getPassword() != Constants._password_salted);
+		_log.debug("->isNeedToChangePassword RETURNS " + Constants.isValidString(getPassword()));
+		return Constants.isValidString(getPassword());
 	}
 
 	protected void updatePassword() {
-
-		_log.debug("->updatePassword to " + getPassword());
-
+		_log.debug("->updatePassword");
+		
 		setSalt(CryptoManager.encryptPassword(getPassword()));
-		setPassword(Constants._password_salted); // remove original text
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.apache.cayenne.CayenneDataObject#validateForInsert(org.apache.cayenne
-	 * .validation.ValidationResult)
-	 */
-	@Override
-	public void validateForInsert(ValidationResult validationResult) {
-		super.validateForInsert(validationResult);
-
-		_log.debug("->validateForInsert");
-
-		validateMail(validationResult);
-		validatePassword(validationResult);
-
+		setPassword(""); // remove original text
+		setStatus(Constants._password_salted);
 	}
 
 	private boolean validateMail(ValidationResult validationResult) {
-
 		_log.debug("->validateMail");
 
-		// Validate for invalid mail
 		if (!org.supposition.utils.Constants.isValidEmailAddress(getMail())) {
 			validationResult.addFailure(new SimpleValidationFailure(this,
 					"errors.invalid.mail"));
 			_log.error("Invalid email" + getMail());
 			return false;
 		}
-		// Validate for existing mail
+
+
+		return true;
+	}
+	
+	private boolean validateFor2Mail(ValidationResult validationResult){
+		_log.debug("->validateFor2Mail");
+				
+		// We have no reason to check if DBO already has failures
+		if(validationResult.hasFailures()) return false;
+		
 		UserProxy users = new UserProxy();
 		users.addExpression(ExpressionFactory.matchExp("Mail", getMail()));
 
@@ -97,9 +104,8 @@ public class User extends _User {
 					return false;
 				}
 			}
-		}
-
-		return true;
+		}		
+		return true;		
 	}
 
 	private boolean validatePassword(ValidationResult validationResult) {
@@ -123,18 +129,11 @@ public class User extends _User {
 	}
 
 	protected void onNew() {
-		_log.debug("->onNew");
-		setCreated(Constants.GetCurrentDateTime());
-	}
-
-	protected void onUpdate() {
-		_log.debug("->onUpdate");
-		setUpdated(Constants.GetCurrentDateTime());
+		is_new = true;		
 	}
 
 	public boolean checkPassword(String password) {
-		//_log.debug(String.format("CryptoManager.checkPassword(%s, %s) = ", password, getSalt()));
-		//_log.debug(String.format("CryptoManager(%s, %s) = ", CryptoManager.encryptPassword(password), getSalt()));
+		_log.trace("password = " + password);
 		return CryptoManager.checkPassword(password, getSalt());
 	}
 
@@ -142,4 +141,6 @@ public class User extends _User {
 		setMail(inUser.getMail().trim());
 		setAdditionals(inUser.getAdditionals().trim());
 	}
+
+
 }
