@@ -15,24 +15,24 @@ public final class SessionManager {
 		return getWebContext().getSession();
 	}
 	
-	public static Object getFromSession(String inKey){
-		Object result = getHttpSession().getAttribute(inKey);
-		if(result != null)
-			return getHttpSession().getAttribute(inKey);
-		return DBDefaults(inKey);
+	public static boolean isExist(String inKey){
+		return getHttpSession().getAttribute(inKey) != null;
 	}
 	
-	private static Object DBDefaults(String inKey) {
-		// TODO Need to inpliment with database
-		return "Need to inpliment with database";
+	public static Object getFromSession(String inKey){
+		return getHttpSession().getAttribute(inKey);
 	}
-
+	
 	public static void setToSession(String inKey, Object inObject){
 		getHttpSession().setAttribute(inKey, inObject);
 	}
 	
 	public static Object getSessionValue(String inKey){
 		return getFromSession(inKey);
+	}
+	
+	public static int getSessionIntValue(String inKey){
+		return Constants.getIntFromStr(getFromSession(inKey).toString());
 	}
 	
 	public static String setSessionValue(String inKey, Object obj){

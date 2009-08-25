@@ -47,6 +47,9 @@ public final class Constants {
 	public static String _web_ok_result_prefix = "OK:";
 	public static String _string_userId = "userId";
 	public static int _default_id_for_new_dbo = -1;
+	public static String _page_size_def = ".pageSize";
+	public static String _current_page_def = ".currentPage";
+	public static String _page_count_def =  ".pageCount";
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);
@@ -131,6 +134,15 @@ public final class Constants {
 
 	public static String translate(String string) {
 		return string;
+	}
+
+	public static int getIntFromStr(String text) {
+		int result = -1;
+		try {
+			result = Integer.parseInt(text.trim());			
+		} catch (NumberFormatException e) {
+		}
+		return result;
 	}
 
 }

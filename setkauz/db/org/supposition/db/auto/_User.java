@@ -21,7 +21,6 @@ public abstract class _User extends CayenneDataObject {
     public static final String SALT_PROPERTY = "Salt";
     public static final String STATUS_PROPERTY = "Status";
     public static final String UPDATED_PROPERTY = "Updated";
-    public static final String VERIFY_FOR_PROPERTY = "VerifyFor";
     public static final String VERIFY_STRING_PROPERTY = "VerifyString";
     public static final String ROLES_PROPERTY = "Roles";
 
@@ -81,13 +80,6 @@ public abstract class _User extends CayenneDataObject {
     }
     public String getUpdated() {
         return (String)readProperty("Updated");
-    }
-
-    public void setVerifyFor(String VerifyFor) {
-        writeProperty("VerifyFor", VerifyFor);
-    }
-    public String getVerifyFor() {
-        return (String)readProperty("VerifyFor");
     }
 
     public void setVerifyString(String VerifyString) {

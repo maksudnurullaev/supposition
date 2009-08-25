@@ -122,7 +122,6 @@ public class UserProxy extends ADBProxyObject<User> {
 		return Constants._web_ok_result_prefix + MessagesManager.getText("message.data.saved");		
 	}
 
-	// ############################
 	@Override
 	public List<String> getColumnNames() {
 		_log.debug("-> getColumnNames");
@@ -148,7 +147,6 @@ public class UserProxy extends ADBProxyObject<User> {
 		return String.format(result, userPk);
 	}
 
-	// ######################################################################
 	public String getPageAsHTMLTable(int inPage) {
 		_log.debug("-> getPageAsHTMLTable");
 		
@@ -164,15 +162,47 @@ public class UserProxy extends ADBProxyObject<User> {
 							++i, 
 							user.getID(), 
 							user.getMail(), 
+							user.getStatus(), 
 							user.getAdditionals(), 
 							user.getCreated(), 
 							user.getUpdated(), 
 							user.getID());
 		}
 		
-		return MessagesManager.getText("main.admin.users.table.header")
+		return  getHTMLPaginator(inPage)
+				+ MessagesManager.getText("main.admin.users.table.header")
 				+ result
 				+ MessagesManager.getText("main.admin.users.table.footer");
+	}
+
+	private String getHTMLPaginator(int inPage) {
+		int pageCount = getPageCount();
+		if(pageCount == 1) return "1";
+		
+		
+		return MessagesManager.getText("template.simple.paginator.head")
+				+ String.format(MessagesManager.getText("template.simple.paginator.btn_back"), "alert('<')")
+				+ String.format(MessagesManager.getText("template.simple.paginator.page_current"),
+						getCurrentPageDef(),
+						inPage)
+				+ String.format(MessagesManager.getText("template.simple.paginator.btn_forward"), "alert('>')")
+				+ String.format(MessagesManager.getText("template.simple.paginator.total"),
+						getPageCountDef(), 
+						pageCount);
+	}
+
+	private int getPageCount() {
+		int pageSize = getPageSize();
+		int itemCount = getCount();
+		int lastItems = itemCount % pageSize;
+		int result = 0;
+		
+		if(lastItems == 0)
+			result = itemCount / pageSize;
+		else 
+			result = (itemCount - lastItems) / pageSize +1;
+		
+		return result;
 	}
 
 	public String updateDBOUser(UserBean userBean) {
@@ -250,6 +280,4 @@ public class UserProxy extends ADBProxyObject<User> {
 				+ MessagesManager.getText("message.new.password.saved");
 	}
 
-
-	
 }
