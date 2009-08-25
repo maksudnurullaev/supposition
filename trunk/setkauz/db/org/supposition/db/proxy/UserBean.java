@@ -8,16 +8,16 @@ public class UserBean {
 	private String password;
 	private String newpassword;
 	private String newpassword2;	
-	
+		
 	public void setMail(String mail) {
 		this.mail = mail;
-	}
+	}	
 	public String getMail() {
 		return mail;
 	}
 	public void setAdditionals(String additionals) {
 		this.additionals = additionals;
-	}
+	}	
 	public String getAdditionals() {
 		return additionals;
 	}
@@ -27,7 +27,6 @@ public class UserBean {
 	public int getId() {
 		return id;
 	}
-	// Password part
 	public void setPassword(String password) {
 		this.password = password;
 	}

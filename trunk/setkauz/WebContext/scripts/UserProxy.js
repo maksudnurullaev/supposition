@@ -1,6 +1,6 @@
 Namespace("UserProxy");
 UserProxy.updateTable = function() {
-	UserProxy.getPageAsHTMLTable(0, function(table) {
+	UserProxy.getPageAsHTMLTable(1, function(table) {
 		dwr.util.setValue('main.admin.users.table', table, {
 			escapeHtml :false
 		});

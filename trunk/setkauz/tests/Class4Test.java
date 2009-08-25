@@ -1,8 +1,6 @@
-import org.apache.cayenne.validation.ValidationFailure;
-import org.apache.cayenne.validation.ValidationResult;
-import org.supposition.db.Default;
-import org.supposition.db.proxy.DefaultProxy;
-import org.supposition.utils.Constants;
+import org.apache.cayenne.access.DataContext;
+import org.supposition.db.User;
+import org.supposition.utils.DBUtils;
 
 
 
@@ -12,32 +10,18 @@ public class Class4Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		DefaultProxy defaults = new DefaultProxy();
-		Default keyValue = null;
+		DataContext _context = DBUtils.getInstance().getDBContext();
 		
-		try {
-			keyValue = defaults.createNew();
-		} catch (Exception e) {
-			System.out.println("errors.could.not.create.dbobject");
+		User user = null;
+		for (int i = 0; i < 100; i++) {
+			user = _context.newObject(User.class);
+			user.setMail(String.format("test_user%d@admin.com", i));
+			user.setAdditionals("For Test Pro");
+			user.setPassword("test");	
+			user.postValidationSave();
 		}
 		
-		keyValue.setKey("test");
-		keyValue.setValue("testvalue");
-		
-		ValidationResult validationResult = new ValidationResult(); 		
-		keyValue.validateForSave(validationResult);
-		
-		if(validationResult.hasFailures()){
-			System.out.println("### Validation Failed ###");
-			for(ValidationFailure fail: validationResult.getFailures()){
-				System.out.println("Fails: " + fail.getDescription());
-			}			
-			System.out.println(Constants._web_error_result_prefix);
-		}		
-		
-		defaults.commitChanges();
-		
-		System.out.println(Constants._web_ok_result_prefix);	
+		_context.commitChanges();
 	}
 
 }

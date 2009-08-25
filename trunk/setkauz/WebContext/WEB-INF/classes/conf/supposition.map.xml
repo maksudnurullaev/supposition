@@ -19,7 +19,6 @@
 		<db-attribute name="Salt" type="VARCHAR" length="128"/>
 		<db-attribute name="Status" type="VARCHAR" length="16"/>
 		<db-attribute name="Updated" type="VARCHAR" length="23"/>
-		<db-attribute name="VerifyFor" type="VARCHAR" length="32"/>
 		<db-attribute name="VerifyString" type="VARCHAR" length="64"/>
 	</db-entity>
 	<db-entity name="Users_Roles">
@@ -43,7 +42,6 @@
 		<obj-attribute name="Salt" type="java.lang.String" db-attribute-path="Salt"/>
 		<obj-attribute name="Status" type="java.lang.String" db-attribute-path="Status"/>
 		<obj-attribute name="Updated" type="java.lang.String" db-attribute-path="Updated"/>
-		<obj-attribute name="VerifyFor" type="java.lang.String" db-attribute-path="VerifyFor"/>
 		<obj-attribute name="VerifyString" type="java.lang.String" db-attribute-path="VerifyString"/>
 		<pre-persist method-name="onNew"/>
 	</obj-entity>

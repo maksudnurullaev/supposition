@@ -11,14 +11,17 @@ import org.apache.cayenne.query.SelectQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.proxy.interfaces.IDBProxyCollection;
+import org.supposition.utils.Constants;
 import org.supposition.utils.DBUtils;
+import org.supposition.utils.MessagesManager;
+import org.supposition.utils.SessionManager;
 
 
 public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDBProxyCollection<E>{
 	private DataContext _context = DBUtils.getInstance().getDBContext();
 	private List<Expression> _expressions = new ArrayList<Expression>();
 	private Class<E> _eclass = null;
-	private int _pageSize = 0;
+	private int _pageSize = Constants.getIntFromStr(MessagesManager.getText("default.page.size"));
 	public Log _log = LogFactory.getLog(this.getClass());
 
 	@Override
@@ -88,14 +91,33 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 
 	@Override
 	public int getPageSize() {
+		if(SessionManager.isExist(getPageSizeDef()))
+			return SessionManager.getSessionIntValue(getPageSizeDef());
+		else
+			SessionManager.setSessionValue(getPageSizeDef(), _pageSize);
 		return _pageSize;
 	}	
 
 	@Override
 	public void setPageSize(int inPageSize) {
-		this._pageSize = inPageSize;
+		SessionManager.setSessionValue(getPageSizeDef(), inPageSize);
 	}
 
+	@Override
+	public String getPageSizeDef() {
+		return getClass().getSimpleName() + Constants._page_size_def;
+	}
+
+	@Override
+	public String getPageCountDef() {
+		return getClass().getSimpleName() + Constants._page_count_def;
+	}	
+	
+	@Override
+	public String getCurrentPageDef(){
+		return getClass().getSimpleName() + Constants._current_page_def;
+	}
+	
 	@Override
 	public boolean hasExpressions() {
 		return (!getExpressions().isEmpty());

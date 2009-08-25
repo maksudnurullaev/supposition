@@ -26,4 +26,7 @@ public interface IDBProxyCollection<E> {
 	void deleteObjects(List<E> objects);
 	DataContext getObjectContext();
 	E getDBObjectByIntPk(int pk);
+	String getPageSizeDef();
+	String getCurrentPageDef();
+	String getPageCountDef();
 }
