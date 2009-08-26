@@ -50,6 +50,9 @@ public final class Constants {
 	public static String _page_size_def = ".pageSize";
 	public static String _current_page_def = ".currentPage";
 	public static String _page_count_def =  ".pageCount";
+	public static String _go2Page_def = ".go2Page(%s)";
+	public static String _page_density_def = ".pageDencity";
+	public static String _set_page_density_def = ".setPageDencity()";
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);

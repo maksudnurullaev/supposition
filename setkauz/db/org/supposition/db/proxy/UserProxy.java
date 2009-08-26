@@ -139,7 +139,8 @@ public class UserProxy extends ADBProxyObject<User> {
 		if (user != null)
 			result = String.format(MessagesManager
 					.getText("main.admin.users.formUpdate"), user.getMail(),
-					user.getAdditionals(), user.getID());
+					user.getAdditionals(), 
+					user.getID());
 		else
 			result = String.format(MessagesManager
 					.getText("main.admin.users.user_not_found_text"), userPk);
@@ -150,16 +151,23 @@ public class UserProxy extends ADBProxyObject<User> {
 	public String getPageAsHTMLTable(int inPage) {
 		_log.debug("-> getPageAsHTMLTable");
 		
+		if(inPage <= 0)
+			return MessagesManager.getText("errors.too.many.objects");
+		
 		String format = MessagesManager.getText("main.admin.users.table.tr");
 		String result = "";
 		List<User> users = getAll();
 		
-		int i = 0;
 		
-		for (User user : users) {
+		int startItem = (inPage - 1) * getPageSize();
+		int endItem = inPage * getPageSize();
+		
+		for (int j = startItem; j < endItem; j++) {
+			if(j >= users.size()) break;
+			User user = users.get(j);
 			result = result
 					+ String.format(format, 
-							++i, 
+							(j + 1), 
 							user.getID(), 
 							user.getMail(), 
 							user.getStatus(), 
@@ -173,36 +181,6 @@ public class UserProxy extends ADBProxyObject<User> {
 				+ MessagesManager.getText("main.admin.users.table.header")
 				+ result
 				+ MessagesManager.getText("main.admin.users.table.footer");
-	}
-
-	private String getHTMLPaginator(int inPage) {
-		int pageCount = getPageCount();
-		if(pageCount == 1) return "1";
-		
-		
-		return MessagesManager.getText("template.simple.paginator.head")
-				+ String.format(MessagesManager.getText("template.simple.paginator.btn_back"), "alert('<')")
-				+ String.format(MessagesManager.getText("template.simple.paginator.page_current"),
-						getCurrentPageDef(),
-						inPage)
-				+ String.format(MessagesManager.getText("template.simple.paginator.btn_forward"), "alert('>')")
-				+ String.format(MessagesManager.getText("template.simple.paginator.total"),
-						getPageCountDef(), 
-						pageCount);
-	}
-
-	private int getPageCount() {
-		int pageSize = getPageSize();
-		int itemCount = getCount();
-		int lastItems = itemCount % pageSize;
-		int result = 0;
-		
-		if(lastItems == 0)
-			result = itemCount / pageSize;
-		else 
-			result = (itemCount - lastItems) / pageSize +1;
-		
-		return result;
 	}
 
 	public String updateDBOUser(UserBean userBean) {
@@ -280,4 +258,9 @@ public class UserProxy extends ADBProxyObject<User> {
 				+ MessagesManager.getText("message.new.password.saved");
 	}
 
+	public String findItemsByFilter(String inFilter){
+		cleanExpressions();
+		addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail", inFilter));
+		return String.format(MessagesManager.getText("message.found.N.records"), getAll().size());
+	}
 }

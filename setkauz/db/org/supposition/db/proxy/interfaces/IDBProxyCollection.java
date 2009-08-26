@@ -29,4 +29,11 @@ public interface IDBProxyCollection<E> {
 	String getPageSizeDef();
 	String getCurrentPageDef();
 	String getPageCountDef();
+	int getPageCount();
+	String getGo2PageDef();
+	String getHTMLPaginator(int inPage);
+	String getPageDencityDef();
+	String getSetPageDencityDef();
+	String getHTMLRowDensity();
+	
 }
