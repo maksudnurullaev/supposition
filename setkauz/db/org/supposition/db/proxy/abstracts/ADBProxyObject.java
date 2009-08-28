@@ -78,89 +78,33 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	}
 	
 	@Override
-	public String getGo2PageDef() {
-		return getClass().getSimpleName() + Constants._go2Page_def;
-	}
-	
-	@Override
 	public String getCurrentPageDef(){
 		return getClass().getSimpleName() + Constants._current_page_def;
-	}	
+	}
 	
 	@Override	
 	public E getDBObjectByIntPk(int pk) {
 		return DataObjectUtils.objectForPK(getObjectContext(), _eclass, pk);
-	}
-
+	}	
+	
 	@Override
 	public List<Expression> getExpressions() {
 		return _expressions;
 	}
 
-	@Override 
-	public DataContext getObjectContext(){
-		return _context;
-	}	
-	
 	@Override
-	public int getPageCount() {
-		int pageSize = getPageSize();
-		int itemCount = getCount();
-		
-		if(pageSize >= itemCount) return 1;
-		
-		int lastItems = itemCount % pageSize;
-		int result = 0;
-		
-		if(lastItems == 0)
-			result = itemCount / pageSize;
-		else 
-			result = (itemCount - lastItems) / pageSize +1;
-		
-		return result;
+	public String getGo2PageDef() {
+		return getClass().getSimpleName() + Constants._go2Page_jsf_def;
 	}
 
-	@Override
-	public String getPageCountDef() {
-		return getClass().getSimpleName() + Constants._page_count_def;
+	private String getHTMLFilter() {
+		return (isSessionHasFilter()?
+				String.format(MessagesManager.getText("template.simple.paginator.filter"),
+						getRemoveFilterDef())
+						:
+						"");
 	}	
 	
-	@Override
-	public int getPageSize() {
-		if(SessionManager.isExist(getPageSizeDef()))
-			return SessionManager.getSessionIntValue(getPageSizeDef());
-		else
-			SessionManager.setSessionValue(getPageSizeDef(), _pageSize);
-		return _pageSize;
-	}
-
-	@Override
-	public String getPageSizeDef() {
-		return getClass().getSimpleName() + Constants._page_size_def;
-	}	
-	
-	@Override
-	public String getPageDencityDef() {
-		return getClass().getSimpleName() + Constants._page_density_def;
-	}	
-	
-	@Override
-	public String getSetPageDencityDef() {
-		return getClass().getSimpleName() + Constants._set_page_density_def;
-	}		
-	
-	@Override
-	public SelectQuery getSelectQuery() {
-		SelectQuery resultQuery = new SelectQuery(_eclass);
-		
-		resultQuery.setPageSize(getPageSize());
-		
-		if(hasExpressions())
-			attachExpressions(resultQuery);
-		
-		return resultQuery;
-	}
-
 	@Override
 	public String getHTMLPaginator(int inPage) {
 		String result = MessagesManager.getText("template.simple.paginator.header");
@@ -195,6 +139,8 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		
 		result += getHTMLRowDensity();
 		
+		result += getHTMLFilter();
+		
 		result += MessagesManager.getText("template.simple.paginator.footer");
 		
 		return result;
@@ -207,10 +153,89 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 				getPageSize(),
 				getSetPageDencityDef());
 	}	
+
+	@Override 
+	public DataContext getObjectContext(){
+		return _context;
+	}		
 	
+	@Override
+	public int getPageCount() {
+		int pageSize = getPageSize();
+		int itemCount = getCount();
+		
+		if(pageSize >= itemCount) return 1;
+		
+		int lastItems = itemCount % pageSize;
+		int result = 0;
+		
+		if(lastItems == 0)
+			result = itemCount / pageSize;
+		else 
+			result = (itemCount - lastItems) / pageSize +1;
+		
+		return result;
+	}
+
+	@Override
+	public String getPageCountDef() {
+		return getClass().getSimpleName() + Constants._page_count_def;
+	}	
+	
+	@Override
+	public String getPageDencityDef() {
+		return getClass().getSimpleName() + Constants._page_density_def;
+	}	
+	
+	@Override
+	public int getPageSize() {
+		if(SessionManager.isExist(getPageSizeDef()))
+			return SessionManager.getSessionIntValue(getPageSizeDef());
+		else
+			SessionManager.setSessionValue(getPageSizeDef(), _pageSize);
+		return _pageSize;
+	}		
+	
+	@Override
+	public String getPageSizeDef() {
+		return getClass().getSimpleName() + Constants._page_size_def;
+	}
+
+	@Override
+	public String getRemoveFilterDef() {
+		return getClass().getSimpleName() + Constants._remove_filter_jsf_def;
+	}
+
+	@Override
+	public SelectQuery getSelectQuery() {
+		SelectQuery resultQuery = new SelectQuery(_eclass);
+		
+		resultQuery.setPageSize(getPageSize());
+		
+		if(hasExpressions())
+			attachExpressions(resultQuery);
+		
+		return resultQuery;
+	}	
+	
+	@Override
+	public String getSessionFilterDef() {
+		return getClass().getSimpleName() + Constants._session_filter_def;
+	}
+	
+	@Override
+	public String getSetPageDencityDef() {
+		return getClass().getSimpleName() + Constants._page_density_jsf_def;
+	}
+
 	@Override
 	public boolean hasExpressions() {
 		return (!getExpressions().isEmpty());
+	}	
+	
+	@Override
+	public boolean isSessionHasFilter(){
+		return (SessionManager.getFromSession(getSessionFilterDef()) != null);		
 	}
 	
 	@Override

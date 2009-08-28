@@ -19,6 +19,10 @@ public final class SessionManager {
 		return getHttpSession().getAttribute(inKey) != null;
 	}
 	
+	/**
+	 * @param inKey
+	 * @return null or Object
+	 */
 	public static Object getFromSession(String inKey){
 		return getHttpSession().getAttribute(inKey);
 	}
@@ -38,5 +42,9 @@ public final class SessionManager {
 	public static String setSessionValue(String inKey, Object obj){
 		setToSession(inKey, obj);
 		return "OK";
+	}
+
+	public static void removeFromSession(String inKey) {
+		getHttpSession().removeAttribute(inKey);
 	}	
 }
