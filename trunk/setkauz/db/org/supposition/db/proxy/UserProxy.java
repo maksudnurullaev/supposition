@@ -21,7 +21,21 @@ public class UserProxy extends ADBProxyObject<User> {
 		super();
 		setEClass(User.class);
 	}		
+
+	public void setSessionFilter(UserBean inBean){
+		SessionManager.setSessionValue(getSessionFilterDef(), inBean);
+	} 
 	
+	public String setSessionFilterAndGetPageAsHTMLTable(UserBean inBean){
+		setSessionFilter(inBean);
+		return getPageAsHTMLTable(1);
+	} 	
+	
+	public String removeSessionFilterAndGetPageAsHTMLTable(){
+		SessionManager.removeFromSession(getSessionFilterDef());
+		return getPageAsHTMLTable(1);
+	}
+		
 	public String addDBOUser(UserBean userBean){
 		_log.debug("-> addDBOUser");
 		
@@ -156,9 +170,22 @@ public class UserProxy extends ADBProxyObject<User> {
 		
 		String format = MessagesManager.getText("main.admin.users.table.tr");
 		String result = "";
+		
+		// Check for filter
+		if(isSessionHasFilter()){
+			applyFilter((UserBean) SessionManager.getFromSession(getSessionFilterDef()));
+		}
+		
+		// Get items
 		List<User> users = getAll();
 		
+		// Check for items
+		if(users == null ||
+				users.size() == 0)
+			return getHTMLPaginator(inPage) + 
+				MessagesManager.getText("errors.object.not.found");
 		
+		// Formate result		
 		int startItem = (inPage - 1) * getPageSize();
 		int endItem = inPage * getPageSize();
 		
@@ -258,9 +285,21 @@ public class UserProxy extends ADBProxyObject<User> {
 				+ MessagesManager.getText("message.new.password.saved");
 	}
 
-	public String findItemsByFilter(String inFilter){
+	public String findItemsByFilter(UserBean inUser){
+		applyFilter(inUser);
+		return String.format(MessagesManager.getText("message.found.N.records"), 
+				getAll().size());
+	}
+
+	private void applyFilter(UserBean inUser) {
 		cleanExpressions();
-		addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail", inFilter));
-		return String.format(MessagesManager.getText("message.found.N.records"), getAll().size());
+		addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail", normalizeString4Filter(inUser.getMail())));
+	}
+	
+	private String normalizeString4Filter(String inString) {
+		int notFound = -1;
+		if(inString.indexOf("%") == notFound )
+			return "%" + inString + "%";
+		return inString;
 	}
 }

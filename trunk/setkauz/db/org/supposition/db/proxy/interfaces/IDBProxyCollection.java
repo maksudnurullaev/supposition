@@ -35,5 +35,8 @@ public interface IDBProxyCollection<E> {
 	String getPageDencityDef();
 	String getSetPageDencityDef();
 	String getHTMLRowDensity();
+	String getSessionFilterDef();
+	boolean isSessionHasFilter();
+	String getRemoveFilterDef();
 	
 }
