@@ -46,5 +46,16 @@ public final class SessionManager {
 
 	public static void removeFromSession(String inKey) {
 		getHttpSession().removeAttribute(inKey);
+	}
+
+	public static String getSessionLocale() {
+		String locale = (String) getFromSession(Constants._session_locale_def);
+		if(locale == null)
+			return Constants._default_locale;
+		return locale;
+	}
+
+	public static void setSessionLocale(String inLocale) {
+		setToSession(Constants._session_locale_def, inLocale);		
 	}	
 }

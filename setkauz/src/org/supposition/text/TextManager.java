@@ -1,5 +1,7 @@
 package org.supposition.text;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -10,59 +12,50 @@ import org.supposition.utils.Constants;
 public class TextManager extends PropertyLoader {
 	private static Log _log = LogFactory.getLog(PropertyLoader.class);	
 	
-	private Properties _property = null;
-	private String _basename = null;
-	private String _locale = null;
+	private Map<String, Properties>  _propertiesMap = null;
+	private String _currentBasename = null;
 	
 	public TextManager() {
 		super();
 	}
 	
 	public void setBasename(String name){
-		_basename = name;
-		_property = null;
-		_log.debug("Basename for property file now is " + _basename);
+		_currentBasename = name;
+		_propertiesMap = new HashMap<String, Properties>();
+		_log.debug("Basename for property files now is " + _currentBasename);
 	}
 
 	public String getBasename() {
-		return _basename;
-	}
-
-	public String getLocale() {
-		return _locale;
+		return _currentBasename;
 	}
 	
-	public void setLocale(String locale){
-		_locale = locale;
-		_property = null;
-		_log.debug("Selected language for property file now is " + _locale);
-	}
-	
-	public String getTextByKey(String inKey){
-		if(_property == null) loadPropertyFile();
-		
-		if(_property == null){
-			_log.error("TextManager is not properly initiated!");
-			return "TextManager is not properly initiated!";
+	public void setLocale(String inLocale){
+		if(!_propertiesMap.containsKey(inLocale)){
+			loadPropertyFile(inLocale);
+			_log.debug("Texts loaded for " + inLocale);
+		}else{
+			_log.debug("Texts already cashed for " + inLocale);
 		}
-		String result = _property.getProperty(inKey);
+	}
+	
+	public String getTextByKey(String inKey, String inLocale){
+		if(!hasLocale(inLocale))loadPropertyFile(inLocale);
+		
+		String result = _propertiesMap.get(inLocale).getProperty(inKey);
 		return (result != null ? result : "Could not find text by key = " + inKey); 
 	}
-	
-	public String getTestMe(String inKey){
-		return inKey;
-	}
 
-	public boolean hasKey(String inKey){
-		return _property.containsKey(inKey);
+	public boolean hasLocale(String inLocale){
+		return _propertiesMap.containsKey(inLocale);
 	}
 	
-	public void loadPropertyFile(){
-		String fileName = _basename + Constants._file_name_delimiter + _locale;
-		_property = loadProperties(fileName);
-		_log.debug(String.format("Propetry file %s has %d key(s)", fileName, _property.size()));
-		for(Object key: _property.keySet()){
-			_log.debug(String.format("%s = %s", key, _property.get(key)));
-		}
+	public boolean hasKey(String inKey, String inLocale){
+		return _propertiesMap.get(inLocale).containsKey(inKey);
+	}
+	
+	public void loadPropertyFile(String inLocale){
+		String fileName = getBasename() + Constants._file_name_delimiter + inLocale;
+		_propertiesMap.put(inLocale, loadProperties(fileName));
+		_log.debug(String.format("Propetry file %s has %d key(s)", fileName, _propertiesMap.get(inLocale).size()));
 	}
 }

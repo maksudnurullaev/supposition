@@ -55,6 +55,8 @@ public final class Constants {
 	public static String _page_density_jsf_def = ".setPageDencity()";
 	public static String _session_filter_def = ".filter";
 	public static String _remove_filter_jsf_def = ".RemoveFilter()";
+	public static String _default_locale = "ru";
+	public static String _session_locale_def = "locale";
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);
