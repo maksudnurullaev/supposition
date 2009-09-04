@@ -13,16 +13,24 @@ import org.supposition.db.User;
  */
 public abstract class _Role extends CayenneDataObject {
 
-    public static final String NAME_PROPERTY = "name";
+    public static final String ID_PROPERTY = "ID";
+    public static final String NAME_PROPERTY = "Name";
     public static final String USERS_PROPERTY = "Users";
 
     public static final String ID_PK_COLUMN = "ID";
 
-    public void setName(String name) {
-        writeProperty("name", name);
+    public void setID(Integer ID) {
+        writeProperty("ID", ID);
+    }
+    public Integer getID() {
+        return (Integer)readProperty("ID");
+    }
+
+    public void setName(String Name) {
+        writeProperty("Name", Name);
     }
     public String getName() {
-        return (String)readProperty("name");
+        return (String)readProperty("Name");
     }
 
     public void addToUsers(User obj) {

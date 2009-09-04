@@ -1,7 +1,7 @@
 Namespace("UserProxy");
 // Update table
 UserProxy.updateTable = function() {
-	if($("UserProxy.currentPage")){
+	if(dwr.util.byId("UserProxy.currentPage")){
 		if(parseInt(dwr.util.getValue("UserProxy.currentPage")) > 0){
 			UserProxy.go2Page(parseInt(dwr.util.getValue("UserProxy.currentPage")));
 		}
@@ -12,11 +12,9 @@ UserProxy.updateTable = function() {
 };
 
 UserProxy.setFilter = function(){
-	// Check correctness
-	if(!UserProxy.checkFilterCorrectness()) {
-		alert(";-)");
-		return;
-	}
+	// Check fields
+	if(!isValidValue("mail")) return false;	
+	
 	// Find & Show Items
 	var User = {mail :null};
 	dwr.util.getValues(User);	
@@ -47,17 +45,14 @@ UserProxy.setPageDencity = function(){
 
 // Filter
 UserProxy.showFilterForm = function(){
-	getTextFromServerToDiv("main.admin.users.filterForm", "main.admin.users.table", false);	
-	
+	getTextFromServerToDiv("main.admin.users.filterForm", "main.admin.users.table", false);		
 	return false;	
 }
 
 UserProxy.checkItemsByFilter = function(){
-	// Check correctness
-	if(!UserProxy.checkFilterCorrectness()) {
-		alert(";-)");
-		return;
-	}
+	// Check fields
+	if(!isValidValue("mail")) return false;	
+	
 	// Find Items
 	var User = {mail :null};
 	dwr.util.getValues(User);
@@ -66,15 +61,6 @@ UserProxy.checkItemsByFilter = function(){
 	});
 	
 	return false;
-}
-
-UserProxy.checkFilterCorrectness = function(){
-	if($("mail")){
-		if(trim(dwr.util.getValue("mail")).length == 0) return false;
-	}else{
-		return false;
-	}
-	return true;
 }
 
 UserProxy.RemoveFilter = function(){
@@ -94,6 +80,9 @@ UserProxy.editUser = function(id) {
 };
 
 UserProxy.updateUserData = function() {
+	// Check fields
+	if(!isValidValue("mail")) return false;	
+	
 	var User = {
 		id :null,
 		mail :null,
@@ -107,12 +96,18 @@ UserProxy.updateUserData = function() {
 };
 
 UserProxy.updateUserPassword = function() {
+	// Check fields
+	if(!isValidValue("password")) return false;	
+	if(!isValidValue("newpassword")) return false;	
+	if(!isValidValue("newpassword2")) return false;	
+	
 	var User = {
 		id :null,
 		password :null,
 		newpassword :null,
 		newpassword2 :null
 	};
+	
 	dwr.util.getValues(User);
 	UserProxy.updateDBOUserPassword(User, function(result) {
 		alert(result);
@@ -123,5 +118,47 @@ UserProxy.updateUserPassword = function() {
 		};
 		dwr.util.setValues(User);
 	});
+	return false;
+};
+
+UserProxy.addRole = function(ID){
+	var User = {
+			id :null,
+			roleId : ID
+		};
+	
+	dwr.util.getValues(User);
+	
+	UserProxy.addDBORole(User, function(result) {
+		alert(result);
+		if(isOK(result))UserProxy.updateRoles(User.id);
+	});
+	
+	return false;
+};
+
+UserProxy.updateRoles = function(userID){
+	UserProxy.getCurrentRolesAsHTML(userID, function(result){
+		dwr.util.setValue("current_roles", result, {escapeHtml :false});
+	});
+
+	UserProxy.getAvailableRolesAsHTML(userID, function(result){
+		dwr.util.setValue("available_roles", result, {escapeHtml :false});
+	});	
+};
+
+UserProxy.removeRole = function(ID){
+	var User = {
+			id :null,
+			roleId : ID
+		};
+	
+	dwr.util.getValues(User);
+	
+	UserProxy.removeDBORole(User, function(result) {
+		alert(result);
+		if(isOK(result))UserProxy.updateRoles(User.id);
+	});
+	
 	return false;
 };

@@ -31,7 +31,8 @@
 		<obj-attribute name="value" type="java.lang.String" db-attribute-path="Value"/>
 	</obj-entity>
 	<obj-entity name="Role" className="org.supposition.db.Role" dbEntityName="Roles">
-		<obj-attribute name="name" type="java.lang.String" db-attribute-path="Name"/>
+		<obj-attribute name="ID" type="java.lang.Integer" lock="true" db-attribute-path="ID"/>
+		<obj-attribute name="Name" type="java.lang.String" db-attribute-path="Name"/>
 	</obj-entity>
 	<obj-entity name="User" className="org.supposition.db.User" dbEntityName="Users">
 		<obj-attribute name="Additionals" type="java.lang.String" db-attribute-path="Addtionals"/>

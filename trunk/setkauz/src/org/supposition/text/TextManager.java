@@ -41,8 +41,27 @@ public class TextManager extends PropertyLoader {
 	public String getTextByKey(String inKey, String inLocale){
 		if(!hasLocale(inLocale))loadPropertyFile(inLocale);
 		
-		String result = _propertiesMap.get(inLocale).getProperty(inKey);
-		return (result != null ? result : "Could not find text by key = " + inKey); 
+		// Build string with start & end tags
+		String result = "";
+		
+		// HEADER TAG
+		if(_propertiesMap.get(inLocale).containsKey(inKey + Constants._text_header_def)){
+			result += _propertiesMap.get(inLocale).getProperty(inKey + Constants._text_header_def);
+		}
+			
+		// ACTUAL TEXT
+		if(_propertiesMap.get(inLocale).containsKey(inKey)){
+			result += _propertiesMap.get(inLocale).getProperty(inKey);
+		}else{
+			result += "Could not find text by key = " + inKey;
+		}
+		
+		// FOOTER TAG 
+		if(_propertiesMap.get(inLocale).containsKey(inKey + Constants._text_footer_def)){
+			result += _propertiesMap.get(inLocale).getProperty(inKey + Constants._text_footer_def);
+		}
+		
+		return result; 
 	}
 
 	public boolean hasLocale(String inLocale){

@@ -2,6 +2,7 @@ package org.supposition.db.proxy;
 
 public class UserBean {
 	private int id;
+	private int roleId;
 	private String mail;
 	private String additionals;
 	
@@ -44,5 +45,11 @@ public class UserBean {
 	}
 	public String getNewpassword2() {
 		return newpassword2;
+	}
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
+	public int getRoleId() {
+		return roleId;
 	}
 }

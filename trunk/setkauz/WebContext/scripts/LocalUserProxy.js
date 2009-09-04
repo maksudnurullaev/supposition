@@ -1,6 +1,11 @@
 Namespace("LocalUserProxy");
 
 LocalUserProxy.addNewUser = function() {
+	// Check fields
+	if(!isValidValue("mail")) return false;		
+	if(!isValidValue("newpassword"))return false;	
+	if(!isValidValue("newpassword2"))return false;	0
+
 	var User = {
 		mail :null,
 		additionals :null,
@@ -29,6 +34,10 @@ LocalUserProxy.addNewUser = function() {
 };
 
 LocalUserProxy.enterUser = function() {
+	// Check fields
+	if(!isValidValue("mail")) return false;		
+	if(!isValidValue("password"))return false;	
+
 	var User = {
 		mail :null,
 		password :null
