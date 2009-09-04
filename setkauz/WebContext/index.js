@@ -23,35 +23,35 @@ function init() {
 	Intro.getHTMLTextFromFile("/footer.html",loadFooter);
 	
 	// Finish
-	$("error").style.display = "none";
+	dwr.util.byId("error").style.display = "none";
 	// We dont need this for a while yet
-	//$("footer").style.display = "block";
+	//dwr.util.byId("footer").style.display = "block";
 	
 }
 
 function showMainRegisterForm(){
 	hideAll();
 	getTextFromServerToDiv("main.user.formNew", "mainBody2", false);
-	$("mainBody2").style.display = "block";
+	dwr.util.byId("mainBody2").style.display = "block";
 	return false;
 }
 
 function showMainEnterForm(){
 	hideAll();
 	getTextFromServerToDiv("main.user.formEnter", "mainBody2", false);
-	$("mainBody2").style.display = "block";
+	dwr.util.byId("mainBody2").style.display = "block";
 	return false;
 }
 
 function hideAll(){
-	$("mainTabList").style.display = "none";
-	$("mainBody2").style.display = "none";
+	dwr.util.byId("mainTabList").style.display = "none";
+	dwr.util.byId("mainBody2").style.display = "none";
 	return false;
 }
 
 function showMainTabList(){
 	hideAll();
-	$("mainTabList").style.display = "block";
+	dwr.util.byId("mainTabList").style.display = "block";
 	return false;
 }
 
@@ -68,15 +68,15 @@ Stack.hideShow =  function (hideElemId, showElemId){
 }
 
 Stack.setToStack = function (elemId){
-	$(elemId).style.display == "none";
-	$("stack").appendChild($(elemId));
+	dwr.util.byId(elemId).style.display == "none";
+	dwr.util.byId("stack").appendChild(dwr.util.byId(elemId));
 	return false;
 }
 
 Stack.showInMainBody = function (elemId){
-	$("mainBody").appendChild($(elemId));
-	if($(elemId).style.display == "none")
-		$(elemId).style.display = "block";
+	dwr.util.byId("mainBody").appendChild(dwr.util.byId(elemId));
+	if(dwr.util.byId(elemId).style.display == "none")
+		dwr.util.byId(elemId).style.display = "block";
 	return false;
 }
 
@@ -137,4 +137,20 @@ function trim(s)
 	while(r > l && s[r] == ' ')
 	{	r-=1;	}
 	return s.substring(l, r+1);
+}
+
+function isValidValue(objName){
+	if(dwr.util.byId(objName)){
+		if(trim(dwr.util.getValue(objName)).length == 0){
+			highlight(objName);
+			return false;
+		}
+	}else{
+		return false;
+	}
+	return true;
+}
+
+function highlight(objName){
+	dwr.util.byId(objName).style.backgroundColor = "#FAF8CC";	
 }

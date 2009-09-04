@@ -38,7 +38,6 @@ public class User extends _User {
 		return validationResult;
 	}
 	
-	
 	public void postValidationSave(){
 		_log.debug("->validateForSave");
 		
@@ -141,6 +140,25 @@ public class User extends _User {
 		setMail(inUser.getMail().trim());
 		setAdditionals(inUser.getAdditionals().trim());
 	}
+	
+	public boolean hasRoles(){
+		return getRoles().size() > 0;
+	}
+	
+	public String getRolesAsStr(){
+		String result = "";
+		
+		for(Role role:getRoles()){
+			result += role.getName() + ",";
+		}
+		
+		return result.substring(0, result.length() - 1);
+	}
 
+	public String getMailWithRoles() {
+		if(!hasRoles())
+			return getMail();
+		return getMail() + String.format("<sup>(%s)</sup>", getRolesAsStr());
+	}
 
 }

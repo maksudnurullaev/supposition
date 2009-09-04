@@ -57,6 +57,9 @@ public final class Constants {
 	public static String _remove_filter_jsf_def = ".RemoveFilter()";
 	public static String _default_locale = "ru";
 	public static String _session_locale_def = "locale";
+	public static String _text_header_def = ".header";
+	public static String _text_footer_def = ".footer";
+	public static String _add_symbol = "+";
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);
