@@ -5,7 +5,19 @@ Load ("dwr/interface/LocalUserProxy.js");
 Load ("tabs/tabs.js");
 Load ("scripts/LocalUserProxy.js");
 
+function gup(name, url) {
+	if (!url) url = window.location.href;
+	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");	
+	var results = new RegExp("[\\?&]"+name+"=([^&#]*)").exec(url);
+	if( results == null ) return null;	
+	else 
+		return decodeURIComponent(results[1].replace(/\+/g," ")); 
+}
+
 function init() {
+	if(gup("action")){
+		alert("go to action = " + gup("action"));
+	}
 	// This turns off the no-javascript message
 	document.getElementById("start").style.display = "none";
 	
@@ -27,33 +39,39 @@ function init() {
 	// We dont need this for a while yet
 	//dwr.util.byId("footer").style.display = "block";
 	
-}
+	
+	return false;
+};
 
 function showMainRegisterForm(){
 	hideAll();
 	getTextFromServerToDiv("main.user.formNew", "mainBody2", false);
 	dwr.util.byId("mainBody2").style.display = "block";
+	
 	return false;
-}
+};
 
 function showMainEnterForm(){
 	hideAll();
 	getTextFromServerToDiv("main.user.formEnter", "mainBody2", false);
 	dwr.util.byId("mainBody2").style.display = "block";
+	
 	return false;
-}
+};
 
 function hideAll(){
 	dwr.util.byId("mainTabList").style.display = "none";
 	dwr.util.byId("mainBody2").style.display = "none";
+	
 	return false;
-}
+};
 
 function showMainTabList(){
 	hideAll();
 	dwr.util.byId("mainTabList").style.display = "block";
+	
 	return false;
-}
+};
 
 // ##################
 
@@ -64,45 +82,51 @@ function Stack(){}
 Stack.hideShow =  function (hideElemId, showElemId){
 	Stack.setToStack(hideElemId);
 	Stack.showInMainBody(showElemId);
+	
 	return false;
-}
+};
 
 Stack.setToStack = function (elemId){
 	dwr.util.byId(elemId).style.display == "none";
 	dwr.util.byId("stack").appendChild(dwr.util.byId(elemId));
+	
 	return false;
-}
+};
 
 Stack.showInMainBody = function (elemId){
 	dwr.util.byId("mainBody").appendChild(dwr.util.byId(elemId));
 	if(dwr.util.byId(elemId).style.display == "none")
 		dwr.util.byId(elemId).style.display = "block";
+	
 	return false;
-}
+};
 
 // #################
 function loadPageContext() {
 	Tabs.clearStack();	
 	getTextFromServer('mainTitle', false);
 	getTextFromServer('mainTabList', false);
+	
 	return false;
-}
+};
 
 function getTextFromServer(key, nonFormat){
 	Intro.getTextByKey(key,function (data) {
 		dwr.util.setValue(key, data, {escapeHtml :nonFormat});
 		evaluateItByKey(key);
 	});	
+	
 	return false;
-}
+};
 
 function getTextFromServerToDiv(key, divId, nonFormat){
 	Intro.getTextByKey(key,function (data) {
 		dwr.util.setValue(divId, data, {escapeHtml :nonFormat});
 		evaluateItByKey(key);
 	});	
+	
 	return false;
-}
+};
 
 function evaluateItByKey(key){
 	var keyID = key + ".eval";	
@@ -113,21 +137,24 @@ function evaluateItByKey(key){
 				});			
 		}
 	});	
+	
 	return false;
-}
+};
 
 
 function loadFooter(data) {
 	dwr.util.setValue("footer", data, {
 		escapeHtml :false
 	});
+	
 	return false;
-}
+};
 
 function isOK(result){
 	if(result.substring(0,3) == "OK:") return true;
+	
 	return false;
-}
+};
 
 function trim(s)
 {
@@ -153,4 +180,14 @@ function isValidValue(objName){
 
 function highlight(objName){
 	dwr.util.byId(objName).style.backgroundColor = "#FAF8CC";	
-}
+	
+	return false;
+};
+
+// #### Kaptcha
+function reloadKaptcha(){
+	if(dwr.util.byId("kaptcha_img"))
+		dwr.util.byId("kaptcha_img").src = 'kaptcha.jpg?' + Math.random()*100;
+	
+	return false;
+};

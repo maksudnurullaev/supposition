@@ -8,7 +8,9 @@ public class UserBean {
 	
 	private String password;
 	private String newpassword;
-	private String newpassword2;	
+	private String newpassword2;
+	
+	private String kaptcha;
 		
 	public void setMail(String mail) {
 		this.mail = mail;
@@ -51,5 +53,11 @@ public class UserBean {
 	}
 	public int getRoleId() {
 		return roleId;
+	}
+	public void setKaptcha(String kaptcha) {
+		this.kaptcha = kaptcha;
+	}
+	public String getKaptcha() {
+		return kaptcha;
 	}
 }

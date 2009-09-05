@@ -146,7 +146,7 @@ public class UserProxy extends ADBProxyObject<User> {
 			}
 		}
 
-		SessionManager.setSessionValue(Constants._string_userId, userList
+		SessionManager.setSessionValue(Constants._session_userid_key, userList
 				.get(0).getID());
 		return Constants._web_ok_result_prefix
 				+ MessagesManager.getText("message.data.saved");

@@ -2,15 +2,17 @@ Namespace("LocalUserProxy");
 
 LocalUserProxy.addNewUser = function() {
 	// Check fields
-	if(!isValidValue("mail")) return false;		
-	if(!isValidValue("newpassword"))return false;	
-	if(!isValidValue("newpassword2"))return false;	0
+	if( !isValidValue("mail") ||
+		!isValidValue("newpassword") ||
+		!isValidValue("newpassword2") ||
+		!isValidValue("kaptcha"))return false;
 
 	var User = {
 		mail :null,
 		additionals :null,
 		newpassword :null,
-		newpassword2 :null
+		newpassword2 :null,
+		kaptcha : null
 	};
 	
 	dwr.util.getValues(User);
@@ -35,12 +37,14 @@ LocalUserProxy.addNewUser = function() {
 
 LocalUserProxy.enterUser = function() {
 	// Check fields
-	if(!isValidValue("mail")) return false;		
-	if(!isValidValue("password"))return false;	
+	if( !isValidValue("mail") ||
+		!isValidValue("password") ||
+		!isValidValue("kaptcha"))return false;
 
 	var User = {
 		mail :null,
-		password :null
+		password :null,
+		kaptcha : null		
 	};
 
 	dwr.util.getValues(User);

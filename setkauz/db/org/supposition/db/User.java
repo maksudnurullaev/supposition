@@ -12,53 +12,72 @@ import org.supposition.db.proxy.UserBean;
 import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.Constants;
 import org.supposition.utils.CryptoManager;
+import org.supposition.utils.SessionManager;
 
 public class User extends _User {
 	private static final long serialVersionUID = 1L;
 	private Log _log = LogFactory.getLog(this.getClass());
 	private boolean is_new = false;
 
+	private String kaptcha;
+
 	private void validateBeforeSave(ValidationResult validationResult) {
 		_log.debug("->validateForSave");
 		super.validateForSave(validationResult);
-				
-		validateMail(validationResult);		
-		
-		if(is_new){
+
+		validateKaptcha(validationResult);
+		validateMail(validationResult);
+
+		validateFor2Mail(validationResult);
+
+		if (is_new) {
 			validatePassword(validationResult);
-			validateFor2Mail(validationResult);
-		}else{
-			if(isNeedToChangePassword()) validatePassword(validationResult);
+		} else {
+			if (isNeedToChangePassword())
+				validatePassword(validationResult);
 		}
 	}
-	
-	public ValidationResult getValidationResult(){
+
+	private void validateKaptcha(ValidationResult validationResult) {
+		String sessionKaptchaValue = (String) SessionManager
+				.getSessionValue(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
+		if (getKaptcha() == null
+				|| !getKaptcha().equalsIgnoreCase(sessionKaptchaValue)) {
+			validationResult.addFailure(new SimpleValidationFailure(this,
+					"errors.invalid.kaptcha"));
+			_log.error(String.format("Invalid kaptcha(%s) should be %s", getKaptcha(), sessionKaptchaValue));
+		}
+
+	}
+
+	public ValidationResult getValidationResult() {
 		ValidationResult validationResult = new ValidationResult();
 		validateBeforeSave(validationResult);
 		return validationResult;
 	}
-	
-	public void postValidationSave(){
+
+	public void postValidationSave() {
 		_log.debug("->validateForSave");
-		
-		if(is_new) {
+
+		if (is_new) {
 			updatePassword();
 			setCreated(Constants.GetCurrentDateTime());
-		}
-		else{
-			if(isNeedToChangePassword()) updatePassword();
+		} else {
+			if (isNeedToChangePassword())
+				updatePassword();
 			setUpdated(Constants.GetCurrentDateTime());
 		}
 	}
 
 	private boolean isNeedToChangePassword() {
-		_log.debug("->isNeedToChangePassword RETURNS " + Constants.isValidString(getPassword()));
+		_log.debug("->isNeedToChangePassword RETURNS "
+				+ Constants.isValidString(getPassword()));
 		return Constants.isValidString(getPassword());
 	}
 
 	protected void updatePassword() {
 		_log.debug("->updatePassword");
-		
+
 		setSalt(CryptoManager.encryptPassword(getPassword()));
 		setPassword(""); // remove original text
 		setStatus(Constants._password_salted);
@@ -74,26 +93,23 @@ public class User extends _User {
 			return false;
 		}
 
-
 		return true;
 	}
-	
-	private boolean validateFor2Mail(ValidationResult validationResult){
+
+	private boolean validateFor2Mail(ValidationResult validationResult) {
 		_log.debug("->validateFor2Mail");
-				
-		// We have no reason to check if DBO already has failures
-		if(validationResult.hasFailures()) return false;
-		
+
 		UserProxy users = new UserProxy();
 		users.addExpression(ExpressionFactory.matchExp("Mail", getMail()));
 
 		List<User> usersList = users.getAll();
-		
+
 		if (usersList.size() > 0) {
 			if (usersList.size() > 1) {
 				validationResult.addFailure(new SimpleValidationFailure(this,
 						"errors.dbobject.already.registered"));
-				_log.warn("Database has too many users record with same mail - "
+				_log
+						.warn("Database has too many users record with same mail - "
 								+ getMail());
 				return false;
 			} else {
@@ -103,8 +119,8 @@ public class User extends _User {
 					return false;
 				}
 			}
-		}		
-		return true;		
+		}
+		return true;
 	}
 
 	private boolean validatePassword(ValidationResult validationResult) {
@@ -128,7 +144,7 @@ public class User extends _User {
 	}
 
 	protected void onNew() {
-		is_new = true;		
+		is_new = true;
 	}
 
 	public boolean checkPassword(String password) {
@@ -139,26 +155,35 @@ public class User extends _User {
 	public void setUser(UserBean inUser) {
 		setMail(inUser.getMail().trim());
 		setAdditionals(inUser.getAdditionals().trim());
+		setKaptcha(inUser.getKaptcha());
 	}
-	
-	public boolean hasRoles(){
+
+	public boolean hasRoles() {
 		return getRoles().size() > 0;
 	}
-	
-	public String getRolesAsStr(){
+
+	public String getRolesAsStr() {
 		String result = "";
-		
-		for(Role role:getRoles()){
+
+		for (Role role : getRoles()) {
 			result += role.getName() + ",";
 		}
-		
+
 		return result.substring(0, result.length() - 1);
 	}
 
 	public String getMailWithRoles() {
-		if(!hasRoles())
+		if (!hasRoles())
 			return getMail();
 		return getMail() + String.format("<sup>(%s)</sup>", getRolesAsStr());
+	}
+
+	public void setKaptcha(String kaptcha) {
+		this.kaptcha = kaptcha;
+	}
+
+	public String getKaptcha() {
+		return kaptcha;
 	}
 
 }

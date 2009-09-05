@@ -61,7 +61,14 @@ public class TextManager extends PropertyLoader {
 			result += _propertiesMap.get(inLocale).getProperty(inKey + Constants._text_footer_def);
 		}
 		
-		return result; 
+		return replaceFinalTokensInText(result); 
+	}
+
+	private String replaceFinalTokensInText(String result) {
+		if(result.indexOf("INSERT_UNIQUE_DATETIME") != -1){
+			result = result.replaceAll("INSERT_UNIQUE_DATETIME", Constants.getUniqueDateTime());
+		}
+		return result;
 	}
 
 	public boolean hasLocale(String inLocale){

@@ -3,7 +3,7 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
-		
+
 	<servlet>
 		<servlet-name>dwr-invoker</servlet-name>
 		<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
@@ -23,7 +23,7 @@
 		<welcome-file>index.htm</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-	
+
 	<!-- Spring ApplicationContext -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -32,5 +32,15 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+
+	<!-- KAPTCHA -->
+	<servlet>
+		<servlet-name>Kaptcha</servlet-name>
+		<servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Kaptcha</servlet-name>
+		<url-pattern>/kaptcha.jpg</url-pattern>
+	</servlet-mapping>
 
 </web-app>
