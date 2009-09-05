@@ -4,8 +4,8 @@
 
 <dwr>
 	<allow>
-		<create creator="new" javascript="Intro">
-			<param name="class" value="org.dwr.Intro" />
+		<create creator="new" javascript="Session">
+			<param name="class" value="org.dwr.Session" />
 		</create>
 
 		<create creator="new" javascript="LocalUserProxy">
@@ -19,10 +19,6 @@
 		<create creator="new" javascript="RoleProxy">
 			<param name="class" value="org.supposition.db.proxy.RoleProxy" />
 		</create>
-
-		<create creator="new" javascript="DefaultProxy">
-			<param name="class" value="org.supposition.db.proxy.DefaultProxy" />
-		</create>		
 		
 		<convert match="org.supposition.db.proxy.RoleBean" converter="bean"/>
 		<convert match="org.supposition.db.proxy.UserBean" converter="bean"/>

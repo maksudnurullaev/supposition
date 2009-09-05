@@ -24,7 +24,7 @@ public class TextManager extends PropertyLoader {
 		_propertiesMap = new HashMap<String, Properties>();
 		_log.debug("Basename for property files now is " + _currentBasename);
 	}
-
+	
 	public String getBasename() {
 		return _currentBasename;
 	}

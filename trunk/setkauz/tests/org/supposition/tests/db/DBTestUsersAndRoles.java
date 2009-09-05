@@ -51,7 +51,6 @@ public class DBTestUsersAndRoles {
 		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail",
 				"test%"));
 		List<User> users = users_proxy.getAll();
-		System.out.println("Count = " + users.size());
 		if (users.size() > 0) {
 			users_proxy.deleteObjects(users);
 			users_proxy.commitChanges();
@@ -76,6 +75,7 @@ public class DBTestUsersAndRoles {
 		User user = (User) _context.newObject(User.class);
 		user.setMail("testme@test.com");
 		user.setPassword(password);
+		user.setKaptcha(Constants._testing_string);
 		
 		ValidationResult validationResult = user.getValidationResult();
 		
@@ -158,6 +158,7 @@ public class DBTestUsersAndRoles {
 		User user = users.createNew();
 		user.setMail("");
 		user.setPassword("");
+		user.setKaptcha(Constants._testing_string);
 		
 		ValidationResult validationResult = user.getValidationResult();
 		Assert.assertTrue(validationResult.hasFailures());
@@ -171,6 +172,7 @@ public class DBTestUsersAndRoles {
 		User user = (User) _context.newObject(User.class);
 		user.setMail("test_invalid_mail#test.com");
 		user.setPassword("test_invalid_mail");
+		user.setKaptcha(Constants._testing_string);
 		
 		ValidationResult validationResult = user.getValidationResult();		
 		

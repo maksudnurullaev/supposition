@@ -190,9 +190,9 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	@Override
 	public int getPageSize() {
 		if(SessionManager.isExist(getPageSizeDef()))
-			return SessionManager.getSessionIntValue(getPageSizeDef());
+			return MessagesManager.getSessionIntValue(getPageSizeDef());
 		else
-			SessionManager.setSessionValue(getPageSizeDef(), _pageSize);
+			SessionManager.setToSession(getPageSizeDef(), _pageSize);
 		return _pageSize;
 	}		
 	
@@ -250,6 +250,6 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 
 	@Override
 	public void setPageSize(int inPageSize) {
-		SessionManager.setSessionValue(getPageSizeDef(), inPageSize);
+		SessionManager.setToSession(getPageSizeDef(), inPageSize);
 	}	
 }
