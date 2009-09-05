@@ -45,7 +45,7 @@ public final class Constants {
 	public static final String _password_salted = "SALTED";
 	public static final String _web_error_result_prefix = "ERROR:";
 	public static String _web_ok_result_prefix = "OK:";
-	public static String _string_userId = "userId";
+	public static String _session_userid_key = "currentUserId";
 	public static int _default_id_for_new_dbo = -1;
 	public static String _page_size_def = ".pageSize";
 	public static String _current_page_def = ".currentPage";
@@ -118,6 +118,13 @@ public final class Constants {
 
 	}
 
+	public static String getUniqueDateTime() {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		return sdf.format(cal.getTime());
+	}
+	
+	
 	public static String trimString(String inString) {
 		return trimString(inString, DefaultStringTrimLength,
 				DefaultStringTrimLengthGap);

@@ -12,8 +12,6 @@ RoleProxy.addNewRole = function(){
 	Role = {name:null};
 	dwr.util.getValues(Role);
 	
-	alert(Role.name);
-	
 	RoleProxy.addDBORole(Role, function(result){
 		alert(result);
 		if (isOK(result)) {
