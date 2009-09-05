@@ -42,7 +42,7 @@ Tabs.onClik = function(elem) {
 	// * Get active Div from stack or server
 	var oldStackedDiv = document.getElementById(Tabs.div_id_prefix + activeDivID)
 	if(!oldStackedDiv){// ...from server
-		Intro.getTextByKeyAsDiv(activeDivID, function(data) {
+		Session.getTextByKeyAsDiv(activeDivID, function(data) {
 			dwr.util.setValue(activeRootDivID, data, {
 				escapeHtml :false
 			});

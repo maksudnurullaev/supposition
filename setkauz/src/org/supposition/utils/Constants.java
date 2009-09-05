@@ -15,25 +15,17 @@ public final class Constants {
 	// **** BEAN Constants
 	public static final String _beans_main_input_pipe = "_main_input_pipe";
 	public static final String _beans_main_message_collector = "_main_message_collector";
-	// **** END - BEAN Constants
+
+	// **** Project Constants
 	public static final String _project_name = "Supposition";
 	public static final String _project_version = "0.1";
 	public static final String _conf_dir_location = "conf";
 	public static final String _logs_dir_location = "logs";
 	public static final String _date_time_id_format = "yyyy.MM.dd HH:mm:ss";
-	// **** Common constants ****
 
-	public static final Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-
-	public static final int _unlimited = -1;
-
-	public static final String UnknownString = "Unknown";
-
-	// **** Deafult waiting times (in milliseconds)
-	public static final long _default_sleep_time = 100;
-	public static final long _default_wait_message_time = 2000;
-
-	// **** For dispatcher
+	// **** Other constants
+	public static final Pattern _pattern_to_cheack_email = Pattern.compile(".+@.+\\.[a-z]+");
+	public static final String _web_context_loader_as_string = "org.apache.catalina.loader.WebappClassLoader";
 	public static final String _dispatchers_posfix = "Dispatcher";
 	public static final String _dispatchers_back_path = "org.supposition.dispatchers.back.";
 	public static final String _dispatchers_front_path = "org.supposition.dispatchers.front.";
@@ -44,22 +36,30 @@ public final class Constants {
 	public static final int _min_password_length = 4;
 	public static final String _password_salted = "SALTED";
 	public static final String _web_error_result_prefix = "ERROR:";
-	public static String _web_ok_result_prefix = "OK:";
-	public static String _session_userid_key = "currentUserId";
-	public static int _default_id_for_new_dbo = -1;
-	public static String _page_size_def = ".pageSize";
-	public static String _current_page_def = ".currentPage";
-	public static String _page_count_def =  ".pageCount";
-	public static String _go2Page_jsf_def = ".go2Page(%s)";
-	public static String _page_density_def = ".pageDencity";
-	public static String _page_density_jsf_def = ".setPageDencity()";
-	public static String _session_filter_def = ".filter";
-	public static String _remove_filter_jsf_def = ".RemoveFilter()";
-	public static String _default_locale = "ru";
-	public static String _session_locale_def = "locale";
-	public static String _text_header_def = ".header";
-	public static String _text_footer_def = ".footer";
-	public static String _add_symbol = "+";
+	public static final String _web_ok_result_prefix = "OK:";
+	public static final String _session_userid_key = "currentUserId";
+	public static final int _default_id_for_new_dbo = -1;
+	public static final String _page_size_def = ".pageSize";
+	public static final String _current_page_def = ".currentPage";
+	public static final String _page_count_def = ".pageCount";
+	public static final String _go2Page_jsf_def = ".go2Page(%s)";
+	public static final String _page_density_def = ".pageDencity";
+	public static final String _page_density_jsf_def = ".setPageDencity()";
+	public static final String _session_filter_def = ".filter";
+	public static final String _remove_filter_jsf_def = ".RemoveFilter()";
+	public static final String _default_locale = "ru";
+	public static final String _session_locale_def = "locale";
+	public static final String _text_header_def = ".header";
+	public static final String _text_footer_def = ".footer";
+	public static final String _add_symbol = "+";
+	public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+	private static final int DefaultStringTrimLength = 50;
+	private static final int DefaultStringTrimLengthGap = 10;
+	public static final String _testing_string = "testing...";	
+	
+	// For JavaSctipt interchange
+	public static final int FALSE = 0;
+	public static final int TRUE = 1;
 
 	public static String GetCurrentDateTime() {
 		SimpleDateFormat sdf = new SimpleDateFormat(_date_time_id_format);
@@ -88,7 +88,7 @@ public final class Constants {
 	 * 
 	 */
 	public static boolean isValidEmailAddress(String aEmailAddress) {
-		Matcher m = p.matcher(aEmailAddress);
+		Matcher m = _pattern_to_cheack_email.matcher(aEmailAddress);
 		return m.matches();
 	}
 
@@ -99,17 +99,6 @@ public final class Constants {
 			return true;
 		}
 	}
-
-	public static String defaultSign() {
-		return UnknownString;
-	}
-
-	public static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
-	private static final int DefaultStringTrimLength = 50;
-	private static final int DefaultStringTrimLengthGap = 10;
-	// For JavaSctipt interchange
-	public static final int FALSE = 0;
-	public static final int TRUE = 1;
 
 	public static String currentDateTime() {
 		Calendar cal = Calendar.getInstance();
@@ -123,8 +112,7 @@ public final class Constants {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		return sdf.format(cal.getTime());
 	}
-	
-	
+
 	public static String trimString(String inString) {
 		return trimString(inString, DefaultStringTrimLength,
 				DefaultStringTrimLengthGap);
@@ -156,10 +144,14 @@ public final class Constants {
 	public static int getIntFromStr(String text) {
 		int result = -1;
 		try {
-			result = Integer.parseInt(text.trim());			
+			result = Integer.parseInt(text.trim());
 		} catch (NumberFormatException e) {
 		}
 		return result;
 	}
 
+	public static boolean isTomcatContext() {
+		return _web_context_loader_as_string.equalsIgnoreCase(Thread
+				.currentThread().getContextClassLoader().getClass().getName());
+	}
 }

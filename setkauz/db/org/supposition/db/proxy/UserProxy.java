@@ -26,7 +26,7 @@ public class UserProxy extends ADBProxyObject<User> {
 	}
 
 	public void setSessionFilter(UserBean inBean) {
-		SessionManager.setSessionValue(getSessionFilterDef(), inBean);
+		SessionManager.setToSession(getSessionFilterDef(), inBean);
 	}
 
 	public String setSessionFilterAndGetPageAsHTMLTable(UserBean inBean) {
@@ -146,7 +146,7 @@ public class UserProxy extends ADBProxyObject<User> {
 			}
 		}
 
-		SessionManager.setSessionValue(Constants._session_userid_key, userList
+		SessionManager.setToSession(Constants._session_userid_key, userList
 				.get(0).getID());
 		return Constants._web_ok_result_prefix
 				+ MessagesManager.getText("message.data.saved");

@@ -21,7 +21,7 @@ public class RoleProxy extends ADBProxyObject<Role> {
 	}		
 	
 	public void setSessionFilter(UserBean inBean){
-		SessionManager.setSessionValue(getSessionFilterDef(), inBean);
+		SessionManager.setToSession(getSessionFilterDef(), inBean);
 	} 
 	
 	public String setSessionFilterAndGetPageAsHTMLTable(UserBean inBean){

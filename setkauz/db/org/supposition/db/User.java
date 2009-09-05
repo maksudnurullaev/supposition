@@ -19,7 +19,7 @@ public class User extends _User {
 	private Log _log = LogFactory.getLog(this.getClass());
 	private boolean is_new = false;
 
-	private String kaptcha;
+	private String kaptcha = "";
 
 	private void validateBeforeSave(ValidationResult validationResult) {
 		_log.debug("->validateForSave");
@@ -39,6 +39,9 @@ public class User extends _User {
 	}
 
 	private void validateKaptcha(ValidationResult validationResult) {
+		// For tests
+		if(getKaptcha().equalsIgnoreCase(Constants._testing_string)) return;
+		
 		String sessionKaptchaValue = (String) SessionManager
 				.getSessionValue(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
 		if (getKaptcha() == null
@@ -89,7 +92,7 @@ public class User extends _User {
 		if (!org.supposition.utils.Constants.isValidEmailAddress(getMail())) {
 			validationResult.addFailure(new SimpleValidationFailure(this,
 					"errors.invalid.mail"));
-			_log.error("Invalid email" + getMail());
+			_log.debug("Invalid email" + getMail());
 			return false;
 		}
 
@@ -129,7 +132,7 @@ public class User extends _User {
 		if (getPassword().isEmpty()) {
 			validationResult.addFailure(new SimpleValidationFailure(this,
 					"errors.passwords.is.empty"));
-			_log.error("Empty password");
+			_log.debug("Empty password");
 			return false;
 		}
 		// Validate for password length

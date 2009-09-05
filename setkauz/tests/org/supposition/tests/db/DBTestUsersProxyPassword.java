@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.User;
 import org.supposition.db.proxy.UserProxy;
+import org.supposition.utils.Constants;
 import org.supposition.utils.DBUtils;
 
 /**
@@ -50,11 +51,12 @@ public class DBTestUsersProxyPassword {
 	@Test
 	public void testOldPassword() {
 		UserProxy users = new UserProxy();
+		
+		users.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
 		List<User> usersList = users.getAll();
 		
 		// Check oldPassword
 		User user = usersList.get(0);
-		System.out.println("oldPassword = " + oldPassword);		
 		Assert.assertTrue(user.checkPassword(oldPassword));		
 	}
 
@@ -69,6 +71,7 @@ public class DBTestUsersProxyPassword {
 		User user = usersList.get(0);	
 		
 		// Set newPassword	
+		user.setKaptcha(Constants._testing_string);
 		user.setPassword(newPassword);
 		
 		ValidationResult validationResult = user.getValidationResult();		
@@ -100,14 +103,7 @@ public class DBTestUsersProxyPassword {
 			user.setPassword(oldPassword);	
 			user.postValidationSave();
 		}
-		
-		// batch update
-//		System.out.println("user.getSalt() = " + user.getSalt());
-//		System.out.println("_context.commitChanges();");
 		_context.commitChanges();
-//		System.out.println("oldPassword = " + oldPassword);		
-//		System.out.println("user.getSalt() = " + user.getSalt());		
-// 		System.out.println("user.checkPassword(oldPassword) = " + user.checkPassword(oldPassword));
 	}
 
 	private static void delete_test_users() {
@@ -116,7 +112,6 @@ public class DBTestUsersProxyPassword {
 		users_proxy.setPageSize(0);
 		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
 		List<User> users = users_proxy.getAll();
-		System.out.println("Count = " + users.size());
 		if (users.size() > 0) {
 			users_proxy.deleteObjects(users);
 			users_proxy.commitChanges();

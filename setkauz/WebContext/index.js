@@ -1,6 +1,6 @@
 Load ("dwr/engine.js");  
 Load ("dwr/util.js");
-Load ("dwr/interface/Intro.js");
+Load ("dwr/interface/Session.js");
 Load ("dwr/interface/LocalUserProxy.js");
 Load ("tabs/tabs.js");
 Load ("scripts/LocalUserProxy.js");
@@ -32,7 +32,7 @@ function init() {
 	loadPageContext()	
 	
 	// Setup footer
-	Intro.getHTMLTextFromFile("/footer.html",loadFooter);
+	Session.getHTMLTextFromFile("/footer.html",loadFooter);
 	
 	// Finish
 	dwr.util.byId("error").style.display = "none";
@@ -111,7 +111,7 @@ function loadPageContext() {
 };
 
 function getTextFromServer(key, nonFormat){
-	Intro.getTextByKey(key,function (data) {
+	Session.getTextByKey(key,function (data) {
 		dwr.util.setValue(key, data, {escapeHtml :nonFormat});
 		evaluateItByKey(key);
 	});	
@@ -120,7 +120,7 @@ function getTextFromServer(key, nonFormat){
 };
 
 function getTextFromServerToDiv(key, divId, nonFormat){
-	Intro.getTextByKey(key,function (data) {
+	Session.getTextByKey(key,function (data) {
 		dwr.util.setValue(divId, data, {escapeHtml :nonFormat});
 		evaluateItByKey(key);
 	});	
@@ -130,9 +130,9 @@ function getTextFromServerToDiv(key, divId, nonFormat){
 
 function evaluateItByKey(key){
 	var keyID = key + ".eval";	
-	Intro.hasMessageByKey(keyID, function(found){
+	Session.hasMessageByKey(keyID, function(found){
 		if(found){
-				Intro.getTextByKey(keyID, function(data){
+				Session.getTextByKey(keyID, function(data){
 					eval(data);
 				});			
 		}
