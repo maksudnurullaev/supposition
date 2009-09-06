@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-map project-version="3.0">
 	<property name="defaultPackage" value="org.supposition.db"/>
-	<db-entity name="Defaults">
-		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-		<db-attribute name="Key" type="VARCHAR" isMandatory="true" length="32"/>
-		<db-attribute name="Value" type="VARCHAR" isMandatory="true" length="128"/>
-	</db-entity>
 	<db-entity name="Roles">
 		<db-attribute name="ID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="Name" type="VARCHAR" isMandatory="true" length="32"/>
@@ -25,11 +20,6 @@
 		<db-attribute name="RoleID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="UserID" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
-	<obj-entity name="Default" className="org.supposition.db.Default" dbEntityName="Defaults">
-		<obj-attribute name="ID" type="java.lang.Integer" lock="true" db-attribute-path="ID"/>
-		<obj-attribute name="key" type="java.lang.String" db-attribute-path="Key"/>
-		<obj-attribute name="value" type="java.lang.String" db-attribute-path="Value"/>
-	</obj-entity>
 	<obj-entity name="Role" className="org.supposition.db.Role" dbEntityName="Roles">
 		<obj-attribute name="ID" type="java.lang.Integer" lock="true" db-attribute-path="ID"/>
 		<obj-attribute name="Name" type="java.lang.String" db-attribute-path="Name"/>

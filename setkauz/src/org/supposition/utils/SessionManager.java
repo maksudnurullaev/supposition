@@ -10,7 +10,7 @@ import org.directwebremoting.WebContextFactory;
 
 public final class SessionManager {
 
-	private static final boolean _isTomcatContext = Constants.isTomcatContext();
+	private static final boolean _isTomcatContext = Utils.isTomcatContext();
 	private static Map<String, Object> _valueHouse = new HashMap<String, Object>();
 
 	public static WebContext getWebContext() {
@@ -24,7 +24,7 @@ public final class SessionManager {
 	public static boolean isExist(String inKey) {
 		if (_isTomcatContext)
 			return getHttpSession().getAttribute(inKey) != null;
-		return _valueHouse.containsKey(inKey);
+		return false;
 	}
 
 	/**
@@ -52,8 +52,8 @@ public final class SessionManager {
 
 	public static int getSessionIntValue(String inKey) {
 		if (_isTomcatContext)
-			return Constants.getIntFromStr(getFromSession(inKey).toString());
-		return Constants.getIntFromStr(_valueHouse.get(inKey).toString());
+			return Utils.getIntFromStr(getFromSession(inKey).toString());
+		return Utils.getIntFromStr(_valueHouse.get(inKey).toString());
 	}
 
 	public static void removeFromSession(String inKey) {
@@ -64,15 +64,16 @@ public final class SessionManager {
 	}
 
 	public static String getSessionLocale() {
-		String locale = (String) (_isTomcatContext?
-				getFromSession(Constants._session_locale_def):
-					_valueHouse.get(Constants._session_locale_def));
-		if (locale == null)
-			return Constants._default_locale;
-		return locale;
+		if(_isTomcatContext){
+			if(SessionManager.isExist(MessagesManager.getDefault("session.locale.def"))){
+				return (String) SessionManager.getFromSession(MessagesManager.getDefault("session.locale.def"));
+			}
+		}
+		return MessagesManager.getDefault("default.locale");
 	}
 
 	public static void setSessionLocale(String inLocale) {
-			setToSession(Constants._session_locale_def, inLocale);
+		if (_isTomcatContext)
+			setToSession(MessagesManager.getDefault("session.locale.def"), inLocale);
 	}
 }

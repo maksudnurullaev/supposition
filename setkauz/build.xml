@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<project name="supposition" basedir="." default="deploy.and.reload">
+<project name="supposition" basedir="." default="usage">
 	<property file="build.properties" />
 
 	<property name="src.dir" value="src" />

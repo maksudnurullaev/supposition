@@ -11,7 +11,7 @@ import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Role;
 import org.supposition.db.User;
 import org.supposition.db.proxy.abstracts.ADBProxyObject;
-import org.supposition.utils.Constants;
+import org.supposition.utils.Utils;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
@@ -45,14 +45,15 @@ public class UserProxy extends ADBProxyObject<User> {
 		// Check for valid NEW passwords
 		String result = DBUtils.validatePassword(userBean);
 		if (result != null)
-			return Constants._web_error_result_prefix + result;
+			return MessagesManager.getDefault("web.error.result.prefix")
+					+ result;
 
 		// Create new DBO
 		User user = null;
 		try {
 			user = createNew();
 		} catch (Exception e) {
-			return Constants._web_error_result_prefix
+			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager
 							.getText("errors.could.not.create.dbobject");
 		}
@@ -77,14 +78,15 @@ public class UserProxy extends ADBProxyObject<User> {
 			}
 			// Delete Object before commit
 			deleteObject(user);
-			return Constants._web_error_result_prefix + failResult;
+			return MessagesManager.getDefault("web.error.result.prefix")
+					+ failResult;
 		} else {
 			user.postValidationSave();
 		}
 
 		commitChanges();
 
-		return Constants._web_ok_result_prefix
+		return MessagesManager.getDefault("web.ok.result.prefix")
 				+ MessagesManager.getText("message.data.saved");
 	}
 
@@ -94,30 +96,30 @@ public class UserProxy extends ADBProxyObject<User> {
 		// Check for NULL object
 		if (userBean == null) {
 			_log.error("errors.null.object");
-			return Constants._web_error_result_prefix
+			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("errors.null.object");
 		}
 
 		// Check for mail
-		if (!Constants.isValidString(userBean.getMail())) {
+		if (!Utils.isValidString(userBean.getMail())) {
 			_log.error("errors.wrong.mail");
 			_log.debug("Mail:" + userBean.getMail());
-			return Constants._web_error_result_prefix
+			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("errors.empty.mail");
 		}
 
-		if (!Constants.isValidEmailAddress(userBean.getMail())) {
+		if (!Utils.isValidEmailAddress(userBean.getMail())) {
 			_log.error("errors.invalid.mail");
 			_log.debug("Mail:" + userBean.getMail());
-			return Constants._web_error_result_prefix
+			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("errors.invalid.mail");
 		}
 
 		// Check for password
-		if (!Constants.isValidString(userBean.getPassword())) {
+		if (!Utils.isValidString(userBean.getPassword())) {
 			_log.error("errors.empty.password");
 			_log.debug("Password:" + userBean.getPassword());
-			return Constants._web_error_result_prefix
+			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("errors.passwords.is.empty");
 		}
 
@@ -129,26 +131,27 @@ public class UserProxy extends ADBProxyObject<User> {
 
 		if (userList.size() == 0) {
 			_log.warn("errors.wrong.mail.or.password");
-			return Constants._web_error_result_prefix
+			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("errors.object.not.found");
 		} else {
 			if (userList.size() > 1) {
 				_log.warn("errors.dbobject.already.registered");
-				return Constants._web_error_result_prefix
+				return MessagesManager.getDefault("web.error.result.prefix")
 						+ MessagesManager.getText("errors.too.many.objects");
 			} else {
 				if (!userList.get(0).checkPassword(userBean.getPassword())) {
 					_log.warn("errors.wrong.mail.or.password");
-					return Constants._web_error_result_prefix
+					return MessagesManager
+							.getDefault("web.error.result.prefix")
 							+ MessagesManager
 									.getText("errors.wrong.mail.or.password");
 				}
 			}
 		}
 
-		SessionManager.setToSession(Constants._session_userid_key, userList
-				.get(0).getID());
-		return Constants._web_ok_result_prefix
+		SessionManager.setToSession(MessagesManager
+				.getDefault("session.userid.key"), userList.get(0).getID());
+		return MessagesManager.getDefault("web.ok.result.prefix")
 				+ MessagesManager.getText("message.data.saved");
 	}
 
@@ -169,7 +172,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		if (user != null)
 			result = String.format(MessagesManager
 					.getText("main.admin.users.formUpdate"), user.getMail(),
-					user.getAdditionals(), userPk, 
+					user.getAdditionals(), userPk,
 					getCurrentRolesAsHTML(userPk),
 					getAvailableRolesAsHTML(userPk));
 		else
@@ -182,60 +185,61 @@ public class UserProxy extends ADBProxyObject<User> {
 	public String getCurrentRolesAsHTML(int userPk) {
 		User user = getDBObjectByIntPk(userPk);
 		String result = "";
-		
-		List<Role> userRolesList = user.getRoles();				
-		
-		if(userRolesList.size() == 0){
+
+		List<Role> userRolesList = user.getRoles();
+
+		if (userRolesList.size() == 0) {
 			result += MessagesManager.getText("text.no.data");
-		}else{
-			for(Role role: userRolesList){
-				result += String.format(MessagesManager.getText("template.input.button"),
-						role.getID(),
-						role.getName(),
-						"UserProxy.removeRole(this.id)");
+		} else {
+			for (Role role : userRolesList) {
+				result += String.format(MessagesManager
+						.getText("template.input.button"), role.getID(), role
+						.getName(), "UserProxy.removeRole(this.id)");
 			}
 		}
 		return result;
-	}	
-	
+	}
+
 	public String getAvailableRolesAsHTML(int userPk) {
 		User user = getDBObjectByIntPk(userPk);
 		String result = "";
-		
+
 		RoleProxy roleProxy = new RoleProxy();
-		
+
 		List<Role> allRolesList = roleProxy.getAll();
-		List<Role> availableRolesList = subRoles(allRolesList, user.getRoles());				
-		
-		if(availableRolesList.size() == 0){
+		List<Role> availableRolesList = subRoles(allRolesList, user.getRoles());
+
+		if (availableRolesList.size() == 0) {
 			result += MessagesManager.getText("text.no.data");
-		}else{
-			for(Role role: availableRolesList){
-				result += String.format(MessagesManager.getText("template.input.button"),
-						role.getID(),
-						role.getName(),
-						"UserProxy.addRole(this.id)");
+		} else {
+			for (Role role : availableRolesList) {
+				result += String.format(MessagesManager
+						.getText("template.input.button"), role.getID(), role
+						.getName(), "UserProxy.addRole(this.id)");
 			}
-		}		
-		
+		}
+
 		return result;
 	}
 
-	private List<Role> subRoles(List<Role> mainRoles, List<Role> subRoles){
-		_log.debug(String.format("subRoles contains %s roles", subRoles.size()));
-		
+	private List<Role> subRoles(List<Role> mainRoles, List<Role> subRoles) {
+		_log
+				.debug(String.format("subRoles contains %s roles", subRoles
+						.size()));
+
 		List<Role> result = new ArrayList<Role>();
-		
-		for(Role role:mainRoles){
-			if(!containsRole(role, subRoles))
+
+		for (Role role : mainRoles) {
+			if (!containsRole(role, subRoles))
 				result.add(role);
-		}		
+		}
 		return result;
 	}
-	 	
+
 	private boolean containsRole(Role inRole, List<Role> mainRoles) {
-		for(Role role:mainRoles){
-			if(inRole.getID().equals(role.getID())) return true;
+		for (Role role : mainRoles) {
+			if (inRole.getID().equals(role.getID()))
+				return true;
 		}
 		return false;
 	}
@@ -273,9 +277,9 @@ public class UserProxy extends ADBProxyObject<User> {
 			User user = users.get(j);
 			result = result
 					+ String.format(format, (j + 1), user.getID(), user
-							.getMailWithRoles(), user.getStatus(),
-							user.getAdditionals(), user.getCreated(), user
-									.getUpdated(), user.getID());
+							.getMailWithRoles(), user.getStatus(), user
+							.getAdditionals(), user.getCreated(), user
+							.getUpdated(), user.getID());
 		}
 
 		return getHTMLPaginator(inPage)
@@ -319,7 +323,8 @@ public class UserProxy extends ADBProxyObject<User> {
 		// Check for valid NEW passwords
 		String result = DBUtils.validatePassword(userBean);
 		if (result != null)
-			return Constants._web_error_result_prefix + result;
+			return MessagesManager.getDefault("web.error.result.prefix")
+					+ result;
 
 		User user = getDBObjectByIntPk(userBean.getId());
 
@@ -327,7 +332,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		_log.debug("user.сheckPassword(inUser.getPassword()) = "
 				+ user.checkPassword(userBean.getPassword()));
 		if (!user.checkPassword(userBean.getPassword())) {
-			return Constants._web_error_result_prefix
+			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("message.data.NOT.saved") + ":\n"
 					+ "\t - "
 					+ MessagesManager.getText("errors.invalid.old.password");
@@ -350,12 +355,13 @@ public class UserProxy extends ADBProxyObject<User> {
 			}
 			// RollBack changes
 			rollbackChanges();
-			return Constants._web_error_result_prefix + failResult;
+			return MessagesManager.getDefault("web.error.result.prefix")
+					+ failResult;
 		} else {
 			user.postValidationSave();
 			commitChanges();
 		}
-		return Constants._web_ok_result_prefix
+		return MessagesManager.getDefault("web.ok.result.prefix")
 				+ MessagesManager.getText("message.new.password.saved");
 	}
 
@@ -379,34 +385,34 @@ public class UserProxy extends ADBProxyObject<User> {
 		return inString;
 	}
 
-	public String addDBORole(UserBean userBean){
-		_log.debug(String.format("AddRole(%s) for User(%s)",
-				userBean.getId(),
+	public String addDBORole(UserBean userBean) {
+		_log.debug(String.format("AddRole(%s) for User(%s)", userBean.getId(),
 				userBean.getRoleId()));
-		
+
 		User user = getDBObjectByIntPk(userBean.getId());
-		
-		user.addToRoles(DataObjectUtils.objectForPK(getObjectContext(), Role.class, userBean.getRoleId()));
-		
+
+		user.addToRoles(DataObjectUtils.objectForPK(getObjectContext(),
+				Role.class, userBean.getRoleId()));
+
 		commitChanges();
-		
-		return Constants._web_ok_result_prefix + 
-			MessagesManager.getText("message.data.saved");
+
+		return MessagesManager.getDefault("web.ok.result.prefix")
+				+ MessagesManager.getText("message.data.saved");
 	}
 
-	public String removeDBORole(UserBean userBean){
-		_log.debug(String.format("RemoveRole(%s) for User(%s)",
-				userBean.getId(),
-				userBean.getRoleId()));
-		
+	public String removeDBORole(UserBean userBean) {
+		_log.debug(String.format("RemoveRole(%s) for User(%s)", userBean
+				.getId(), userBean.getRoleId()));
+
 		User user = getDBObjectByIntPk(userBean.getId());
-		
-		user.removeFromRoles(DataObjectUtils.objectForPK(getObjectContext(), Role.class, userBean.getRoleId()));
-		
+
+		user.removeFromRoles(DataObjectUtils.objectForPK(getObjectContext(),
+				Role.class, userBean.getRoleId()));
+
 		commitChanges();
-		
-		return Constants._web_ok_result_prefix + 
-			MessagesManager.getText("message.data.saved");
-	}	
+
+		return MessagesManager.getDefault("web.ok.result.prefix")
+				+ MessagesManager.getText("message.data.saved");
+	}
 
 }

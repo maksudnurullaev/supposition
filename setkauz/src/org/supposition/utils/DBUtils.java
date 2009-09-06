@@ -30,8 +30,8 @@ public final class DBUtils {
 	}
 
 	public static String validatePassword(UserBean inUser) {
-		if (!Constants.isValidString(inUser.getNewpassword())
-				|| !Constants.isValidString(inUser.getNewpassword2())) {
+		if (!Utils.isValidString(inUser.getNewpassword())
+				|| !Utils.isValidString(inUser.getNewpassword2())) {
 			return MessagesManager.getText("message.data.NOT.saved") + ":\n"
 					+ "\t - "
 					+ MessagesManager.getText("errors.invalid.password") + "\n"

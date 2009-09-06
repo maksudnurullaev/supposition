@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.supposition.utils.Constants;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 
@@ -19,6 +18,9 @@ import org.supposition.utils.SessionManager;
  */
 public class Session
 {
+	private static final int FALSE = 0;
+	private static final int TRUE = 1;
+	
 	public Log _log = LogFactory.getLog(this.getClass());		
     /**
      * A simple test that the DWr is working. Used by the front page.
@@ -44,7 +46,7 @@ public class Session
     }          
 
 	public int hasMessageByKey(String inKey){
-		return MessagesManager.hasMessageByKey(inKey)?Constants.TRUE:Constants.FALSE;
+		return MessagesManager.hasMessageByKey(inKey)?TRUE:FALSE;
 	}    
     
     public String getTextByKey(String inKey){

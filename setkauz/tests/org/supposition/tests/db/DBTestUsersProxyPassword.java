@@ -11,8 +11,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.User;
 import org.supposition.db.proxy.UserProxy;
-import org.supposition.utils.Constants;
 import org.supposition.utils.DBUtils;
+import org.supposition.utils.MessagesManager;
 
 /**
  * To use this test we should create 1000 test users
@@ -71,7 +71,7 @@ public class DBTestUsersProxyPassword {
 		User user = usersList.get(0);	
 		
 		// Set newPassword	
-		user.setKaptcha(Constants._testing_string);
+		user.setKaptcha(MessagesManager.getDefault("testing.string"));
 		user.setPassword(newPassword);
 		
 		ValidationResult validationResult = user.getValidationResult();		
