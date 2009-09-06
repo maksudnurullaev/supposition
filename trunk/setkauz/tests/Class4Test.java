@@ -1,4 +1,4 @@
-import org.supposition.db.proxy.UserProxy;
+import org.supposition.utils.MessagesManager;
 
 public class Class4Test {
 
@@ -6,10 +6,8 @@ public class Class4Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		UserProxy users = new UserProxy();
-		
-		System.out.println("Users count" + users.getAll().size());
-
+		System.out.println(MessagesManager.getDefault("pattern.to.cheack.email.pattern"));
+		System.out.println(MessagesManager.getDefault("project_wrong.name"));
 	}
 
 }

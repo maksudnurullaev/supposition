@@ -7,25 +7,29 @@ import org.supposition.text.TextManager;
 
 public final class MessagesManager {
 	public static Log _log = LogFactory.getLog("org.supposition.utils.MessageFactory");
+	private static final String _beans_text_manager_id = "textManager";
 	private static final String _defaultBaseName = "messages";
-	private static final String _defaultLocale = "ru";
-	private static final boolean _isTomcatContext = Constants.isTomcatContext();
+	private static final boolean _isTomcatContext = Utils.isTomcatContext();
 
 	private static TextManager _textManager = null;
 
 	// *** TEXT MANAGER part ****
 	public static String getText(String inKey) {
-		checkTextManager();
+		checkInitTextManager();
 		return _textManager.getTextByKey(inKey, getLocale());
 	}
 
-	private static void checkTextManager() {
+	public static String getDefault(String inKey) {
+		checkInitTextManager();
+		return _textManager.getDefaultByKey(inKey);
+	}	
+	
+	private static void checkInitTextManager() {
 		if (_textManager == null) {
 			// Get TextManager bean from spring framework
 			if(_isTomcatContext){
-				_log.debug("Loading TextManager from WebApplicationContext");
 				_textManager = (TextManager) ContextLoader
-					.getCurrentWebApplicationContext().getBean(Constants._beans_text_manager);
+					.getCurrentWebApplicationContext().getBean(_beans_text_manager_id);
 			}else{
 				_textManager = new TextManager();
 				_textManager.setBasename(_defaultBaseName);
@@ -36,33 +40,29 @@ public final class MessagesManager {
 
 	// *** MESSAGE SENDER part ****
 	public static boolean hasMessageByKey(String inKey) {
-		checkTextManager();
+		checkInitTextManager();
 		return _textManager.hasKey(inKey, getLocale());
+	}
+	
+	public static boolean hasDefaultByKey(String inKey) {
+		checkInitTextManager();
+		return _textManager.hasDefaultKey(inKey);
 	}
 
 	public static void changeLocale(String inLocale) {
-		checkTextManager();
+		checkInitTextManager();
 		// Set locale
-		if(_isTomcatContext) SessionManager.setSessionLocale(inLocale);
-		_textManager.setLocale(inLocale);
+		SessionManager.setSessionLocale(inLocale);
 	}
 
 	public static String getLocale() {
-		if(_isTomcatContext){
-			return SessionManager.getSessionLocale();
-		}
-		return _defaultLocale;
+		return SessionManager.getSessionLocale();
 	}
 
 	public static int getSessionIntValue(String inKey) {
-		if(_isTomcatContext)
-			return SessionManager.getSessionIntValue(inKey);
-		else{
-			if(inKey.equalsIgnoreCase(Constants._page_size_def)){
-				return Constants.getIntFromStr(MessagesManager.getText("default.page.size"));
-			}
-		}
-		return 0;
+		return SessionManager.getSessionIntValue(inKey);
 	}
+
+
 
 }

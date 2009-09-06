@@ -4,7 +4,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.supposition.utils.Constants;
+import org.supposition.utils.Utils;
 
 /**
  * To use this test we should create 1000 test users
@@ -24,16 +24,16 @@ public class TestUtils {
 	
 	@Test
 	public void testSimple() {
-		Assert.assertTrue(Constants.isValidEmailAddress("test_user@tester.com"));
-		Assert.assertTrue(!Constants.isValidEmailAddress("test_user#tester.com"));
+		Assert.assertTrue(Utils.isValidEmailAddress("test_user@tester.com"));
+		Assert.assertTrue(!Utils.isValidEmailAddress("test_user#tester.com"));
 	}
 
 	@Test
 	public void testForEmptyString(){
-		Assert.assertTrue(Constants.isValidString("test"));
-		Assert.assertFalse(Constants.isValidString(""));
-		Assert.assertFalse(Constants.isValidString("    "));
-		Assert.assertFalse(Constants.isValidString(null));		
+		Assert.assertTrue(Utils.isValidString("test"));
+		Assert.assertFalse(Utils.isValidString(""));
+		Assert.assertFalse(Utils.isValidString("    "));
+		Assert.assertFalse(Utils.isValidString(null));		
 	}
 	
 }

@@ -10,9 +10,6 @@
 		<property name="basename">
 			<value>messages</value>
 		</property>
-		<property name="locale">
-			<value>ru</value>
-		</property>
 	</bean>
 	
 </beans>

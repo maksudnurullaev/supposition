@@ -126,11 +126,11 @@ public abstract class PropertyLoader {
 				found = line.indexOf("=");
 				if (found != NOT_FOUND) {
 					savePreviousKeyValue(result, curKey, curValue);
-					curKey = line.substring(0, found - 1).trim();
+					curKey = line.substring(0, found - 1);
 					curValue = line.substring(found + 1, line.length());
 				}
 			} else {
-					curValue += line.substring(1);
+					curValue += line.substring(1).trim();
 			}
 		}
 		// Save last pair
@@ -140,9 +140,8 @@ public abstract class PropertyLoader {
 	private static void savePreviousKeyValue(Properties inProp, String inKey,
 			String inValue) {
 		if ((inKey != null) && (inValue != null)) {
-			inProp.setProperty(inKey, inValue);
-			_log.debug(String.format("KEY(%s) and VALUE(%s) found", inKey,
-					inValue));
+			inProp.setProperty(inKey.trim(), inValue.trim());
+			_log.debug(String.format("KEY(%s) and VALUE(%s) found", inKey.trim(), inValue.trim()));
 		}
 	}
 

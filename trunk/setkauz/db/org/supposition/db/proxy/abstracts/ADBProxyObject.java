@@ -11,7 +11,7 @@ import org.apache.cayenne.query.SelectQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.proxy.interfaces.IDBProxyCollection;
-import org.supposition.utils.Constants;
+import org.supposition.utils.Utils;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
@@ -21,7 +21,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	private DataContext _context = DBUtils.getInstance().getDBContext();
 	private List<Expression> _expressions = new ArrayList<Expression>();
 	private Class<E> _eclass = null;
-	private int _pageSize = Constants.getIntFromStr(MessagesManager.getText("default.page.size"));
+	private int _pageSize = Utils.getIntFromStr(MessagesManager.getDefault("default.page.size"));
 	public Log _log = LogFactory.getLog(this.getClass());
 
 	@Override
@@ -79,7 +79,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	
 	@Override
 	public String getCurrentPageDef(){
-		return getClass().getSimpleName() + Constants._current_page_def;
+		return getClass().getSimpleName() + MessagesManager.getDefault("current.page.def");
 	}
 	
 	@Override	
@@ -94,7 +94,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 
 	@Override
 	public String getGo2PageDef() {
-		return getClass().getSimpleName() + Constants._go2Page_jsf_def;
+		return getClass().getSimpleName() + MessagesManager.getDefault("go2Page.jsf.def");
 	}
 
 	private String getHTMLFilter() {
@@ -179,12 +179,12 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 
 	@Override
 	public String getPageCountDef() {
-		return getClass().getSimpleName() + Constants._page_count_def;
+		return getClass().getSimpleName() + MessagesManager.getDefault("page.count.def");
 	}	
 	
 	@Override
 	public String getPageDencityDef() {
-		return getClass().getSimpleName() + Constants._page_density_def;
+		return getClass().getSimpleName() + MessagesManager.getDefault("page.density.def");
 	}	
 	
 	@Override
@@ -198,12 +198,12 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	
 	@Override
 	public String getPageSizeDef() {
-		return getClass().getSimpleName() + Constants._page_size_def;
+		return getClass().getSimpleName() + MessagesManager.getDefault("page.size.def");
 	}
 
 	@Override
 	public String getRemoveFilterDef() {
-		return getClass().getSimpleName() + Constants._remove_filter_jsf_def;
+		return getClass().getSimpleName() + MessagesManager.getDefault("remove.filter.jsf.def");
 	}
 
 	@Override
@@ -220,12 +220,12 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	
 	@Override
 	public String getSessionFilterDef() {
-		return getClass().getSimpleName() + Constants._session_filter_def;
+		return getClass().getSimpleName() + MessagesManager.getDefault("session.filter.def");
 	}
 	
 	@Override
 	public String getSetPageDencityDef() {
-		return getClass().getSimpleName() + Constants._page_density_jsf_def;
+		return getClass().getSimpleName() + MessagesManager.getDefault("page.density.jsf.def");
 	}
 
 	@Override

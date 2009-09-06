@@ -10,8 +10,9 @@ import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._User;
 import org.supposition.db.proxy.UserBean;
 import org.supposition.db.proxy.UserProxy;
-import org.supposition.utils.Constants;
+import org.supposition.utils.Utils;
 import org.supposition.utils.CryptoManager;
+import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 
 public class User extends _User {
@@ -40,7 +41,7 @@ public class User extends _User {
 
 	private void validateKaptcha(ValidationResult validationResult) {
 		// For tests
-		if(getKaptcha().equalsIgnoreCase(Constants._testing_string)) return;
+		if(getKaptcha().equalsIgnoreCase(MessagesManager.getDefault("testing.string"))) return;
 		
 		String sessionKaptchaValue = (String) SessionManager
 				.getSessionValue(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
@@ -64,18 +65,18 @@ public class User extends _User {
 
 		if (is_new) {
 			updatePassword();
-			setCreated(Constants.GetCurrentDateTime());
+			setCreated(Utils.GetCurrentDateTime());
 		} else {
 			if (isNeedToChangePassword())
 				updatePassword();
-			setUpdated(Constants.GetCurrentDateTime());
+			setUpdated(Utils.GetCurrentDateTime());
 		}
 	}
 
 	private boolean isNeedToChangePassword() {
 		_log.debug("->isNeedToChangePassword RETURNS "
-				+ Constants.isValidString(getPassword()));
-		return Constants.isValidString(getPassword());
+				+ Utils.isValidString(getPassword()));
+		return Utils.isValidString(getPassword());
 	}
 
 	protected void updatePassword() {
@@ -83,13 +84,13 @@ public class User extends _User {
 
 		setSalt(CryptoManager.encryptPassword(getPassword()));
 		setPassword(""); // remove original text
-		setStatus(Constants._password_salted);
+		setStatus(MessagesManager.getDefault("password.salted"));
 	}
 
 	private boolean validateMail(ValidationResult validationResult) {
 		_log.debug("->validateMail");
 
-		if (!org.supposition.utils.Constants.isValidEmailAddress(getMail())) {
+		if (!org.supposition.utils.Utils.isValidEmailAddress(getMail())) {
 			validationResult.addFailure(new SimpleValidationFailure(this,
 					"errors.invalid.mail"));
 			_log.debug("Invalid email" + getMail());
@@ -136,11 +137,11 @@ public class User extends _User {
 			return false;
 		}
 		// Validate for password length
-		else if (getPassword().length() < Constants._min_password_length) {
+		else if (getPassword().length() < Utils.getIntFromStr(MessagesManager.getDefault("min.password.length"))) {
 			validationResult.addFailure(new SimpleValidationFailure(this,
 					"errors.invalid.password.length"));
 			_log.error("Invalid password length, should be > "
-					+ Constants._min_password_length);
+					+ MessagesManager.getDefault("min.password.length"));
 			return false;
 		}
 		return true;

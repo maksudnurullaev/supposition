@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.supposition.db.Role;
 import org.supposition.db.User;
 import org.supposition.db.proxy.UserProxy;
-import org.supposition.utils.Constants;
 import org.supposition.utils.DBUtils;
+import org.supposition.utils.MessagesManager;
 
 public class DBTestUsersAndRoles {
 	static int generate_test_objects_count = 1;
@@ -48,8 +48,7 @@ public class DBTestUsersAndRoles {
 		UserProxy users_proxy = new UserProxy();
 		
 		users_proxy.setPageSize(0);
-		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail",
-				"test%"));
+		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
 		List<User> users = users_proxy.getAll();
 		if (users.size() > 0) {
 			users_proxy.deleteObjects(users);
@@ -75,7 +74,7 @@ public class DBTestUsersAndRoles {
 		User user = (User) _context.newObject(User.class);
 		user.setMail("testme@test.com");
 		user.setPassword(password);
-		user.setKaptcha(Constants._testing_string);
+		user.setKaptcha(MessagesManager.getDefault("testing.string"));
 		
 		ValidationResult validationResult = user.getValidationResult();
 		
@@ -85,7 +84,7 @@ public class DBTestUsersAndRoles {
 		_context.commitChanges();
 		
 		Assert.assertTrue(user.getPassword() == "");
-		Assert.assertTrue(user.getStatus() == Constants._password_salted);
+		Assert.assertTrue(user.getStatus().equalsIgnoreCase(MessagesManager.getDefault("password.salted")));
 		Assert.assertTrue(user.checkPassword(password));
 		
 		// Change password
@@ -98,7 +97,7 @@ public class DBTestUsersAndRoles {
 		_context.commitChanges();
 		
 		Assert.assertTrue(user.getPassword() == "");
-		Assert.assertTrue(user.getStatus() == Constants._password_salted);
+		Assert.assertTrue(user.getStatus().equalsIgnoreCase(MessagesManager.getDefault("password.salted")));
 		Assert.assertTrue(user.checkPassword(password2));
 
 	}
@@ -158,7 +157,7 @@ public class DBTestUsersAndRoles {
 		User user = users.createNew();
 		user.setMail("");
 		user.setPassword("");
-		user.setKaptcha(Constants._testing_string);
+		user.setKaptcha(MessagesManager.getDefault("testing.string"));
 		
 		ValidationResult validationResult = user.getValidationResult();
 		Assert.assertTrue(validationResult.hasFailures());
@@ -172,7 +171,7 @@ public class DBTestUsersAndRoles {
 		User user = (User) _context.newObject(User.class);
 		user.setMail("test_invalid_mail#test.com");
 		user.setPassword("test_invalid_mail");
-		user.setKaptcha(Constants._testing_string);
+		user.setKaptcha(MessagesManager.getDefault("testing.string"));
 		
 		ValidationResult validationResult = user.getValidationResult();		
 		

@@ -7,7 +7,7 @@ import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Role;
 import org.supposition.db.proxy.abstracts.ADBProxyObject;
-import org.supposition.utils.Constants;
+import org.supposition.utils.Utils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 
@@ -38,11 +38,11 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		_log.debug("addDBORole ->");
 		
 		// Check for valid name		
-		if(!Constants.isValidString(roleBean.getName())){
+		if(!Utils.isValidString(roleBean.getName())){
 			_log.debug("addDBORole -> Constants.isValidString");			
 			_log.debug("addDBORole -> Constants.isValidString -> roleBean.getName() -> " + roleBean.getName());			
-			return Constants._web_error_result_prefix
-			+ MessagesManager.getText("errors.empty.value");
+			return MessagesManager.getDefault("web.error.result.prefix")
+						+ MessagesManager.getText("errors.empty.value");
 		}
 			
 		
@@ -51,7 +51,7 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		try {
 			role = createNew();
 		} catch (Exception e) {
-			return Constants._web_error_result_prefix + MessagesManager.getText("errors.could.not.create.dbobject");
+			return MessagesManager.getDefault("web.error.result.prefix") + MessagesManager.getText("errors.could.not.create.dbobject");
 		}
 		
 		// Setup user bean
@@ -69,12 +69,13 @@ public class RoleProxy extends ADBProxyObject<Role> {
 			}		
 			// Delete Object before commit
 			deleteObject(role);
-			return Constants._web_error_result_prefix + failResult;
+			return MessagesManager.getDefault("web.error.result.prefix")
+						+ failResult;
 		}
 
 		commitChanges();		
 		
-		return Constants._web_ok_result_prefix + MessagesManager.getText("message.data.saved");		
+		return MessagesManager.getDefault("web.ok.result.prefix") + MessagesManager.getText("message.data.saved");		
 	}
 
 	@Override

@@ -1,11 +1,12 @@
 package org.supposition.db.proxy;
 
-import org.supposition.utils.Constants;
+import org.supposition.utils.Utils;
+import org.supposition.utils.MessagesManager;
 
 public class KeyValueBean {
 	private String key;
 	private String value;
-	private int id = Constants._default_id_for_new_dbo;
+	private int id = Utils.getIntFromStr(MessagesManager.getDefault("default.id.for.new.dbo"));
 	
 	public void setKey(String key) {
 		this.key = key;
@@ -26,7 +27,7 @@ public class KeyValueBean {
 		return id;
 	}
 	public boolean isNew() {
-		return id == Constants._default_id_for_new_dbo;
+		return id == Utils.getIntFromStr(MessagesManager.getDefault("default.id.for.new.dbo"));
 	}
 	
 }
