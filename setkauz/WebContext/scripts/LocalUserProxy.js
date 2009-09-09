@@ -21,13 +21,11 @@ LocalUserProxy.updateUserData = function(){
 
 LocalUserProxy.updateUserPassword = function(){
 	// Check fields
-	if( !Main.isValidValue("password") ||
-		!Main.isValidValue("newpassword") ||
+	if( !Main.isValidValue("newpassword") ||
 		!Main.isValidValue("newpassword2"))return false;
 	
 	var User = {
 			id :null,
-			password :null,
 			newpassword :null,
 			newpassword2 :null
 		};	
@@ -38,7 +36,6 @@ LocalUserProxy.updateUserPassword = function(){
 		alert(result);
 		if(Main.isOK(result)){
 			var User = {
-				password :null,
 				newpassword :null,
 				newpassword2 :null
 			};

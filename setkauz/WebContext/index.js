@@ -9,6 +9,11 @@ Load ("scripts/Stack.js");
 Load ("scripts/Main.js");
 Load ("scripts/LocalUserProxy.js");
 
+// ### DEBUG TIME ###
+function myErrorHandler(msg){
+	alert(msg);
+};
+
 initPage = function(){
 	// Test [ Main.testLoadedJS ]
 	if( "undefined" == typeof Main)              { alert( "JS: Failed to Load [ Main ]"); return; }
@@ -20,10 +25,16 @@ initPage = function(){
 		return;		
 	}
 	
-	// Test gup redirection
-	//if(Main.gup("action")){
-	//	alert("go to action = " + Session.gup("action"));
-	//}
+	// #### DEBUG TIME ####
+	dwr.engine.setErrorHandler(myErrorHandler);
+	dwr.engine.setWarningHandler(myErrorHandler);
+
+	// Handle Session Expire Event 
+	dwr.engine.setTextHtmlHandler(function(){
+		alert("sessionExpiredHandler event handled");
+		LocalUserProxy.showMainEnterForm();		
+	});
+	
 	
 	// This turns off the no-javascript message
 	document.getElementById("start").style.display = "none";

@@ -328,16 +328,6 @@ public class UserProxy extends ADBProxyObject<User> {
 
 		User user = getDBObjectByIntPk(userBean.getId());
 
-		// Check for valid OLD password
-		_log.debug("user.сheckPassword(inUser.getPassword()) = "
-				+ user.checkPassword(userBean.getPassword()));
-		if (!user.checkPassword(userBean.getPassword())) {
-			return MessagesManager.getDefault("web.error.result.prefix")
-					+ MessagesManager.getText("message.data.NOT.saved") + ":\n"
-					+ "\t - "
-					+ MessagesManager.getText("errors.invalid.old.password");
-		}
-
 		// Trying to update real password of Database Object
 		_log.debug("New password:" + userBean.getNewpassword());
 		ValidationResult validationResult = new ValidationResult();
