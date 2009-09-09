@@ -77,5 +77,11 @@ public class Session
 		return MessagesManager.getText("main.admin.session.table.header")
 		+ result
 		+ MessagesManager.getText("main.admin.session.table.footer");	
-    }    
+    }
+	
+	public String logOff(){
+		SessionManager.logoffUser();
+		return MessagesManager.getDefault("web.ok.result.prefix")
+			+ MessagesManager.getText("message.bye");
+	}
 }

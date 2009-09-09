@@ -1,9 +1,11 @@
 package org.supposition.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.cayenne.exp.ExpressionFactory;
 import org.apache.cayenne.validation.SimpleValidationFailure;
+import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +28,6 @@ public class User extends _User {
 		_log.debug("->validateForSave");
 		super.validateForSave(validationResult);
 
-		validateKaptcha(validationResult);
 		validateMail(validationResult);
 
 		validateFor2Mail(validationResult);
@@ -40,6 +41,13 @@ public class User extends _User {
 	}
 
 	private void validateKaptcha(ValidationResult validationResult) {
+		// Check captcha
+		if(getKaptcha() == null){
+			validationResult.addFailure(new SimpleValidationFailure(this,
+				"errors.null.object"));
+			return;
+		}
+
 		// For tests
 		if(getKaptcha().equalsIgnoreCase(MessagesManager.getDefault("testing.string"))) return;
 		
@@ -54,9 +62,21 @@ public class User extends _User {
 
 	}
 
-	public ValidationResult getValidationResult() {
+	public ValidationResult getValidationResult(boolean withKaptcha) {
 		ValidationResult validationResult = new ValidationResult();
+		
+		if(withKaptcha)
+			validateKaptcha(validationResult);
+		
 		validateBeforeSave(validationResult);
+		
+		// Log
+		if(validationResult.hasFailures()){
+			_log.debug("Validation failed for user -> " + getMail());
+			for(ValidationFailure fail:validationResult.getFailures())
+				_log.debug(" fail ->  " + fail.getDescription());
+		}
+		
 		return validationResult;
 	}
 
@@ -127,7 +147,7 @@ public class User extends _User {
 		return true;
 	}
 
-	private boolean validatePassword(ValidationResult validationResult) {
+	public boolean validatePassword(ValidationResult validationResult) {
 		_log.debug("->validatePassword");
 		// Validate for empty password
 		if (getPassword().isEmpty()) {
@@ -176,6 +196,15 @@ public class User extends _User {
 		return result.substring(0, result.length() - 1);
 	}
 
+	public List<String> getRolesAsList() {
+		List<String> result = new ArrayList<String>();
+		for (Role role : getRoles()) {
+			result.add(role.getName());
+		}
+		
+		return result;
+	}	
+	
 	public String getMailWithRoles() {
 		if (!hasRoles())
 			return getMail();

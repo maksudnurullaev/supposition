@@ -76,7 +76,7 @@ public class DBTestUsersAndRoles {
 		user.setPassword(password);
 		user.setKaptcha(MessagesManager.getDefault("testing.string"));
 		
-		ValidationResult validationResult = user.getValidationResult();
+		ValidationResult validationResult = user.getValidationResult(true);
 		
 		Assert.assertFalse(validationResult.hasFailures());
 		
@@ -90,7 +90,7 @@ public class DBTestUsersAndRoles {
 		// Change password
 		user.setPassword(password2);
 
-		validationResult = user.getValidationResult();		
+		validationResult = user.getValidationResult(true);		
 		Assert.assertFalse(validationResult.hasFailures());
 
 		user.postValidationSave();
@@ -159,7 +159,7 @@ public class DBTestUsersAndRoles {
 		user.setPassword("");
 		user.setKaptcha(MessagesManager.getDefault("testing.string"));
 		
-		ValidationResult validationResult = user.getValidationResult();
+		ValidationResult validationResult = user.getValidationResult(true);
 		Assert.assertTrue(validationResult.hasFailures());
 		Assert.assertTrue(validationResult.getFailures().size() == 2);
 	}
@@ -173,10 +173,24 @@ public class DBTestUsersAndRoles {
 		user.setPassword("test_invalid_mail");
 		user.setKaptcha(MessagesManager.getDefault("testing.string"));
 		
-		ValidationResult validationResult = user.getValidationResult();		
+		ValidationResult validationResult = user.getValidationResult(true);		
 		
 		Assert.assertTrue(validationResult.hasFailures());
 		Assert.assertTrue(validationResult.getFailures().size() == 1);
 		Assert.assertTrue(validationResult.getFailures().get(0).getDescription() == "errors.invalid.mail");		
-	}	
+	}
+	
+	@Test
+	public void test_valid_user_mail() {
+		DataContext _context = DBUtils.getInstance().getDBContext();		
+		// User-Admin
+		User user = (User) _context.newObject(User.class);
+		user.setMail("test@test.com");
+		user.setPassword("test_password");
+		user.setKaptcha(MessagesManager.getDefault("testing.string"));
+		
+		ValidationResult validationResult = user.getValidationResult(true);		
+		
+		Assert.assertFalse(validationResult.hasFailures());
+	}		
 }

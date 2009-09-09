@@ -13,7 +13,7 @@ UserProxy.updateTable = function() {
 
 UserProxy.setFilter = function(){
 	// Check fields
-	if(!isValidValue("mail")) return false;	
+	if(!Main.isValidValue("mail")) return false;	
 	
 	// Find & Show Items
 	var User = {mail :null};
@@ -45,13 +45,13 @@ UserProxy.setPageDencity = function(){
 
 // Filter
 UserProxy.showFilterForm = function(){
-	getTextFromServerToDiv("main.admin.users.filterForm", "main.admin.users.table", false);		
+	Main.getTextFromServerToDiv("main.admin.users.filterForm", "main.admin.users.table", false);		
 	return false;	
 }
 
 UserProxy.checkItemsByFilter = function(){
 	// Check fields
-	if(!isValidValue("mail")) return false;	
+	if(!Main.isValidValue("mail")) return false;	
 	
 	// Find Items
 	var User = {mail :null};
@@ -81,7 +81,7 @@ UserProxy.editUser = function(id) {
 
 UserProxy.updateUserData = function() {
 	// Check fields
-	if(!isValidValue("mail")) return false;	
+	if(!Main.isValidValue("mail")) return false;	
 	
 	var User = {
 		id :null,
@@ -97,9 +97,9 @@ UserProxy.updateUserData = function() {
 
 UserProxy.updateUserPassword = function() {
 	// Check fields
-	if(!isValidValue("password")) return false;	
-	if(!isValidValue("newpassword")) return false;	
-	if(!isValidValue("newpassword2")) return false;	
+	if( !Main.isValidValue("password") ||
+		!Main.isValidValue("newpassword") ||
+		!Main.isValidValue("newpassword2"))return false;
 	
 	var User = {
 		id :null,
@@ -111,12 +111,14 @@ UserProxy.updateUserPassword = function() {
 	dwr.util.getValues(User);
 	UserProxy.updateDBOUserPassword(User, function(result) {
 		alert(result);
-		var User = {
-			password :null,
-			newpassword :null,
-			newpassword2 :null
-		};
-		dwr.util.setValues(User);
+		if(Main.isOK(result)){
+			var User = {
+				password :null,
+				newpassword :null,
+				newpassword2 :null
+			};
+			dwr.util.setValues(User);
+		}
 	});
 	return false;
 };
@@ -131,7 +133,7 @@ UserProxy.addRole = function(ID){
 	
 	UserProxy.addDBORole(User, function(result) {
 		alert(result);
-		if(isOK(result))UserProxy.updateRoles(User.id);
+		if(Main.isOK(result))UserProxy.updateRoles(User.id);
 	});
 	
 	return false;
@@ -157,7 +159,7 @@ UserProxy.removeRole = function(ID){
 	
 	UserProxy.removeDBORole(User, function(result) {
 		alert(result);
-		if(isOK(result))UserProxy.updateRoles(User.id);
+		if(Main.isOK(result))UserProxy.updateRoles(User.id);
 	});
 	
 	return false;

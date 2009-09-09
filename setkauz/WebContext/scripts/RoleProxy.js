@@ -1,20 +1,20 @@
 Namespace("RoleProxy");
 
 RoleProxy.showNewForm = function() {
-	getTextFromServerToDiv("main.admin.roles.formNew",'main.admin.roles.table', false);	
+	Main.getTextFromServerToDiv("main.admin.roles.formNew",'main.admin.roles.table', false);	
 	return false;
 };
 
 RoleProxy.addNewRole = function(){
 	// Check fields
-	if(!isValidValue("name")) return false;
+	if(!Main.isValidValue("name")) return false;
 	
 	Role = {name:null};
 	dwr.util.getValues(Role);
 	
 	RoleProxy.addDBORole(Role, function(result){
 		alert(result);
-		if (isOK(result)) {
+		if (Main.isOK(result)) {
 			RoleProxy.updateTable();
 		}			
 	});
@@ -62,7 +62,7 @@ RoleProxy.editRole = function(id) {
 
 RoleProxy.updateData = function() {
 	// Check fields
-	if(!isValidValue("name")) return false;	
+	if(!Main.isValidValue("name")) return false;	
 	
 	var Role = {
 		id :null,

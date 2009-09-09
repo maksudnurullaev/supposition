@@ -73,7 +73,7 @@
 	
 	<target name="deploy.and.reload" depends="deploy, reload" description="Deploy application and Reload Tomcat"/>
 	
-	<target name="deploywar" depends="build"
+	<target name="zzz_deploywar" depends="build"
 		description="Deploy application as a WAR file">
 		<war destfile="${name}.war" webxml="${web.dir}/WEB-INF/web.xml">
 			<fileset dir="${web.dir}">

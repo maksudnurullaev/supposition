@@ -7,12 +7,13 @@ import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.supposition.db.User;
 
 public final class SessionManager {
 
 	private static final boolean _isTomcatContext = Utils.isTomcatContext();
 	private static Map<String, Object> _valueHouse = new HashMap<String, Object>();
-
+	
 	public static WebContext getWebContext() {
 		return WebContextFactory.get();
 	}
@@ -75,5 +76,22 @@ public final class SessionManager {
 	public static void setSessionLocale(String inLocale) {
 		if (_isTomcatContext)
 			setToSession(MessagesManager.getDefault("session.locale.def"), inLocale);
+	}
+
+	public static int getUserId() {
+		return getSessionIntValue(MessagesManager.getDefault("session.userid.key"));
+	}
+	
+	public static boolean isUserLoggedIn(){
+		return 	isExist(MessagesManager.getDefault("session.userid.key"));
+	}
+
+
+	public static void logoffUser(){
+		removeFromSession(MessagesManager.getDefault("session.userid.key"));
+	}
+	
+	public static void loginUser(User user){
+			setToSession(MessagesManager.getDefault("session.userid.key"), user.getID());				
 	}
 }

@@ -6,21 +6,24 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.supposition.db.User;
+import org.supposition.db.proxy.UserProxy;
 import org.supposition.text.abstracts.PropertyLoader;
-import org.supposition.utils.Utils;
 import org.supposition.utils.MessagesManager;
+import org.supposition.utils.SessionManager;
+import org.supposition.utils.Utils;
 
 public class TextManager extends PropertyLoader {
 	private static final String DEFAULTS_KEY = "defaults";
 	private static final String DEFAULTS_FILE_NAME = "defaults.properties";
+	private static final String DEFAULT_NONREGISTERED_POSTFIX = ".nonregistered";
+	private static final String DEFAULT_REGISTERED_POSTFIX = ".registered";
 
 	private static Log _log = LogFactory.getLog(PropertyLoader.class);
 
 	private Map<String, Properties> _propertiesMap = new HashMap<String, Properties>();
 
 	private String _currentBasename = null;
-	private String _currentLocale = null;
-
 	public TextManager() {
 		super();
 	}
@@ -60,27 +63,40 @@ public class TextManager extends PropertyLoader {
 
 		// Build string with start & end tags
 		String result = "";
-
-		// HEADER TAG
-		if (_propertiesMap.get(inLocale).containsKey(
-				inKey + MessagesManager.getDefault("text.header.def"))) {
-			result += _propertiesMap.get(inLocale).getProperty(
-					inKey + MessagesManager.getDefault("text.header.def"));
-		}
-
-		// ACTUAL TEXT
+		
+		// 1. HEADER TAG
+		result += tryToGetText(inLocale,inKey + MessagesManager.getDefault("text.header.def"));
+		
+		// 2. ACTUAL TEXT
 		result += _propertiesMap.get(inLocale).getProperty(inKey);
 
-		// FOOTER TAG
-		if (_propertiesMap.get(inLocale).containsKey(
-				inKey + MessagesManager.getDefault("text.footer.def"))) {
-			result += _propertiesMap.get(inLocale).getProperty(
-					inKey + MessagesManager.getDefault("text.footer.def"));
-		}
+
+		// 3. Refistered & Non-registered part - REST
+		if(SessionManager.isUserLoggedIn()){
+			result += tryToGetText(inLocale,inKey + DEFAULT_REGISTERED_POSTFIX);
+			UserProxy users = new UserProxy();
+			User user = users.getDBObjectByIntPk(SessionManager.getUserId());
+			if(user != null){
+				for(String role:user.getRolesAsList()){
+					result += tryToGetText(inLocale,inKey + "." + role);
+				}
+			}
+		}else
+			result += tryToGetText(inLocale,inKey + DEFAULT_NONREGISTERED_POSTFIX);		
+		
+		// 4. FOOTER TAG
+		result += tryToGetText(inLocale,inKey + MessagesManager.getDefault("text.footer.def"));
 
 		return replaceFinalTokensInText(result);
 	}
 
+	private String tryToGetText(String inLocale, String inKey){
+		if (_propertiesMap.get(inLocale).containsKey(inKey)) {
+			return _propertiesMap.get(inLocale).getProperty(inKey);
+		}		
+		return "";
+	}
+	
 	private String replaceFinalTokensInText(String result) {
 		if (result.indexOf("INSERT_UNIQUE_DATETIME") != -1) {
 			result = result.replaceAll("INSERT_UNIQUE_DATETIME", Utils
