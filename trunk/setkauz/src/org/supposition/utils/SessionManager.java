@@ -2,12 +2,15 @@ package org.supposition.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.supposition.db.User;
+import org.supposition.db.proxy.UserProxy;
 
 public final class SessionManager {
 
@@ -93,5 +96,39 @@ public final class SessionManager {
 	
 	public static void loginUser(User user){
 			setToSession(MessagesManager.getDefault("session.userid.key"), user.getID());				
+	}
+
+	public static String getUserMail() {
+		UserProxy users = new UserProxy();
+		User user = users.getDBObjectByIntPk(getUserId());
+		if(user == null){
+			return "NULL";
+		}
+
+		return user.getMail();
+	}
+
+	public static String getSystemDefaultsAsHTMLMgmTable() {
+		Properties defaults = MessagesManager.getDefaults();
+		
+		// Table + Header
+		String result = MessagesManager.getText("main.admin.system.defaults.table.header");
+		result +=  MessagesManager.getText("main.admin.system.defaults.table.th");
+		
+		TreeSet<Object> sortedkeys = new TreeSet<Object>(defaults.keySet());
+		
+		// Table rows
+		String tr_format = MessagesManager.getText("main.admin.system.defaults.table.tr");
+		for(Object key:sortedkeys){
+			result += String.format(tr_format, 
+					key, 
+					key, 
+					defaults.get(key),
+					key);
+		}
+		
+		// Table footer
+		result += MessagesManager.getText("main.admin.system.defaults.table.footer");		
+		return result;
 	}
 }

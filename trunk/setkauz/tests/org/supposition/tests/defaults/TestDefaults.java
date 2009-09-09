@@ -11,7 +11,7 @@ public class TestDefaults {
 		Assert.assertTrue(MessagesManager.hasDefaultByKey("project.name"));
 		Assert.assertFalse(MessagesManager.hasDefaultByKey("project.wrong.name"));
 		Assert.assertTrue(MessagesManager.hasDefaultByKey("default.page.size"));
-		Assert.assertTrue(MessagesManager.hasDefaultByKey("DATE.FORMAT.NOW"));
+		Assert.assertTrue(MessagesManager.hasDefaultByKey("default.date.format"));
 		Assert.assertTrue(MessagesManager.hasDefaultByKey("min.password.length"));
 	}
 }

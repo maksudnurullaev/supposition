@@ -43,6 +43,7 @@ public class User extends _User {
 	private void validateKaptcha(ValidationResult validationResult) {
 		// Check captcha
 		if(getKaptcha() == null){
+			_log.error("errors.null.object - Kaptcha");			
 			validationResult.addFailure(new SimpleValidationFailure(this,
 				"errors.null.object"));
 			return;

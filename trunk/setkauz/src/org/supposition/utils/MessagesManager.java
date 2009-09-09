@@ -1,5 +1,8 @@
 package org.supposition.utils;
 
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.ContextLoader;
@@ -77,6 +80,10 @@ public final class MessagesManager {
 	
 	public static String okPrefix(){
 		return  getDefault("web.ok.result.prefix");
+	}
+
+	public static Properties getDefaults() {
+		return  _textManager.getDefaults();
 	}
 	
 
