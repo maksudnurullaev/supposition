@@ -101,6 +101,10 @@ public class TextManager extends PropertyLoader {
 		if (result.indexOf("INSERT_UNIQUE_DATETIME") != -1) {
 			result = result.replaceAll("INSERT_UNIQUE_DATETIME", Utils
 					.getUniqueDateTime());
+		}else if (result.indexOf("INSERT_USER_MAIL") != -1) {
+			result = result.replaceAll("INSERT_USER_MAIL",  SessionManager.getUserMail());
+		}else if (result.indexOf("INSTERT_SYSTEM_DEFAULTS") != -1) {
+			result = result.replaceAll("INSTERT_SYSTEM_DEFAULTS",  SessionManager.getSystemDefaultsAsHTMLMgmTable());
 		}
 		return result;
 	}
@@ -143,6 +147,11 @@ public class TextManager extends PropertyLoader {
 
 	private synchronized void tryToLoadDefaultsFile() {
 		_propertiesMap.put(DEFAULTS_KEY, loadProperties(DEFAULTS_FILE_NAME));
+	}
+
+	
+	public Properties getDefaults() {
+		return _propertiesMap.get(DEFAULTS_KEY);
 	}
 
 }

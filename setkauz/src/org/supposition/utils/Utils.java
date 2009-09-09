@@ -19,10 +19,10 @@ public final class Utils {
 	
 	
 	public static final Pattern _pattern_to_cheack_email = 
-		Pattern.compile(MessagesManager.getDefault("pattern.to.cheack.email.pattern"));
+		Pattern.compile(MessagesManager.getDefault("regex.pattern.to.cheack.email"));
 	
 	public static String GetCurrentDateTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat(MessagesManager.getDefault("DATE.FORMAT.NOW"));
+		SimpleDateFormat sdf = new SimpleDateFormat(MessagesManager.getDefault("default.date.format"));
 		return String.format(sdf.format(new Date()));
 	};
 
@@ -61,7 +61,7 @@ public final class Utils {
 
 	public static String currentDateTime() {
 		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat(MessagesManager.getDefault("DATE.FORMAT.NOW"));
+		SimpleDateFormat sdf = new SimpleDateFormat(MessagesManager.getDefault("default.date.format"));
 		return sdf.format(cal.getTime());
 
 	}
@@ -74,16 +74,16 @@ public final class Utils {
 
 	public static String trimString(String inString) {
 		return trimString(inString, 
-				getIntFromStr(MessagesManager.getDefault("DefaultStringTrimLength")),
-				getIntFromStr(MessagesManager.getDefault("DefaultStringTrimLengthGap")));
+				getIntFromStr(MessagesManager.getDefault("default.trim.length")),
+				getIntFromStr(MessagesManager.getDefault("default.trim.length.gap")));
 	}
 
 	public static String trimString(String inString, int inMaxCount, int inGap) {
 		// Initial check
 		if (inMaxCount <= 0)
-			inMaxCount = getIntFromStr(MessagesManager.getDefault("DefaultStringTrimLength"));
+			inMaxCount = getIntFromStr(MessagesManager.getDefault("default.trim.length"));
 		if (inGap <= 0)
-			inGap = getIntFromStr(MessagesManager.getDefault("DefaultStringTrimLengthGap"));
+			inGap = getIntFromStr(MessagesManager.getDefault("default.trim.length.gap"));
 		if (inString.length() > (inMaxCount + inGap))
 			return inString.substring(0, inMaxCount).trim() + "...";
 		return inString;

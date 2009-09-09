@@ -94,23 +94,21 @@ public class UserProxy extends ADBProxyObject<User> {
 
 		// Check for NULL object
 		if (userBean == null) {
-			_log.error("errors.null.object");
+			_log.error("errors.null.object - userBean");
 			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("errors.null.object");
 		}
 
 		// Check for mail
 		if (!Utils.isValidString(userBean.getMail())) {
-			_log.error("errors.wrong.mail");
-			_log.debug("Mail:" + userBean.getMail());
+			_log.error("errors.wrong.mail - userBean");
 			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("errors.empty.mail");
 		}
 
 		// Check for password
 		if (!Utils.isValidString(userBean.getPassword())) {
-			_log.error("errors.empty.password");
-			_log.debug("Password:" + userBean.getPassword());
+			_log.error("errors.empty.password - userBean");
 			return MessagesManager.getDefault("web.error.result.prefix")
 					+ MessagesManager.getText("errors.passwords.is.empty");
 		}
@@ -281,8 +279,13 @@ public class UserProxy extends ADBProxyObject<User> {
 				+ MessagesManager.getText("main.admin.users.table.footer");
 	}
 
+	/**
+	 * Just for stub function without using kaptcha
+	 * @param userBean
+	 * @return String 
+	 */
 	public String updateDBOUser(UserBean userBean){
-		return updateDBOUserByCaptcha(userBean, true);
+		return updateDBOUserByCaptcha(userBean, false);
 	}
 	
 	public String updateDBOUserByCaptcha(UserBean userBean, boolean withCaptcha) {
