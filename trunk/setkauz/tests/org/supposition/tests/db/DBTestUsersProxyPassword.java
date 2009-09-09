@@ -74,7 +74,7 @@ public class DBTestUsersProxyPassword {
 		user.setKaptcha(MessagesManager.getDefault("testing.string"));
 		user.setPassword(newPassword);
 		
-		ValidationResult validationResult = user.getValidationResult();		
+		ValidationResult validationResult = user.getValidationResult(true);		
 		if(!validationResult.hasFailures()){
 			user.postValidationSave();
 			_context.commitChanges();
@@ -85,7 +85,7 @@ public class DBTestUsersProxyPassword {
 
 		// Set newPassword2
 		user.setPassword(newPassword2);
-		validationResult = user.getValidationResult();		
+		validationResult = user.getValidationResult(true);		
 		if(!validationResult.hasFailures()){
 			user.postValidationSave();
 			_context.commitChanges();

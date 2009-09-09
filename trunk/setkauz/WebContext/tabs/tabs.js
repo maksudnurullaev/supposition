@@ -1,4 +1,4 @@
-function Tabs() {}
+Namespace("Tabs");
 
 Tabs.id_div_suffix = '.div';
 Tabs.div_id_prefix = 'ID.';
@@ -46,7 +46,7 @@ Tabs.onClik = function(elem) {
 			dwr.util.setValue(activeRootDivID, data, {
 				escapeHtml :false
 			});
-			evaluateItByKey(activeDivID);
+			Main.evaluateItByKey(activeDivID);
 		});
 	}else { // ...from local stack
 		activeRootDiv.appendChild(oldStackedDiv);
@@ -96,6 +96,6 @@ Tabs.initStack = function(){
 
 Tabs.clearStack = function(){
 	if(Tabs.initStack()){
-		dwr.util.setValue(Tabs.div_stack_id);
+		dwr.util.setValue(Tabs.div_stack_id, "empty");
 	}
 }

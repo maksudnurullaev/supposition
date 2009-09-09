@@ -63,19 +63,15 @@ public class UserProxy extends ADBProxyObject<User> {
 		user.setPassword(userBean.getNewpassword());
 
 		// Validate
-		ValidationResult validationResult = user.getValidationResult();
+		ValidationResult validationResult = user.getValidationResult(true);
 
 		if (validationResult.hasFailures()) {
-			_log.warn("### Validation Failed ###");
 			String failResult = MessagesManager
 					.getText("message.data.NOT.saved")
 					+ ":\n";
-			for (ValidationFailure fail : validationResult.getFailures()) {
-				_log.warn("Fails: " + fail.getDescription());
-				failResult += "\t - "
-						+ MessagesManager.getText(fail.getDescription()) + "\n";
-				;
-			}
+			for (ValidationFailure fail : validationResult.getFailures()) 
+				failResult += "\t - "+ MessagesManager.getText(fail.getDescription()) + "\n";
+			
 			// Delete Object before commit
 			deleteObject(user);
 			return MessagesManager.getDefault("web.error.result.prefix")
@@ -85,9 +81,12 @@ public class UserProxy extends ADBProxyObject<User> {
 		}
 
 		commitChanges();
-
+		
+		// Register User
+		SessionManager.loginUser(user);
+		
 		return MessagesManager.getDefault("web.ok.result.prefix")
-				+ MessagesManager.getText("message.data.saved");
+				+ MessagesManager.getText("message.congratulations");
 	}
 
 	public String enterDBOUser(UserBean userBean) {
@@ -108,13 +107,6 @@ public class UserProxy extends ADBProxyObject<User> {
 					+ MessagesManager.getText("errors.empty.mail");
 		}
 
-		if (!Utils.isValidEmailAddress(userBean.getMail())) {
-			_log.error("errors.invalid.mail");
-			_log.debug("Mail:" + userBean.getMail());
-			return MessagesManager.getDefault("web.error.result.prefix")
-					+ MessagesManager.getText("errors.invalid.mail");
-		}
-
 		// Check for password
 		if (!Utils.isValidString(userBean.getPassword())) {
 			_log.error("errors.empty.password");
@@ -132,10 +124,10 @@ public class UserProxy extends ADBProxyObject<User> {
 		if (userList.size() == 0) {
 			_log.warn("errors.wrong.mail.or.password");
 			return MessagesManager.getDefault("web.error.result.prefix")
-					+ MessagesManager.getText("errors.object.not.found");
+					+ MessagesManager.getText("errors.wrong.mail.or.password");
 		} else {
 			if (userList.size() > 1) {
-				_log.warn("errors.dbobject.already.registered");
+				_log.error("errors.too.many.objects");
 				return MessagesManager.getDefault("web.error.result.prefix")
 						+ MessagesManager.getText("errors.too.many.objects");
 			} else {
@@ -149,12 +141,13 @@ public class UserProxy extends ADBProxyObject<User> {
 			}
 		}
 
-		SessionManager.setToSession(MessagesManager
-				.getDefault("session.userid.key"), userList.get(0).getID());
+		// Register User		
+		SessionManager.loginUser(userList.get(0));
+		
 		return MessagesManager.getDefault("web.ok.result.prefix")
-				+ MessagesManager.getText("message.data.saved");
+				+ MessagesManager.getText("message.welcome");
 	}
-
+	
 	@Override
 	public List<String> getColumnNames() {
 		_log.debug("-> getColumnNames");
@@ -288,21 +281,27 @@ public class UserProxy extends ADBProxyObject<User> {
 				+ MessagesManager.getText("main.admin.users.table.footer");
 	}
 
-	public String updateDBOUser(UserBean userBean) {
+	public String updateDBOUser(UserBean userBean){
+		return updateDBOUserByCaptcha(userBean, true);
+	}
+	
+	public String updateDBOUserByCaptcha(UserBean userBean, boolean withCaptcha) {
 		_log.debug("-> updateDBOUser");
 
+		if(userBean == null)
+			return MessagesManager.errorPrefix() +
+				MessagesManager.getText("errors.null.object");
+		
 		User user = getDBObjectByIntPk(userBean.getId());
 		user.setUser(userBean);
 
-		ValidationResult validationResult = user.getValidationResult();
+		ValidationResult validationResult = user.getValidationResult(withCaptcha);
 
 		if (validationResult.hasFailures()) {
-			_log.warn("### Validation Failed ###");
-			String failResult = MessagesManager
-					.getText("message.data.NOT.saved")
+			String failResult = MessagesManager.errorPrefix()
+					+ MessagesManager.getText("message.data.NOT.saved")	
 					+ ":\n";
 			for (ValidationFailure fail : validationResult.getFailures()) {
-				_log.warn("Fails: " + fail.getDescription());
 				failResult += "\t - "
 						+ MessagesManager.getText(fail.getDescription()) + "\n";
 			}
@@ -312,9 +311,10 @@ public class UserProxy extends ADBProxyObject<User> {
 		} else {
 			user.postValidationSave();
 		}
+		
 		commitChanges();
 
-		return MessagesManager.getText("message.data.saved");
+		return MessagesManager.okPrefix() + MessagesManager.getText("message.data.saved");
 	}
 
 	public String updateDBOUserPassword(UserBean userBean) {
@@ -341,8 +341,10 @@ public class UserProxy extends ADBProxyObject<User> {
 		// Trying to update real password of Database Object
 		_log.debug("New password:" + userBean.getNewpassword());
 		ValidationResult validationResult = new ValidationResult();
+		
 		user.setPassword(userBean.getNewpassword());
-		user.validateForUpdate(validationResult);
+		user.validatePassword(validationResult);
+		
 		if (validationResult.hasFailures()) {
 			_log.warn("### Validation Failed ###");
 			String failResult = MessagesManager

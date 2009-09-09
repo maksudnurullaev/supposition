@@ -63,6 +63,22 @@ public final class MessagesManager {
 		return SessionManager.getSessionIntValue(inKey);
 	}
 
+	public static String okDataSaveMessage() {
+		return  okPrefix() + getText("message.data.saved");
+	}
+
+	public static String errorDataNotSaveMessage() {
+		return  errorPrefix() + getText("message.data.NOT.saved");
+	}
+	
+	public static String errorPrefix(){
+		return  getDefault("web.error.result.prefix");
+	}
+	
+	public static String okPrefix(){
+		return  getDefault("web.ok.result.prefix");
+	}
+	
 
 
 }

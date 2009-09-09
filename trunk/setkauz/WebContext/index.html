@@ -5,7 +5,7 @@
 <title>Setka.uz</title>
 
 <!-- Default AJILE scripts -->
-<script type="text/javascript" src="com.iskitz.ajile.js">
+<script type="text/javascript" src="scripts/com.iskitz.ajile.js?cloakoff">
 <!-- Additional scripts -->
 <script type="text/javascript" src='index.js'> </script>
 
@@ -16,7 +16,7 @@
 </head>
 
 <!-- Default initial procedure -->
-<body onload="init()">
+<body onload="javascipt:void(initPage())">
 <div style="float: right;"><a href="http://getahead.org/dwr/"><img src="logo.gif"/></a></div>
 <!-- Default title -->
 <div id="mainTitle"></div>
@@ -52,7 +52,7 @@ appeared either in the browser (including the Javascript console if one
 exists) and the server console log.</p>
 </div>
 
-<div id="file" style="display: none;">
+<div id="fail2LoadJS" style="display: none;">
 <p><strong>Missing DWR Javascript Functions</strong></p>
 <p>This is a fairly advanced page that tests DWR to check that
 everything is setup properly for you.</p>
