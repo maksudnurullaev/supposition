@@ -41,10 +41,11 @@ public class Role extends _Role {
 				_log.warn("Database has too many users record with same name - "
 								+ getName());
 			} else {
-				if (!rolesList.get(0).getID().equals(getID())) {
-					validationResult.addFailure(new SimpleValidationFailure(
-							this, "errors.dbobject.already.registered"));
-				}
+				//TODO ID
+//				if (!rolesList.get(0).getID().equals(getID())) {
+//					validationResult.addFailure(new SimpleValidationFailure(
+//							this, "errors.dbobject.already.registered"));
+//				}
 			}
 		}		
 	}

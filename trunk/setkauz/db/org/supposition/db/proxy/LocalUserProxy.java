@@ -3,6 +3,7 @@ package org.supposition.db.proxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.User;
+import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 
@@ -61,7 +62,7 @@ public class LocalUserProxy {
 		String format = MessagesManager.getText("main.user.cabinetForm");
 
 		return String.format(format, user.getMail(), user.getAdditionals(),
-				user.getID());
+				DBUtils.getID(user));
 	}
 
 }

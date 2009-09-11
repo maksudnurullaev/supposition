@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.DataObjectUtils;
 import org.apache.cayenne.exp.ExpressionFactory;
-import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Role;
 import org.supposition.db.User;
 import org.supposition.db.proxy.abstracts.ADBProxyObject;
-import org.supposition.utils.Utils;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
+import org.supposition.utils.Utils;
 
 public class UserProxy extends ADBProxyObject<User> {
 
@@ -66,16 +66,8 @@ public class UserProxy extends ADBProxyObject<User> {
 		ValidationResult validationResult = user.getValidationResult(true);
 
 		if (validationResult.hasFailures()) {
-			String failResult = MessagesManager
-					.getText("message.data.NOT.saved")
-					+ ":\n";
-			for (ValidationFailure fail : validationResult.getFailures()) 
-				failResult += "\t - "+ MessagesManager.getText(fail.getDescription()) + "\n";
-			
-			// Delete Object before commit
 			deleteObject(user);
-			return MessagesManager.getDefault("web.error.result.prefix")
-					+ failResult;
+			return DBUtils.getFailuresAsString(validationResult);
 		} else {
 			user.postValidationSave();
 		}
@@ -177,15 +169,17 @@ public class UserProxy extends ADBProxyObject<User> {
 		User user = getDBObjectByIntPk(userPk);
 		String result = "";
 
-		List<Role> userRolesList = user.getRoles();
+		List<?> userRolesList = user.getRoles();
 
 		if (userRolesList.size() == 0) {
 			result += MessagesManager.getText("text.no.data");
 		} else {
-			for (Role role : userRolesList) {
+			for (Object role : userRolesList) {
 				result += String.format(MessagesManager
-						.getText("template.input.button"), role.getID(), role
-						.getName(), "UserProxy.removeRole(this.id)");
+						.getText("template.input.button"), 
+						DBUtils.getID((CayenneDataObject) role), 
+						((Role)role).getName(), 
+						"UserProxy.removeRole(this.id)");
 			}
 		}
 		return result;
@@ -203,17 +197,19 @@ public class UserProxy extends ADBProxyObject<User> {
 		if (availableRolesList.size() == 0) {
 			result += MessagesManager.getText("text.no.data");
 		} else {
-			for (Role role : availableRolesList) {
+			for (Object role : availableRolesList) {
 				result += String.format(MessagesManager
-						.getText("template.input.button"), role.getID(), role
-						.getName(), "UserProxy.addRole(this.id)");
+						.getText("template.input.button"), 
+						DBUtils.getID((CayenneDataObject) role), 
+						((Role)role).getName(), 
+						"UserProxy.addRole(this.id)");
 			}
 		}
 
 		return result;
 	}
 
-	private List<Role> subRoles(List<Role> mainRoles, List<Role> subRoles) {
+	private List<Role> subRoles(List<Role> mainRoles, List<?> subRoles) {
 		_log
 				.debug(String.format("subRoles contains %s roles", subRoles
 						.size()));
@@ -221,15 +217,15 @@ public class UserProxy extends ADBProxyObject<User> {
 		List<Role> result = new ArrayList<Role>();
 
 		for (Role role : mainRoles) {
-			if (!containsRole(role, subRoles))
+			if (!containsRole((Role)role, subRoles))
 				result.add(role);
 		}
 		return result;
 	}
 
-	private boolean containsRole(Role inRole, List<Role> mainRoles) {
-		for (Role role : mainRoles) {
-			if (inRole.getID().equals(role.getID()))
+	private boolean containsRole(Role inRole, List<?> subRoles) {
+		for (Object role : subRoles) {
+			if (DBUtils.getID(inRole).equals(DBUtils.getID((CayenneDataObject) role)))
 				return true;
 		}
 		return false;
@@ -267,10 +263,10 @@ public class UserProxy extends ADBProxyObject<User> {
 				break;
 			User user = users.get(j);
 			result = result
-					+ String.format(format, (j + 1), user.getID(), user
+					+ String.format(format, (j + 1), DBUtils.getID(user), user
 							.getMailWithRoles(), user.getStatus(), user
 							.getAdditionals(), user.getCreated(), user
-							.getUpdated(), user.getID());
+							.getUpdated(), DBUtils.getID(user));
 		}
 
 		return getHTMLPaginator(inPage)
@@ -301,16 +297,8 @@ public class UserProxy extends ADBProxyObject<User> {
 		ValidationResult validationResult = user.getValidationResult(withCaptcha);
 
 		if (validationResult.hasFailures()) {
-			String failResult = MessagesManager.errorPrefix()
-					+ MessagesManager.getText("message.data.NOT.saved")	
-					+ ":\n";
-			for (ValidationFailure fail : validationResult.getFailures()) {
-				failResult += "\t - "
-						+ MessagesManager.getText(fail.getDescription()) + "\n";
-			}
-			// RollBack changes
 			rollbackChanges();
-			return failResult;
+			return DBUtils.getFailuresAsString(validationResult);
 		} else {
 			user.postValidationSave();
 		}
@@ -339,19 +327,8 @@ public class UserProxy extends ADBProxyObject<User> {
 		user.validatePassword(validationResult);
 		
 		if (validationResult.hasFailures()) {
-			_log.warn("### Validation Failed ###");
-			String failResult = MessagesManager
-					.getText("message.data.NOT.saved")
-					+ ":\n";
-			for (ValidationFailure fail : validationResult.getFailures()) {
-				_log.warn("Fails: " + fail.getDescription());
-				failResult += "\t - "
-						+ MessagesManager.getText(fail.getDescription());
-			}
-			// RollBack changes
 			rollbackChanges();
-			return MessagesManager.getDefault("web.error.result.prefix")
-					+ failResult;
+			return DBUtils.getFailuresAsString(validationResult);
 		} else {
 			user.postValidationSave();
 			commitChanges();
@@ -386,7 +363,7 @@ public class UserProxy extends ADBProxyObject<User> {
 
 		User user = getDBObjectByIntPk(userBean.getId());
 
-		user.addToRoles(DataObjectUtils.objectForPK(getObjectContext(),
+		user.addToRoles((Role)DataObjectUtils.objectForPK(getObjectContext(),
 				Role.class, userBean.getRoleId()));
 
 		commitChanges();
@@ -401,7 +378,7 @@ public class UserProxy extends ADBProxyObject<User> {
 
 		User user = getDBObjectByIntPk(userBean.getId());
 
-		user.removeFromRoles(DataObjectUtils.objectForPK(getObjectContext(),
+		user.removeFromRoles((Role)DataObjectUtils.objectForPK(getObjectContext(),
 				Role.class, userBean.getRoleId()));
 
 		commitChanges();

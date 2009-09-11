@@ -52,7 +52,7 @@ public class DBTestUsersProxyPassword {
 	public void testOldPassword() {
 		UserProxy users = new UserProxy();
 		
-		users.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
+		users.addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail","test%"));
 		List<User> usersList = users.getAll();
 		
 		// Check oldPassword
@@ -64,7 +64,7 @@ public class DBTestUsersProxyPassword {
 	public void testNewPassword() {
 		UserProxy users = new UserProxy();
 		
-		users.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
+		users.addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail","test%"));
 
 		List<User> usersList = users.getAll();
 		
@@ -98,7 +98,7 @@ public class DBTestUsersProxyPassword {
 	public static void create_test_users(int inCount) {
 		User user = null;
 		for (int i = 0; i < inCount; i++) {
-			user = _context.newObject(User.class);
+			user = (User) _context.newObject(User.class);
 			user.setMail(String.format("test_user%d@admin.com", i));
 			user.setPassword(oldPassword);	
 			user.postValidationSave();
@@ -110,7 +110,7 @@ public class DBTestUsersProxyPassword {
 		UserProxy users_proxy = new UserProxy();
 		
 		users_proxy.setPageSize(0);
-		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
+		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail","test%"));
 		List<User> users = users_proxy.getAll();
 		if (users.size() > 0) {
 			users_proxy.deleteObjects(users);
