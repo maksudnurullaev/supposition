@@ -45,6 +45,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		_context.commitChanges();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public E createNew() throws Exception {
 		if(_eclass == null)
@@ -64,8 +65,8 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		
 	}
 	
-	@Override
 	@SuppressWarnings("unchecked")
+	@Override
 	public List<E> getAll() {
 		return _context.performQuery(getSelectQuery());
 	}	
@@ -82,9 +83,10 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		return getClass().getSimpleName() + MessagesManager.getDefault("current.page.def");
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override	
 	public E getDBObjectByIntPk(int pk) {
-		return DataObjectUtils.objectForPK(getObjectContext(), _eclass, pk);
+		return (E) DataObjectUtils.objectForPK(getObjectContext(), _eclass, pk);
 	}	
 	
 	@Override

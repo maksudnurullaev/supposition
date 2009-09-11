@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.ExpressionFactory;
+import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -36,7 +37,7 @@ public class DBTestUsersAndRoles {
 	public static void create_test_objects(int inCount) {
 		User user = null;
 		for (int i = 0; i < inCount; i++) {
-			user = _context.newObject(User.class);
+			user = (User) _context.newObject(User.class);
 			user.setMail(String.format("test_user%d@admin.com", i));
 			user.setPassword(oldPassword);	
 		}
@@ -48,7 +49,7 @@ public class DBTestUsersAndRoles {
 		UserProxy users_proxy = new UserProxy();
 		
 		users_proxy.setPageSize(0);
-		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseDbExp("Mail","test%"));
+		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail","test%"));
 		List<User> users = users_proxy.getAll();
 		if (users.size() > 0) {
 			users_proxy.deleteObjects(users);
@@ -106,7 +107,7 @@ public class DBTestUsersAndRoles {
 	public void test_add_users_and_roles() {
 		// ### CREATE USERS & ROLES
 		// User-Admin
-		User userAdmin = _context.newObject(User.class);
+		User userAdmin = (User) _context.newObject(User.class);
 		userAdmin.setMail("test@user.com");
 		userAdmin.setPassword("test_admin_password");
 
@@ -177,7 +178,7 @@ public class DBTestUsersAndRoles {
 		
 		Assert.assertTrue(validationResult.hasFailures());
 		Assert.assertTrue(validationResult.getFailures().size() == 1);
-		Assert.assertTrue(validationResult.getFailures().get(0).getDescription() == "errors.invalid.mail");		
+		Assert.assertTrue(((ValidationFailure)validationResult.getFailures().get(0)).getDescription() == "errors.invalid.mail");		
 	}
 	
 	@Test

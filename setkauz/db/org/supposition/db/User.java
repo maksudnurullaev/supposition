@@ -5,17 +5,17 @@ import java.util.List;
 
 import org.apache.cayenne.exp.ExpressionFactory;
 import org.apache.cayenne.validation.SimpleValidationFailure;
-import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._User;
 import org.supposition.db.proxy.UserBean;
 import org.supposition.db.proxy.UserProxy;
-import org.supposition.utils.Utils;
 import org.supposition.utils.CryptoManager;
+import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
+import org.supposition.utils.Utils;
 
 public class User extends _User {
 	private static final long serialVersionUID = 1L;
@@ -71,12 +71,8 @@ public class User extends _User {
 		
 		validateBeforeSave(validationResult);
 		
-		// Log
-		if(validationResult.hasFailures()){
-			_log.debug("Validation failed for user -> " + getMail());
-			for(ValidationFailure fail:validationResult.getFailures())
-				_log.debug(" fail ->  " + fail.getDescription());
-		}
+		if(validationResult.hasFailures())
+			_log.debug(String.format("Validation failed for User(%s)",getMail()));
 		
 		return validationResult;
 	}
@@ -129,6 +125,8 @@ public class User extends _User {
 
 		List<User> usersList = users.getAll();
 
+		_log.debug("Founded users = " + usersList.size());
+		
 		if (usersList.size() > 0) {
 			if (usersList.size() > 1) {
 				validationResult.addFailure(new SimpleValidationFailure(this,
@@ -138,7 +136,7 @@ public class User extends _User {
 								+ getMail());
 				return false;
 			} else {
-				if (!usersList.get(0).getID().equals(getID())) {
+				if (!DBUtils.getID(usersList.get(0)).equals(DBUtils.getID(this))) {
 					validationResult.addFailure(new SimpleValidationFailure(
 							this, "errors.dbobject.already.registered"));
 					return false;
@@ -190,8 +188,8 @@ public class User extends _User {
 	public String getRolesAsStr() {
 		String result = "";
 
-		for (Role role : getRoles()) {
-			result += role.getName() + ",";
+		for (Object role : getRoles()) {
+			result += ((Role)role).getName() + ",";
 		}
 
 		return result.substring(0, result.length() - 1);
@@ -199,8 +197,8 @@ public class User extends _User {
 
 	public List<String> getRolesAsList() {
 		List<String> result = new ArrayList<String>();
-		for (Role role : getRoles()) {
-			result.add(role.getName());
+		for (Object role : getRoles()) {
+			result.add(((Role)role).getName());
 		}
 		
 		return result;

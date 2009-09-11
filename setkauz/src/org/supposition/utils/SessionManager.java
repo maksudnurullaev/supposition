@@ -95,7 +95,7 @@ public final class SessionManager {
 	}
 	
 	public static void loginUser(User user){
-			setToSession(MessagesManager.getDefault("session.userid.key"), user.getID());				
+			setToSession(MessagesManager.getDefault("session.userid.key"), DBUtils.getID(user));				
 	}
 
 	public static String getUserMail() {

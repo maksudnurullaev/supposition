@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<domains project-version="3.0">
-<domain name="Supposition">
-	<map name="supposition" location="supposition.map.xml"/>
+<domains project-version="2.0">
+<domain name="setkauz">
+	<map name="setka" location="setka.map.xml"/>
 
-	<node name="db"
-		 datasource="db.driver.xml"
+	<node name="setkauzNode"
+		 datasource="setkauzNode.driver.xml"
 		 factory="org.apache.cayenne.conf.DriverDataSourceFactory">
-			<map-ref name="supposition"/>
+			<map-ref name="setka"/>
 	 </node>
 </domain>
 </domains>

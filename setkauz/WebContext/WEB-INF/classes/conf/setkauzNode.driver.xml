@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driver project-version="2.0" class="org.postgresql.Driver">
+	<url value="jdbc:postgresql://localhost:5432/setkauz"/>
+	<connectionPool min="1" max="100" />
+	<login userName="setkauz" password="setkauz"/>
+</driver>

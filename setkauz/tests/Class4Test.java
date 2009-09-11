@@ -1,3 +1,7 @@
+import org.apache.cayenne.access.DataContext;
+import org.supposition.db.Role;
+import org.supposition.utils.DBUtils;
+
 
 public class Class4Test {
 
@@ -5,17 +9,10 @@ public class Class4Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String line = "111111111111 =";
-		int found = line.indexOf("=");
-		if (found != -1) {
-			String curKey = line.substring(0, found - 1);
-			String curValue = line.substring(found + 1, line.length());
-
-			curValue = null;
-			
-			System.out.println(curKey);
-			System.out.println(curValue);
-		}
+		DataContext _context = DBUtils.getInstance().getDBContext();
+		Role  role = (Role) _context.newObject(Role.class);
+		role.setName("test333");
+		_context.commitChanges();		
 	}
 
 }

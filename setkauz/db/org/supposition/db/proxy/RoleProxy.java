@@ -3,13 +3,13 @@ package org.supposition.db.proxy;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Role;
 import org.supposition.db.proxy.abstracts.ADBProxyObject;
-import org.supposition.utils.Utils;
+import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
+import org.supposition.utils.Utils;
 
 public class RoleProxy extends ADBProxyObject<Role> {
 	
@@ -51,7 +51,8 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		try {
 			role = createNew();
 		} catch (Exception e) {
-			return MessagesManager.getDefault("web.error.result.prefix") + MessagesManager.getText("errors.could.not.create.dbobject");
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.could.not.create.dbobject");
 		}
 		
 		// Setup user bean
@@ -61,21 +62,16 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		ValidationResult validationResult = role.getValidationResult();
 
 		if(validationResult.hasFailures()){
-			_log.warn("### Validation Failed ###");
-			String failResult = MessagesManager.getText("message.data.NOT.saved") + ":\n";
-			for(ValidationFailure fail: validationResult.getFailures()){
-				_log.warn("Fails: " + fail.getDescription());
-				failResult += "\t - " + MessagesManager.getText(fail.getDescription()) + "\n";;
-			}		
 			// Delete Object before commit
 			deleteObject(role);
 			return MessagesManager.getDefault("web.error.result.prefix")
-						+ failResult;
+						+ DBUtils.getFailuresAsString(validationResult);
 		}
 
 		commitChanges();		
 		
-		return MessagesManager.getDefault("web.ok.result.prefix") + MessagesManager.getText("message.data.saved");		
+		return MessagesManager.getDefault("web.ok.result.prefix") 
+			+ MessagesManager.getText("message.data.saved");		
 	}
 
 	@Override
@@ -96,7 +92,7 @@ public class RoleProxy extends ADBProxyObject<Role> {
 			result = String.format(MessagesManager
 					.getText("main.admin.roles.formUpdate"),
 					role.getName(), 
-					role.getID());
+					DBUtils.getID(role));
 		else
 			result = String.format(MessagesManager
 					.getText("main.admin.roles.not_found_text"), rolePk);
@@ -133,10 +129,10 @@ public class RoleProxy extends ADBProxyObject<Role> {
 			result = result
 					+ String.format(format, 
 							(j + 1), 
-							role.getID(), 
+							DBUtils.getID(role), 
 							role.getName(), 
 							role.getUsers().size(), 
-							role.getID());
+							DBUtils.getID(role));
 		}
 		
 		return  getHTMLPaginator(inPage)
@@ -154,21 +150,15 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		ValidationResult validationResult = role.getValidationResult();
 
 		if (validationResult.hasFailures()) {
-			_log.debug("updateDBORole -> validationResult.hasFailures() -> TRUE");
-			String failResult = MessagesManager.getText("message.data.NOT.saved")
-					+ ":\n";
-			for (ValidationFailure fail : validationResult.getFailures()) {
-				_log.warn("Fails: " + fail.getDescription());
-				failResult += "\t - "
-						+ MessagesManager.getText(fail.getDescription()) + "\n";
-			}
-			// RollBack changes
+			_log.debug("Validation Failed");
 			rollbackChanges();
-			return failResult;
+			return MessagesManager.getDefault("web.error.result.prefix")
+				+ DBUtils.getFailuresAsString(validationResult);
 		}
 		
 		commitChanges();		
 		
-		return MessagesManager.getText("message.data.saved");
+		return MessagesManager.getDefault("web.ok.result.prefix")
+			+ MessagesManager.getText("message.data.saved");
 	}
 }
