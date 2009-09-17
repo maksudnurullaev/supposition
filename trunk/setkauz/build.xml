@@ -182,7 +182,7 @@ tests.failed=${tests.failed}
 
 			<batchtest>
 				<fileset dir="${build.dir}">
-					<include name="**/DBTestUsersProxyPassword.class" />
+					<include name="**/DBTest*.class" />
 				</fileset>
 			</batchtest>
 		</junit>

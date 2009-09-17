@@ -10,9 +10,6 @@ Main.testLoadedJS = function(){
 	   return true;
 }; 
 
-
-
-
 Main.hideAll = function(){
 	dwr.util.byId("mainTabList").style.display = "none";
 	dwr.util.byId("mainBody2").style.display = "none";
@@ -125,4 +122,3 @@ Main.updateSessionTable = function() {
 	});
 	return false;
 };
-

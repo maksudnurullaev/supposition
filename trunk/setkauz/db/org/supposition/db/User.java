@@ -20,37 +20,43 @@ import org.supposition.utils.Utils;
 public class User extends _User {
 	private static final long serialVersionUID = 1L;
 	private Log _log = LogFactory.getLog(this.getClass());
-	private boolean is_new = false;
 
 	private String kaptcha = "";
+	private boolean _check_4kaptcha = true;
 
 	private void validateBeforeSave(ValidationResult validationResult) {
 		_log.debug("->validateForSave");
-		super.validateForSave(validationResult);
 
-		validateMail(validationResult);
-
-		validateFor2Mail(validationResult);
-
-		if (is_new) {
+		if (isNew()) {
+			setUuid(DBUtils.getUuid());
 			validatePassword(validationResult);
 		} else {
 			if (isNeedToChangePassword())
 				validatePassword(validationResult);
 		}
+
+		validateMail(validationResult);
+
+		validateFor2Mail(validationResult);
+
+		super.validateForSave(validationResult);
+	}
+
+	private boolean isNew() {
+		return this.getPersistenceState() == org.apache.cayenne.PersistenceState.NEW;
 	}
 
 	private void validateKaptcha(ValidationResult validationResult) {
+		// For tests
+		if(!_check_4kaptcha) return;
+
 		// Check captcha
 		if(getKaptcha() == null){
-			_log.error("errors.null.object - Kaptcha");			
+			_log.debug("errors.null.object - Kaptcha");			
 			validationResult.addFailure(new SimpleValidationFailure(this,
 				"errors.null.object"));
 			return;
 		}
-
-		// For tests
-		if(getKaptcha().equalsIgnoreCase(MessagesManager.getDefault("testing.string"))) return;
 		
 		String sessionKaptchaValue = (String) SessionManager
 				.getSessionValue(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
@@ -63,24 +69,10 @@ public class User extends _User {
 
 	}
 
-	public ValidationResult getValidationResult(boolean withKaptcha) {
-		ValidationResult validationResult = new ValidationResult();
-		
-		if(withKaptcha)
-			validateKaptcha(validationResult);
-		
-		validateBeforeSave(validationResult);
-		
-		if(validationResult.hasFailures())
-			_log.debug(String.format("Validation failed for User(%s)",getMail()));
-		
-		return validationResult;
-	}
-
 	public void postValidationSave() {
 		_log.debug("->validateForSave");
 
-		if (is_new) {
+		if (isNew()) {
 			updatePassword();
 			setCreated(Utils.GetCurrentDateTime());
 		} else {
@@ -121,7 +113,7 @@ public class User extends _User {
 		_log.debug("->validateFor2Mail");
 
 		UserProxy users = new UserProxy();
-		users.addExpression(ExpressionFactory.matchExp("Mail", getMail()));
+		users.addExpression(ExpressionFactory.matchExp("mail", getMail()));
 
 		List<User> usersList = users.getAll();
 
@@ -136,7 +128,7 @@ public class User extends _User {
 								+ getMail());
 				return false;
 			} else {
-				if (!DBUtils.getID(usersList.get(0)).equals(DBUtils.getID(this))) {
+				if (!usersList.get(0).getUuid().equals(this.getUuid())) {
 					validationResult.addFailure(new SimpleValidationFailure(
 							this, "errors.dbobject.already.registered"));
 					return false;
@@ -159,15 +151,11 @@ public class User extends _User {
 		else if (getPassword().length() < Utils.getIntFromStr(MessagesManager.getDefault("min.password.length"))) {
 			validationResult.addFailure(new SimpleValidationFailure(this,
 					"errors.invalid.password.length"));
-			_log.error("Invalid password length, should be > "
+			_log.debug("Invalid password length, should be > "
 					+ MessagesManager.getDefault("min.password.length"));
 			return false;
 		}
 		return true;
-	}
-
-	protected void onNew() {
-		is_new = true;
 	}
 
 	public boolean checkPassword(String password) {
@@ -200,7 +188,7 @@ public class User extends _User {
 		for (Object role : getRoles()) {
 			result.add(((Role)role).getName());
 		}
-		
+				
 		return result;
 	}	
 	
@@ -217,5 +205,23 @@ public class User extends _User {
 	public String getKaptcha() {
 		return kaptcha;
 	}
+
+	public void check4Kaptcha(boolean bType) {
+		this._check_4kaptcha = bType;		
+	}
+	
+	public ValidationResult getValidationResult() {
+		ValidationResult validationResult = new ValidationResult();
+		
+		validateKaptcha(validationResult);
+		
+		validateBeforeSave(validationResult);
+		
+		if(validationResult.hasFailures())
+			_log.debug(String.format("Validation failed for User(%s)",getMail()));
+		
+		return validationResult;
+	}
+	
 
 }

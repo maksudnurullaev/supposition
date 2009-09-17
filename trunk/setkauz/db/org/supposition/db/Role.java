@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._Role;
 import org.supposition.db.proxy.RoleBean;
 import org.supposition.db.proxy.RoleProxy;
+import org.supposition.utils.DBUtils;
 
 public class Role extends _Role {
 	private static final long serialVersionUID = 1L;
@@ -26,9 +27,18 @@ public class Role extends _Role {
 		return validationResult;
 	}
 
+	private boolean isNew() {
+		return this.getPersistenceState() == org.apache.cayenne.PersistenceState.NEW;
+	}	
+	
 	private void validateBeforeSave(ValidationResult validationResult) {
+		if(isNew())
+			setUuid(DBUtils.getUuid());
+		
+		super.validateForSave(validationResult);
+		
 		RoleProxy roles  = new RoleProxy();
-		roles.addExpression(ExpressionFactory.matchExp("Name", getName()));
+		roles.addExpression(ExpressionFactory.matchExp("name", getName()));
 
 		List<Role> rolesList = roles.getAll();
 		
@@ -41,11 +51,10 @@ public class Role extends _Role {
 				_log.warn("Database has too many users record with same name - "
 								+ getName());
 			} else {
-				//TODO ID
-//				if (!rolesList.get(0).getID().equals(getID())) {
-//					validationResult.addFailure(new SimpleValidationFailure(
-//							this, "errors.dbobject.already.registered"));
-//				}
+				if (!rolesList.get(0).getUuid().equals(getUuid())) {
+					validationResult.addFailure(new SimpleValidationFailure(
+							this, "errors.dbobject.already.registered"));
+				}
 			}
 		}		
 	}

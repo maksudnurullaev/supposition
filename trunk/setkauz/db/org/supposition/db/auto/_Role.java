@@ -10,15 +10,24 @@ import java.util.List;
 public class _Role extends org.apache.cayenne.CayenneDataObject {
 
     public static final String NAME_PROPERTY = "name";
+    public static final String UUID_PROPERTY = "uuid";
     public static final String USERS_PROPERTY = "Users";
 
-    public static final String ID_PK_COLUMN = "ID";
+    public static final String ID_PK_COLUMN = "id";
 
     public void setName(String name) {
         writeProperty("name", name);
     }
     public String getName() {
         return (String)readProperty("name");
+    }
+    
+    
+    public void setUuid(String uuid) {
+        writeProperty("uuid", uuid);
+    }
+    public String getUuid() {
+        return (String)readProperty("uuid");
     }
     
     

@@ -15,11 +15,12 @@ public class _User extends org.apache.cayenne.CayenneDataObject {
     public static final String PASSWORD_PROPERTY = "password";
     public static final String SALT_PROPERTY = "salt";
     public static final String STATUS_PROPERTY = "status";
+    public static final String STRING2VERIFY_PROPERTY = "string2verify";
     public static final String UPDATED_PROPERTY = "updated";
-    public static final String VERIFY_STRING_PROPERTY = "verifyString";
+    public static final String UUID_PROPERTY = "uuid";
     public static final String ROLES_PROPERTY = "Roles";
 
-    public static final String ID_PK_COLUMN = "ID";
+    public static final String ID_PK_COLUMN = "id";
 
     public void setAdditionals(String additionals) {
         writeProperty("additionals", additionals);
@@ -69,6 +70,14 @@ public class _User extends org.apache.cayenne.CayenneDataObject {
     }
     
     
+    public void setString2verify(String string2verify) {
+        writeProperty("string2verify", string2verify);
+    }
+    public String getString2verify() {
+        return (String)readProperty("string2verify");
+    }
+    
+    
     public void setUpdated(String updated) {
         writeProperty("updated", updated);
     }
@@ -77,11 +86,11 @@ public class _User extends org.apache.cayenne.CayenneDataObject {
     }
     
     
-    public void setVerifyString(String verifyString) {
-        writeProperty("verifyString", verifyString);
+    public void setUuid(String uuid) {
+        writeProperty("uuid", uuid);
     }
-    public String getVerifyString() {
-        return (String)readProperty("verifyString");
+    public String getUuid() {
+        return (String)readProperty("uuid");
     }
     
     

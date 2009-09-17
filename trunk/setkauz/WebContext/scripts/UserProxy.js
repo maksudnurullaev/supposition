@@ -70,8 +70,8 @@ UserProxy.RemoveFilter = function(){
 }
 
 // Edit & Update 
-UserProxy.editUser = function(id) {
-	UserProxy.getFormUpdate(id, function(form) {
+UserProxy.editUser = function(uuid) {
+	UserProxy.getFormUpdate(uuid, function(form) {
 		dwr.util.setValue('main.admin.users.table', form, {
 			escapeHtml :false
 		});
@@ -84,7 +84,7 @@ UserProxy.updateUserData = function() {
 	if(!Main.isValidValue("mail")) return false;	
 	
 	var User = {
-		id :null,
+		uuid :null,
 		mail :null,
 		additionals :null
 	};
@@ -101,7 +101,7 @@ UserProxy.updateUserPassword = function() {
 		!Main.isValidValue("newpassword2"))return false;
 	
 	var User = {
-		id :null,
+		uuid :null,
 		newpassword :null,
 		newpassword2 :null
 	};
@@ -122,15 +122,15 @@ UserProxy.updateUserPassword = function() {
 
 UserProxy.addRole = function(ID){
 	var User = {
-			id :null,
-			roleId : ID
+			uuid :null,
+			roleuuid : ID
 		};
 	
 	dwr.util.getValues(User);
 	
 	UserProxy.addDBORole(User, function(result) {
 		alert(result);
-		if(Main.isOK(result))UserProxy.updateRoles(User.id);
+		if(Main.isOK(result))UserProxy.updateRoles(User.uuid);
 	});
 	
 	return false;
@@ -148,15 +148,15 @@ UserProxy.updateRoles = function(userID){
 
 UserProxy.removeRole = function(ID){
 	var User = {
-			id :null,
-			roleId : ID
+			uuid :null,
+			roleuuid : ID
 		};
 	
 	dwr.util.getValues(User);
 	
 	UserProxy.removeDBORole(User, function(result) {
 		alert(result);
-		if(Main.isOK(result))UserProxy.updateRoles(User.id);
+		if(Main.isOK(result))UserProxy.updateRoles(User.uuid);
 	});
 	
 	return false;

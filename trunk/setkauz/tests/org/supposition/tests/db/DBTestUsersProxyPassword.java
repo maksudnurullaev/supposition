@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.supposition.db.User;
 import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.DBUtils;
-import org.supposition.utils.MessagesManager;
 
 /**
  * To use this test we should create 1000 test users
@@ -20,20 +19,11 @@ import org.supposition.utils.MessagesManager;
  * @see Create100TestUsers
  * @author M.Nurullayev
  */
-public class DBTestUsersProxyPassword {
-
-	static DataContext _context = DBUtils.getInstance().getDBContext();
-	static int generate_test_dbobjects_count = 1;
-	private static String oldPassword = "password";
-	
-	private static String newPassword = "newPassword";
-	private static String newPassword2 = "newPassword2";
-	
+public class DBTestUsersProxyPassword {	
 	
 	@BeforeClass
 	public static void start() {
 		delete_test_users();		
-		create_test_users(generate_test_dbobjects_count);
 	}
 
 	@AfterClass
@@ -42,77 +32,49 @@ public class DBTestUsersProxyPassword {
 	}
 	
 	@Test
-	public void testSimple() throws Exception {
-		UserProxy users = new UserProxy();
-		User user = users.createNew();
-		Assert.assertTrue(user instanceof User);
-	}
-
-	@Test
-	public void testOldPassword() {
-		UserProxy users = new UserProxy();
+	public void test_1_old_password() {
+		DataContext _context = DBUtils.getInstance().getDBContext();
+		User user = (User) _context.newObject(User.class); 
+		user.check4Kaptcha(false);
 		
-		users.addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail","test%"));
+		user.setMail("test_user_password@test.com");
+		user.setPassword("1234");		
+				
+		ValidationResult validationResult = user.getValidationResult();
+		Assert.assertFalse(validationResult.hasFailures());
+		user.postValidationSave();
+		_context.commitChanges();		
+		
+		// 1. Check old password
+		UserProxy users = new UserProxy();
+		users.addExpression(ExpressionFactory.matchDbExp("mail","test_user_password@test.com"));
 		List<User> usersList = users.getAll();
 		
-		// Check oldPassword
-		User user = usersList.get(0);
-		Assert.assertTrue(user.checkPassword(oldPassword));		
-	}
+		Assert.assertNotNull(usersList);
+		Assert.assertTrue(usersList.size() == 1);
+		Assert.assertEquals(user.getMail(), usersList.get(0).getMail());
+		Assert.assertTrue(user.checkPassword("1234"));
+		Assert.assertFalse(user.checkPassword("123_4"));
 
-	@Test
-	public void testNewPassword() {
-		UserProxy users = new UserProxy();
+		// 2. Change password
+		user.setPassword("12345");
 		
-		users.addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail","test%"));
-
-		List<User> usersList = users.getAll();
-		
-		User user = usersList.get(0);	
-		
-		// Set newPassword	
-		user.setKaptcha(MessagesManager.getDefault("testing.string"));
-		user.setPassword(newPassword);
-		
-		ValidationResult validationResult = user.getValidationResult(true);		
-		if(!validationResult.hasFailures()){
-			user.postValidationSave();
-			_context.commitChanges();
-		}
-		
-		// Check newPassword
-		Assert.assertTrue(user.checkPassword(newPassword));		
-
-		// Set newPassword2
-		user.setPassword(newPassword2);
-		validationResult = user.getValidationResult(true);		
-		if(!validationResult.hasFailures()){
-			user.postValidationSave();
-			_context.commitChanges();
-		}
-		
-		// Check newPassword2
-		Assert.assertTrue(user.checkPassword(newPassword2));		
-	}
-
-	public static void create_test_users(int inCount) {
-		User user = null;
-		for (int i = 0; i < inCount; i++) {
-			user = (User) _context.newObject(User.class);
-			user.setMail(String.format("test_user%d@admin.com", i));
-			user.setPassword(oldPassword);	
-			user.postValidationSave();
-		}
+		validationResult = user.getValidationResult();
+		Assert.assertFalse(validationResult.hasFailures());
+		user.postValidationSave();
 		_context.commitChanges();
+		
+		// 3. Check for new password
+		Assert.assertTrue(user.checkPassword("12345"));		
 	}
 
 	private static void delete_test_users() {
 		UserProxy users_proxy = new UserProxy();
 		
 		users_proxy.setPageSize(0);
-		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail","test%"));
+		users_proxy.addExpression(ExpressionFactory.likeIgnoreCaseExp("mail","test_user_%"));
 		List<User> users = users_proxy.getAll();
-		if (users.size() > 0) {
+		if (users != null && users.size() > 0) {
 			users_proxy.deleteObjects(users);
 			users_proxy.commitChanges();
 		}
