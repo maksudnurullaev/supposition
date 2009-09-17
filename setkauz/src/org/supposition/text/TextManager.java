@@ -75,7 +75,7 @@ public class TextManager extends PropertyLoader {
 		if(SessionManager.isUserLoggedIn()){
 			result += tryToGetText(inLocale,inKey + DEFAULT_REGISTERED_POSTFIX);
 			UserProxy users = new UserProxy();
-			User user = users.getDBObjectByIntPk(SessionManager.getUserId());
+			User user = users.getDBObjectByUuid(SessionManager.getUserUuid());
 			if(user != null){
 				for(String role:user.getRolesAsList()){
 					result += tryToGetText(inLocale,inKey + "." + role);
@@ -101,8 +101,6 @@ public class TextManager extends PropertyLoader {
 		if (result.indexOf("INSERT_UNIQUE_DATETIME") != -1) {
 			result = result.replaceAll("INSERT_UNIQUE_DATETIME", Utils
 					.getUniqueDateTime());
-		}else if (result.indexOf("INSERT_USER_MAIL") != -1) {
-			result = result.replaceAll("INSERT_USER_MAIL",  SessionManager.getUserMail());
 		}else if (result.indexOf("INSTERT_SYSTEM_DEFAULTS") != -1) {
 			result = result.replaceAll("INSTERT_SYSTEM_DEFAULTS",  SessionManager.getSystemDefaultsAsHTMLMgmTable());
 		}

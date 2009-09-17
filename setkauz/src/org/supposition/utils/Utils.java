@@ -25,6 +25,11 @@ public final class Utils {
 		SimpleDateFormat sdf = new SimpleDateFormat(MessagesManager.getDefault("default.date.format"));
 		return String.format(sdf.format(new Date()));
 	};
+	
+	public static String GetFormatedDate(String format) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		return String.format(sdf.format(new Date()));
+	};	
 
 	public static String GetCurrentDateTime(String inFormat) {
 		SimpleDateFormat sdf = new SimpleDateFormat(inFormat);

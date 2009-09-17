@@ -65,7 +65,7 @@ RoleProxy.updateData = function() {
 	if(!Main.isValidValue("name")) return false;	
 	
 	var Role = {
-		id :null,
+		uuid :null,
 		name :null
 	};
 

@@ -4,26 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.cayenne.CayenneDataObject;
-import org.apache.cayenne.DataObjectUtils;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.exp.ExpressionFactory;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.proxy.interfaces.IDBProxyCollection;
-import org.supposition.utils.Utils;
-import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
+import org.supposition.utils.Utils;
 
 
 public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDBProxyCollection<E>{
-	private DataContext _context = DBUtils.getInstance().getDBContext();
+	public DataContext _context;
 	private List<Expression> _expressions = new ArrayList<Expression>();
 	private Class<E> _eclass = null;
 	private int _pageSize = Utils.getIntFromStr(MessagesManager.getDefault("default.page.size"));
 	public Log _log = LogFactory.getLog(this.getClass());
 
+	
 	@Override
 	public void addExpression(Expression inExpression) {
 		_log.debug("->addExpression: " + inExpression.toString());
@@ -65,12 +65,23 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		
 	}
 	
+
+	public DataContext getDataContext(){
+		return _context;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<E> getAll() {
 		return _context.performQuery(getSelectQuery());
 	}	
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<E> getAll(DataContext inContext) {
+		return inContext.performQuery(getSelectQuery());
+	}	
+	
 	@Override
 	public int getCount() {
 		SelectQuery query = getSelectQuery();
@@ -82,12 +93,23 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	public String getCurrentPageDef(){
 		return getClass().getSimpleName() + MessagesManager.getDefault("current.page.def");
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	@Override	
-	public E getDBObjectByIntPk(int pk) {
-		return (E) DataObjectUtils.objectForPK(getObjectContext(), _eclass, pk);
-	}	
+	public E getDBObjectByUuid(String inUuid){
+		cleanExpressions();
+		addExpression(ExpressionFactory.matchDbExp("uuid", inUuid));
+		List<E> listOfObjects = getAll();
+		if(listOfObjects == null || listOfObjects.size() == 0) {
+			_log.warn(String.format("%s: Could not find object by UUID = %s", getClass().getSimpleName(), inUuid));
+			return null;
+		}
+		
+		if(listOfObjects.size() == 1)
+			return listOfObjects.get(0);
+		
+		_log.fatal(String.format("Unique UUID %s found for %s %s objects", inUuid, listOfObjects.size(), getClass().getSimpleName()));
+		return null;		
+	}
 	
 	@Override
 	public List<Expression> getExpressions() {

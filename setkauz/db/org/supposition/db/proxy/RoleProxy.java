@@ -3,6 +3,7 @@ package org.supposition.db.proxy;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Role;
 import org.supposition.db.proxy.abstracts.ADBProxyObject;
@@ -18,7 +19,14 @@ public class RoleProxy extends ADBProxyObject<Role> {
 	public RoleProxy(){
 		super();
 		setEClass(Role.class);
-	}		
+		_context = DBUtils.getInstance().getDBContext();
+	}
+
+	public RoleProxy(DataContext inDataContext) {
+		super();
+		setEClass(Role.class);
+		_context = inDataContext;
+	}	
 	
 	public void setSessionFilter(UserBean inBean){
 		SessionManager.setToSession(getSessionFilterDef(), inBean);
@@ -82,22 +90,22 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		return Arrays.asList(result);
 	}
 
-	public String getFormUpdate(int rolePk) {
+	public String getFormUpdate(String inUuid) {
 		_log.debug("-> getFormUpdate");
 		
 		String result = "";
-		Role role = getDBObjectByIntPk(rolePk);
+		Role role = getDBObjectByUuid(inUuid);
 		
 		if (role != null)
 			result = String.format(MessagesManager
 					.getText("main.admin.roles.formUpdate"),
 					role.getName(), 
-					DBUtils.getID(role));
+					role.getUuid());
 		else
 			result = String.format(MessagesManager
-					.getText("main.admin.roles.not_found_text"), rolePk);
+					.getText("main.admin.roles.not_found_text"), inUuid);
 
-		return String.format(result, rolePk);
+		return String.format(result, inUuid);
 	}
 
 	public String getPageAsHTMLTable(int inPage) {
@@ -129,10 +137,9 @@ public class RoleProxy extends ADBProxyObject<Role> {
 			result = result
 					+ String.format(format, 
 							(j + 1), 
-							DBUtils.getID(role), 
 							role.getName(), 
 							role.getUsers().size(), 
-							DBUtils.getID(role));
+							role.getUuid());
 		}
 		
 		return  getHTMLPaginator(inPage)
@@ -144,7 +151,7 @@ public class RoleProxy extends ADBProxyObject<Role> {
 	public String updateDBORole(RoleBean roleBean) {
 		_log.debug("updateDBORole -> ");
 
-		Role role =getDBObjectByIntPk(roleBean.getId());
+		Role role =getDBObjectByUuid(roleBean.getUuid());
 		role.setRole(roleBean);
 
 		ValidationResult validationResult = role.getValidationResult();

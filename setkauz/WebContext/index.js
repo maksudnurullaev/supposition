@@ -9,13 +9,16 @@ Load ("scripts/Stack.js");
 Load ("scripts/Main.js");
 Load ("scripts/LocalUserProxy.js");
 
+Namespace("index");
+
 // ### DEBUG TIME ###
-function myErrorHandler(msg){
+index.myErrorHandler = function (msg){
 	alert(msg);
 };
 
-initPage = function(){
+index.initPage = function(){
 	// Test [ Main.testLoadedJS ]
+	if( "undefined" == typeof Namespace)         { alert( "JS: Failed to Load [ Namespace ]"); return; }	
 	if( "undefined" == typeof Main)              { alert( "JS: Failed to Load [ Main ]"); return; }
 	if( "undefined" == typeof Main.testLoadedJS) { alert( "JS: Failed to Load [ Main.testLoadedJS ]"); return; }
 	
@@ -26,8 +29,8 @@ initPage = function(){
 	}
 	
 	// #### DEBUG TIME ####
-	dwr.engine.setErrorHandler(myErrorHandler);
-	dwr.engine.setWarningHandler(myErrorHandler);
+	dwr.engine.setErrorHandler(index.myErrorHandler);
+	dwr.engine.setWarningHandler(index.myErrorHandler);
 
 	// Handle Session Expire Event 
 	dwr.engine.setTextHtmlHandler(function(){

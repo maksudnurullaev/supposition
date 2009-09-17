@@ -1,7 +1,6 @@
 package org.supposition.db.proxy;
 
-public class RoleBean {
-	private int id;
+public class RoleBean extends SimpleProxy {
 	private String name;
 		
 	public void setName(String name) {
@@ -9,11 +8,5 @@ public class RoleBean {
 	}	
 	public String getName() {
 		return name;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public int getId() {
-		return id;
 	}
 }

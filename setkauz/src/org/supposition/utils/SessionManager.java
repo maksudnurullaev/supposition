@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.supposition.db.User;
-import org.supposition.db.proxy.UserProxy;
 
 public final class SessionManager {
 
@@ -81,8 +80,8 @@ public final class SessionManager {
 			setToSession(MessagesManager.getDefault("session.locale.def"), inLocale);
 	}
 
-	public static int getUserId() {
-		return getSessionIntValue(MessagesManager.getDefault("session.userid.key"));
+	public static String getUserUuid() {
+		return (String) getSessionValue(MessagesManager.getDefault("session.userid.key"));
 	}
 	
 	public static boolean isUserLoggedIn(){
@@ -95,17 +94,7 @@ public final class SessionManager {
 	}
 	
 	public static void loginUser(User user){
-			setToSession(MessagesManager.getDefault("session.userid.key"), DBUtils.getID(user));				
-	}
-
-	public static String getUserMail() {
-		UserProxy users = new UserProxy();
-		User user = users.getDBObjectByIntPk(getUserId());
-		if(user == null){
-			return "NULL";
-		}
-
-		return user.getMail();
+			setToSession(MessagesManager.getDefault("session.userid.key"), user.getUuid());				
 	}
 
 	public static String getSystemDefaultsAsHTMLMgmTable() {

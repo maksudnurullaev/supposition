@@ -25,7 +25,6 @@ public interface IDBProxyCollection<E> {
 	void deleteObject(E object);
 	void deleteObjects(List<E> objects);
 	DataContext getObjectContext();
-	E getDBObjectByIntPk(int pk);
 	String getPageSizeDef();
 	String getCurrentPageDef();
 	String getPageCountDef();
@@ -38,5 +37,7 @@ public interface IDBProxyCollection<E> {
 	String getSessionFilterDef();
 	boolean isSessionHasFilter();
 	String getRemoveFilterDef();
+	E getDBObjectByUuid(String inUuid);
+	List<E> getAll(DataContext inContext);
 	
 }

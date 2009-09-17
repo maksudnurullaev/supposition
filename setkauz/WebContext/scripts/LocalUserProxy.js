@@ -5,7 +5,7 @@ LocalUserProxy.updateUserData = function(){
 	if( !Main.isValidValue("mail"))return false;
 	
 	var User = {
-			id :null,
+			uuid :null,
 			mail :null,
 			additionals :null
 		};	
@@ -25,7 +25,7 @@ LocalUserProxy.updateUserPassword = function(){
 		!Main.isValidValue("newpassword2"))return false;
 	
 	var User = {
-			id :null,
+			uuid :null,
 			newpassword :null,
 			newpassword2 :null
 		};	

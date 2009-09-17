@@ -1,6 +1,7 @@
 package org.supposition.utils;
 
-import org.apache.cayenne.CayenneDataObject;
+import java.util.UUID;
+
 import org.apache.cayenne.PersistenceState;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.conf.Configuration;
@@ -82,15 +83,16 @@ public final class DBUtils {
 	
 	public static String getFailuresAsString(ValidationResult validationResult){
 		String result = MessagesManager.getText("message.data.NOT.saved") + ":\n";
+		String errorString= "";
 		for(Object fail:validationResult.getFailures()){
-			_log.debug("Fails: " + ((ValidationFailure)fail).getDescription());
-			result += ((ValidationFailure)fail).getDescription() + "\n";
+			errorString = ((ValidationFailure)fail).getDescription();
+			_log.debug("Fails: " + errorString);
+			result += "\t - " + MessagesManager.getText(errorString) + "\n";
 		}
 		return result;
 	}
 
-	public static Integer getID(CayenneDataObject cdo) {
-		// stumb
-		return -1;
+	public static String getUuid() {
+		return UUID.randomUUID().toString();
 	}	
 }
