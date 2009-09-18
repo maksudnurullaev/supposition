@@ -1,3 +1,5 @@
+Namespace("index");
+
 Load ("dwr/engine.js");  
 Load ("dwr/util.js");
 Load ("tabs/tabs.js");
@@ -9,50 +11,38 @@ Load ("scripts/Stack.js");
 Load ("scripts/Main.js");
 Load ("scripts/LocalUserProxy.js");
 
-Namespace("index");
-
-// ### DEBUG TIME ###
 index.myErrorHandler = function (msg){
-	alert(msg);
+	alert("Error handler" + msg);
+	// Clear stack
+	dwr.util.setValue("stack", "", {escapeHtml :false});
 };
 
+index.sessionExpiredHadnler = function (msg){
+	alert("Session Expired hadnler: " + msg);
+	// Re-load page
+	Main.loadPageContext();
+};
+
+
 index.initPage = function(){
-	// Test [ Main.testLoadedJS ]
-	if( "undefined" == typeof Namespace)         { alert( "JS: Failed to Load [ Namespace ]"); return; }	
-	if( "undefined" == typeof Main)              { alert( "JS: Failed to Load [ Main ]"); return; }
-	if( "undefined" == typeof Main.testLoadedJS) { alert( "JS: Failed to Load [ Main.testLoadedJS ]"); return; }
-	
-	// Test Loaded js
-	if(!Main.testLoadedJS()){
-		dwr.util.byId("fail2LoadJS").style.display = "block";
-		return;		
-	}
-	
+	if( "undefined" == typeof Namespace)      { alert("JS: Failed to Load [ Namespace ]");      return false; }	
+	if( "undefined" == typeof dwr)            { alert("JS: Failed to Load [ dwr ]");            return false; }
+	if( "undefined" == typeof dwr.engine)     { alert("JS: Failed to Load [ dwr.engine ]");     return false; }
+	if( "undefined" == typeof dwr.util)       { alert("JS: Failed to Load [ dwr.util ]");       return false; }
+	if( "undefined" == typeof Tabs)           { alert("JS: Failed to Load [ Tabs ]");           return false; }
+	if( "undefined" == typeof LocalUserProxy) { alert("JS: Failed to Load [ LocalUserProxy ]"); return false; }
+	if( "undefined" == typeof Main)           { alert("JS: Failed to Load [ Main ]");			 return false; }
+
 	// #### DEBUG TIME ####
 	dwr.engine.setErrorHandler(index.myErrorHandler);
 	dwr.engine.setWarningHandler(index.myErrorHandler);
+	dwr.engine.setTextHtmlHandler(index.sessionExpiredHadnler);
 
-	// Handle Session Expire Event 
-	dwr.engine.setTextHtmlHandler(function(){
-		alert("sessionExpiredHandler event handled");
-		LocalUserProxy.showMainEnterForm();		
-	});
-	
-	
-	// This turns off the no-javascript message
+	// This turns off the starting message
 	document.getElementById("start").style.display = "none";
 
 	// Load page context
 	Main.loadPageContext();
-	
-	// Setup footer
-	Session.getHTMLTextFromFile("/footer.html",Main.loadFooter);
-	
-	// Finish
-	dwr.util.byId("error").style.display = "none";
-	// We dont need this for a while yet
-	//dwr.util.byId("footer").style.display = "block";
-	
 	
 	return false;
 };

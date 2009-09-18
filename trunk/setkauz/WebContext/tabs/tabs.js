@@ -29,7 +29,7 @@ Tabs.onClik = function(elem) {
 	// Init other divs
 	var activeRootDiv = document.getElementById(activeRootDivID);
 	if(!activeRootDiv){
-		alert('ERROR: Could not find parent div by id!');
+		alert('ERROR: Could not find parent div by id:' + activeRootDivID);
 		return;
 	}
 

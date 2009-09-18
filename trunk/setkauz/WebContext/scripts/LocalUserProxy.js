@@ -102,7 +102,7 @@ LocalUserProxy.enterUser = function() {
 
 LocalUserProxy.showMainRegisterForm = function(){
 	Main.hideAll();
-	Main.getTextFromServerToDiv("main.user.formNew", "mainBody2", false);
+	Main.getTextFromServerToDiv("main.nonregistered.formNew", "mainBody2", false);
 	dwr.util.byId("mainBody2").style.display = "block";
 	
 	return false;
@@ -120,7 +120,7 @@ LocalUserProxy.showPersonalCabinet = function(){
 
 LocalUserProxy.showMainEnterForm = function(){
 	Main.hideAll();
-	Main.getTextFromServerToDiv("main.user.formEnter", "mainBody2", false);
+	Main.getTextFromServerToDiv("main.nonregistered.formEnter", "mainBody2", false);
 	dwr.util.byId("mainBody2").style.display = "block";
 	
 	return false;
