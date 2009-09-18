@@ -91,11 +91,6 @@ public class TextManager extends PropertyLoader {
 		return replaceFinalTokensInText(result);
 	}
 
-	private boolean isUserHasValidRole(String inKey, List<String> roles) {
-		for(String role:roles)if(inKey.indexOf("." + role + ".") != -1)return true;
-		return false;
-	}
-
 	private List<String> getUserRoles() {
 		List<String> resultList = new ArrayList<String>();
 		UserProxy users = new UserProxy();
