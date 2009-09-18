@@ -116,7 +116,7 @@ public class UserProxy extends ADBProxyObject<User> {
 
 	private void applyFilter(UserBean inUser) {
 		cleanExpressions();
-		addExpression(ExpressionFactory.likeIgnoreCaseExp("Mail",
+		addExpression(ExpressionFactory.likeIgnoreCaseExp("mail",
 				normalizeString4Filter(inUser.getMail())));
 	}
 

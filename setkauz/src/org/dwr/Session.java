@@ -36,14 +36,6 @@ public class Session
     public void setLocale(String lang){
 		MessagesManager.changeLocale(lang);
     }
-    
-    public String getTitle(){
-   		return MessagesManager.getText("mainTitle");		
-    }
-    
-    public String getTabList(){
-   		return MessagesManager.getText("mainTabList");		
-    }          
 
 	public int hasMessageByKey(String inKey){
 		return MessagesManager.hasMessageByKey(inKey)?TRUE:FALSE;

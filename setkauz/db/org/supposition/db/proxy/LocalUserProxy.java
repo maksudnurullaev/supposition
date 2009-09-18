@@ -56,7 +56,7 @@ public class LocalUserProxy {
 			return MessagesManager.getText("errors.user.not.found");
 
 		// Return actual result
-		String format = MessagesManager.getText("main.user.cabinetForm");
+		String format = MessagesManager.getText("main.registered.cabinetForm");
 
 		return String.format(format, user.getMail(), user.getAdditionals(),
 				user.getUuid());

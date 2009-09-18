@@ -1,6 +1,8 @@
 package org.supposition.text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -16,8 +18,8 @@ import org.supposition.utils.Utils;
 public class TextManager extends PropertyLoader {
 	private static final String DEFAULTS_KEY = "defaults";
 	private static final String DEFAULTS_FILE_NAME = "defaults.properties";
-	private static final String DEFAULT_NONREGISTERED_POSTFIX = ".nonregistered";
-	private static final String DEFAULT_REGISTERED_POSTFIX = ".registered";
+	private static final String DEFAULT_NONREGISTERED_POSTFIX = "nonregistered";
+	private static final String DEFAULT_REGISTERED_POSTFIX = "registered";
 
 	private static Log _log = LogFactory.getLog(PropertyLoader.class);
 
@@ -37,8 +39,10 @@ public class TextManager extends PropertyLoader {
 	}
 
 	public String getDefaultByKey(String inKey) {
+		_log.debug("Get text for key:" + inKey);
+		
 		if (!hasDefaultKey(inKey)){
-			_log.error("Could not find DEFAULT by key = " + inKey);
+			_log.warn("Could not find DEFAULT by key = " + inKey);
 			return "Could not find DEFAULT by key = " + inKey;
 		}
 
@@ -60,10 +64,13 @@ public class TextManager extends PropertyLoader {
 			_log.error("Could not find text by key = " + inKey);
 			return "Could not find text by key = " + inKey;
 		}
+		
+		// Get list of roles
+		List<String> roles = getUserRoles();
 
 		// Build string with start & end tags
 		String result = "";
-		
+
 		// 1. HEADER TAG
 		result += tryToGetText(inLocale,inKey + MessagesManager.getDefault("text.header.def"));
 		
@@ -73,21 +80,38 @@ public class TextManager extends PropertyLoader {
 
 		// 3. Refistered & Non-registered part - REST
 		if(SessionManager.isUserLoggedIn()){
-			result += tryToGetText(inLocale,inKey + DEFAULT_REGISTERED_POSTFIX);
-			UserProxy users = new UserProxy();
-			User user = users.getDBObjectByUuid(SessionManager.getUserUuid());
-			if(user != null){
-				for(String role:user.getRolesAsList()){
-					result += tryToGetText(inLocale,inKey + "." + role);
-				}
-			}
-		}else
-			result += tryToGetText(inLocale,inKey + DEFAULT_NONREGISTERED_POSTFIX);		
+			for(String role:roles)result += tryToGetText(inLocale,inKey + "." + role);
+		}else{
+			result += tryToGetText(inLocale,inKey + "." + DEFAULT_NONREGISTERED_POSTFIX);
+		}
 		
 		// 4. FOOTER TAG
 		result += tryToGetText(inLocale,inKey + MessagesManager.getDefault("text.footer.def"));
 
 		return replaceFinalTokensInText(result);
+	}
+
+	private boolean isUserHasValidRole(String inKey, List<String> roles) {
+		for(String role:roles)if(inKey.indexOf("." + role + ".") != -1)return true;
+		return false;
+	}
+
+	private List<String> getUserRoles() {
+		List<String> resultList = new ArrayList<String>();
+		UserProxy users = new UserProxy();
+		User user = users.getDBObjectByUuid(SessionManager.getUserUuid());
+		if(user == null){
+			resultList.add(DEFAULT_NONREGISTERED_POSTFIX);
+			_log.debug("Current user has role:" + DEFAULT_NONREGISTERED_POSTFIX);
+		}else{
+			resultList.add(DEFAULT_REGISTERED_POSTFIX);
+			_log.debug("Current user has role:" + DEFAULT_REGISTERED_POSTFIX);
+			for(String role:user.getRolesAsList()){
+				resultList.add(role);
+				_log.debug("Current user has role:" + role);
+			}			
+		}
+		return resultList;
 	}
 
 	private String tryToGetText(String inLocale, String inKey){

@@ -1,17 +1,7 @@
 Namespace("Main");
 
-Main.testLoadedJS = function(){  
-	   if( "undefined" == typeof dwr)            { alert( "JS: Failed to Load [ dwr ]");            return false; }
-	   if( "undefined" == typeof dwr.engine)     { alert( "JS: Failed to Load [ dwr.engine ]");     return false; }
-	   if( "undefined" == typeof dwr.util)       { alert( "JS: Failed to Load [ dwr.util ]");       return false; }
-	   if( "undefined" == typeof Tabs)           { alert( "JS: Failed to Load [ Tabs ]");           return false; }
-	   if( "undefined" == typeof Session)        { alert( "JS: Failed to Load [ Session ]");        return false; }
-	   if( "undefined" == typeof LocalUserProxy) { alert( "JS: Failed to Load [ LocalUserProxy ]"); return false; }
-	   return true;
-}; 
-
 Main.hideAll = function(){
-	dwr.util.byId("mainTabList").style.display = "none";
+	dwr.util.byId("tabList").style.display = "none";
 	dwr.util.byId("mainBody2").style.display = "none";
 	
 	return false;
@@ -19,15 +9,15 @@ Main.hideAll = function(){
 
 Main.showMainTabList = function(){
 	Main.hideAll();
-	dwr.util.byId("mainTabList").style.display = "block";
+	dwr.util.byId("tabList").style.display = "block";
 	
 	return false;
 };
 
 Main.loadPageContext = function(){
 	Tabs.clearStack();	
-	Main.getTextFromServer('mainTitle', false);
-	Main.getTextFromServer('mainTabList', false);
+	Main.getTextFromServer('title', false);
+	Main.getTextFromServer('tabList', false);
 	Main.showMainTabList();	
 	
 	return false;
@@ -38,7 +28,6 @@ Main.getTextFromServer = function(key, nonFormat){
 		dwr.util.setValue(key, data, {escapeHtml :nonFormat});
 		Main.evaluateItByKey(key);
 	});	
-	
 	return false;
 };
 
@@ -73,7 +62,7 @@ Main.loadFooter = function(data) {
 };
 
 Main.isOK = function(result){
-	if(result.substring(0,3) == "OK:") return true;
+	if(result.substring(0,3) == "OK:"){ return true;}
 	
 	return false;
 };
@@ -90,7 +79,7 @@ Main.trim = function(s)
 
 Main.isValidValue = function(objName){
 	if(dwr.util.byId(objName)){
-		if(Main.trim(dwr.util.getValue(objName)).length == 0){
+		if(Main.trim(dwr.util.getValue(objName)).length === 0){
 			Main.highlight(objName);
 			return false;
 		}
@@ -98,7 +87,7 @@ Main.isValidValue = function(objName){
 		return false;
 	}
 	return true;
-}
+};
 
 Main.highlight = function(objName){
 	dwr.util.byId(objName).style.backgroundColor = "#FAF8CC";	
@@ -108,8 +97,9 @@ Main.highlight = function(objName){
 
 // #### Kaptcha
 Main.reloadKaptcha = function(){
-	if(dwr.util.byId("kaptcha_img"))
-		dwr.util.byId("kaptcha_img").src = 'kaptcha.jpg?' + Math.random()*100;
+	if(dwr.util.byId("kaptcha_img")){
+		dwr.util.byId("kaptcha_img").src = ("kaptcha.jpg?" + Math.random()*100);
+    }
 	
 	return false;
 };
