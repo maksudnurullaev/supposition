@@ -12,17 +12,12 @@ Load ("scripts/Main.js");
 Load ("scripts/LocalUserProxy.js");
 
 index.myErrorHandler = function (msg){
-	alert("Error handler" + msg);
+	alert("Error handler: " + msg);
 	// Clear stack
 	dwr.util.setValue("stack", "", {escapeHtml :false});
-};
-
-index.sessionExpiredHadnler = function (msg){
-	alert("Session Expired hadnler: " + msg);
 	// Re-load page
 	Main.loadPageContext();
 };
-
 
 index.initPage = function(){
 	if( "undefined" == typeof Namespace)      { alert("JS: Failed to Load [ Namespace ]");      return false; }	
@@ -36,7 +31,7 @@ index.initPage = function(){
 	// #### DEBUG TIME ####
 	dwr.engine.setErrorHandler(index.myErrorHandler);
 	dwr.engine.setWarningHandler(index.myErrorHandler);
-	dwr.engine.setTextHtmlHandler(index.sessionExpiredHadnler);
+	dwr.engine.setTextHtmlHandler(index.myErrorHandler);
 
 	// This turns off the starting message
 	document.getElementById("start").style.display = "none";
