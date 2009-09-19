@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.Role;
 import org.supposition.db.User;
+import org.supposition.db.proxy.UserBean;
 import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
@@ -166,6 +167,38 @@ public class DBTestUsersAndRoles {
 
 		_context.commitChanges();
 	}	
+	
+	// Test update
+	@Test
+	public void test_update(){
+		DataContext _context = DBUtils.getInstance().getDBContext();
+		User user = (User) _context.newObject(User.class); 
+		user.check4Kaptcha(false);
+		
+		user.setMail("test_user_update@tester.com");
+		user.setPassword("test_user_update");
+		
+		ValidationResult validationResult = user.getValidationResult();
+		Assert.assertFalse(validationResult.hasFailures());
+		user.postValidationSave();
+		_context.commitChanges();
+		
+		String uuid = user.getUuid();
+		
+		UserBean userBean = new UserBean();
+		userBean.setMail("test_user_update@tester.com");
+		userBean.setAdditionals("additionals");
+		
+		UserProxy userProxy = new UserProxy(_context);
+		user = userProxy.getDBObjectByUuid(uuid);
+		user.setUser(userBean);		
+		user.check4Kaptcha(false);
+		
+		validationResult = user.getValidationResult();
+		Assert.assertFalse(validationResult.hasFailures());
+		Assert.assertTrue(user.getMail().equals(userBean.getMail()));
+		Assert.assertTrue(user.getAdditionals().equals(userBean.getAdditionals()));		
+	}
 	
 	// Test exceptions
 	@Test

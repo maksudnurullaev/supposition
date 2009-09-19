@@ -26,7 +26,7 @@ public class LocalUserProxy {
 			return MessagesManager.getText("errors.user.not.loggedin");
 
 		// Check for errors - same user or not
-		if (userBean.getUuid() != SessionManager.getUserUuid()) {
+		if (!userBean.getUuid().equals(SessionManager.getUserUuid())) {
 			_log.warn(String.format(
 					"userBean.getUuid(%s) != SessionManager.getUserUuid(%s)",
 					userBean.getUuid(), SessionManager.getUserUuid()));

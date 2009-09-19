@@ -28,6 +28,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	public void addExpression(Expression inExpression) {
 		_log.debug("->addExpression: " + inExpression.toString());
 		_expressions.add(inExpression);
+		_log.debug("Expression count now = " + _expressions.size());
 	}
 	
 	@Override	

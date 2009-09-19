@@ -373,19 +373,26 @@ public class UserProxy extends ADBProxyObject<User> {
 	public String updateDBOUser(UserBean userBean){
 		_log.debug("-> updateDBOUser");
 
-		if(userBean == null)
+		if(userBean == null){
+			_log.debug("errors.null.object");
 			return MessagesManager.errorPrefix() +
 				MessagesManager.getText("errors.null.object");
+		}else{
+			_log.debug("userBean not NULL - OK");			
+		}
 		
 		User user = getDBObjectByUuid(userBean.getUuid());
 		user.setUser(userBean);
+		user.check4Kaptcha(false); // due update 
 
 		ValidationResult validationResult = user.getValidationResult();
 
 		if (validationResult.hasFailures()) {
+			_log.debug("Validation failed, and validationResult.getFailures().size() = " + validationResult.getFailures().size());			
 			rollbackChanges();
 			return DBUtils.getFailuresAsString(validationResult);
 		} else {
+			_log.debug("Validation PASSED, now process user.postValidationSave()");			
 			user.postValidationSave();
 		}
 		
