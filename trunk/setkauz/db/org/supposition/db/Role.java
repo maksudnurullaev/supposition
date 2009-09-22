@@ -8,11 +8,12 @@ import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._Role;
+import org.supposition.db.interfaces.IDBOClass;
 import org.supposition.db.proxy.RoleBean;
 import org.supposition.db.proxy.RoleProxy;
 import org.supposition.utils.DBUtils;
 
-public class Role extends _Role {
+public class Role extends _Role implements IDBOClass {
 	private static final long serialVersionUID = 1L;
 	private Log _log = LogFactory.getLog(this.getClass());
 
@@ -20,6 +21,7 @@ public class Role extends _Role {
 		setName(roleBean.getName());
 	}
 
+	@Override
 	public ValidationResult getValidationResult(){
 		_log.debug("getValidationResult -> ");
 		ValidationResult validationResult = new ValidationResult();
@@ -27,7 +29,8 @@ public class Role extends _Role {
 		return validationResult;
 	}
 
-	private boolean isNew() {
+	@Override
+	public boolean isNew() {
 		return this.getPersistenceState() == org.apache.cayenne.PersistenceState.NEW;
 	}	
 	
@@ -57,6 +60,11 @@ public class Role extends _Role {
 				}
 			}
 		}		
+	}
+
+	@Override
+	public void postValidationSave() {
+		
 	}
 
 }

@@ -3,6 +3,7 @@ package org.supposition.db.proxy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.User;
+import org.supposition.db.interfaces.IDBOClass;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 
@@ -34,7 +35,7 @@ public class LocalUserProxy {
 		}
 
 		// Check for errors - user valid or not
-		User user = (new UserProxy()).getDBObjectByUuid(userBean.getUuid());
+		IDBOClass user = (new UserProxy()).getDBObjectByUuid(userBean.getUuid());
 		if (user == null)
 			return MessagesManager.getText("errors.user.not.found");
 

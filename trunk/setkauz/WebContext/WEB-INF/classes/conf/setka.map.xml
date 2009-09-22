@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-map project-version="2.0">
 	<property name="defaultPackage" value="org.supposition.db"/>
+	<db-entity name="cgroups">
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="pid" type="INTEGER"/>
+		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
+	</db-entity>
+	<db-entity name="cgroups2companies">
+		<db-attribute name="cgroup_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="company_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="companies">
+		<db-attribute name="additionals" type="VARCHAR" length="256"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
+	</db-entity>
 	<db-entity name="roles">
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="32"/>
@@ -22,6 +38,15 @@
 		<db-attribute name="role_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="user_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
+	<obj-entity name="Cgroup" className="org.supposition.db.Cgroup" dbEntityName="cgroups">
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+		<obj-attribute name="uuid" type="java.lang.String" db-attribute-path="uuid"/>
+	</obj-entity>
+	<obj-entity name="Company" className="org.supposition.db.Company" dbEntityName="companies">
+		<obj-attribute name="additionals" type="java.lang.String" db-attribute-path="additionals"/>
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+		<obj-attribute name="uuid" type="java.lang.String" db-attribute-path="uuid"/>
+	</obj-entity>
 	<obj-entity name="Role" className="org.supposition.db.Role" dbEntityName="roles">
 		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
 		<obj-attribute name="uuid" type="java.lang.String" db-attribute-path="uuid"/>
@@ -37,6 +62,24 @@
 		<obj-attribute name="updated" type="java.lang.String" db-attribute-path="updated"/>
 		<obj-attribute name="uuid" type="java.lang.String" db-attribute-path="uuid"/>
 	</obj-entity>
+	<db-relationship name="CgroupIDs" source="cgroups" target="cgroups2companies" toMany="true">
+		<db-attribute-pair source="id" target="cgroup_id"/>
+	</db-relationship>
+	<db-relationship name="Childs" source="cgroups" target="cgroups" toMany="true">
+		<db-attribute-pair source="id" target="pid"/>
+	</db-relationship>
+	<db-relationship name="Parent" source="cgroups" target="cgroups" toMany="false">
+		<db-attribute-pair source="pid" target="id"/>
+	</db-relationship>
+	<db-relationship name="Cgroups" source="cgroups2companies" target="cgroups" toDependentPK="true" toMany="false">
+		<db-attribute-pair source="cgroup_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="Companies" source="cgroups2companies" target="companies" toDependentPK="true" toMany="false">
+		<db-attribute-pair source="company_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="CompanyIDs" source="companies" target="cgroups2companies" toMany="true">
+		<db-attribute-pair source="id" target="company_id"/>
+	</db-relationship>
 	<db-relationship name="RoleIDs" source="roles" target="users2roles" toMany="true">
 		<db-attribute-pair source="id" target="role_id"/>
 	</db-relationship>
@@ -49,6 +92,10 @@
 	<db-relationship name="Users" source="users2roles" target="users" toDependentPK="true" toMany="false">
 		<db-attribute-pair source="user_id" target="id"/>
 	</db-relationship>
+	<obj-relationship name="Childs" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Childs"/>
+	<obj-relationship name="Companies" source="Cgroup" target="Company" deleteRule="Nullify" db-relationship-path="CgroupIDs.Companies"/>
+	<obj-relationship name="Parent" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Parent"/>
+	<obj-relationship name="Cgoups" source="Company" target="Cgroup" deleteRule="Nullify" db-relationship-path="CompanyIDs.Cgroups"/>
 	<obj-relationship name="Users" source="Role" target="User" deleteRule="Nullify" db-relationship-path="RoleIDs.Users"/>
 	<obj-relationship name="Roles" source="User" target="Role" deleteRule="Nullify" db-relationship-path="UserIDs.Roles"/>
 </data-map>

@@ -9,6 +9,7 @@ import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._User;
+import org.supposition.db.interfaces.IDBOClass;
 import org.supposition.db.proxy.UserBean;
 import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.CryptoManager;
@@ -17,7 +18,7 @@ import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 import org.supposition.utils.Utils;
 
-public class User extends _User {
+public class User extends _User implements IDBOClass {
 	private static final long serialVersionUID = 1L;
 	private Log _log = LogFactory.getLog(this.getClass());
 
@@ -42,7 +43,7 @@ public class User extends _User {
 		super.validateForSave(validationResult);
 	}
 
-	private boolean isNew() {
+	public boolean isNew() {
 		return this.getPersistenceState() == org.apache.cayenne.PersistenceState.NEW;
 	}
 
