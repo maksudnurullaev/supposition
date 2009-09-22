@@ -11,8 +11,9 @@ public class _Cgroup extends org.apache.cayenne.CayenneDataObject {
 
     public static final String NAME_PROPERTY = "name";
     public static final String UUID_PROPERTY = "uuid";
-    public static final String CHILDS_PROPERTY = "childs";
-    public static final String PARENT_PROPERTY = "parent";
+    public static final String CHILDS_PROPERTY = "Childs";
+    public static final String COMPANIES_PROPERTY = "Companies";
+    public static final String PARENT_PROPERTY = "Parent";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -33,22 +34,33 @@ public class _Cgroup extends org.apache.cayenne.CayenneDataObject {
     
     
     public void addToChilds(org.supposition.db.Cgroup obj) {
-        addToManyTarget("childs", obj, true);
+        addToManyTarget("Childs", obj, true);
     }
     public void removeFromChilds(org.supposition.db.Cgroup obj) {
-        removeToManyTarget("childs", obj, true);
+        removeToManyTarget("Childs", obj, true);
     }
     public List getChilds() {
-        return (List)readProperty("childs");
+        return (List)readProperty("Childs");
     }
     
     
-    public void setParent(org.supposition.db.Cgroup parent) {
-        setToOneTarget("parent", parent, true);
+    public void addToCompanies(org.supposition.db.Company obj) {
+        addToManyTarget("Companies", obj, true);
+    }
+    public void removeFromCompanies(org.supposition.db.Company obj) {
+        removeToManyTarget("Companies", obj, true);
+    }
+    public List getCompanies() {
+        return (List)readProperty("Companies");
+    }
+    
+    
+    public void setParent(org.supposition.db.Cgroup Parent) {
+        setToOneTarget("Parent", Parent, true);
     }
 
     public org.supposition.db.Cgroup getParent() {
-        return (org.supposition.db.Cgroup)readProperty("parent");
+        return (org.supposition.db.Cgroup)readProperty("Parent");
     } 
     
     
