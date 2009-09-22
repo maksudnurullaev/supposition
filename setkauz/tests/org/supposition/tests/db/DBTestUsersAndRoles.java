@@ -12,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.Role;
 import org.supposition.db.User;
+import org.supposition.db.interfaces.IDBOClass;
 import org.supposition.db.proxy.UserBean;
 import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.DBUtils;
@@ -32,9 +33,9 @@ public class DBTestUsersAndRoles {
 	@Test
 	public void test_0_simple() {
 		DataContext _context = DBUtils.getInstance().getDBContext();
-		User user = (User) _context.newObject(User.class); 
+		IDBOClass user = (IDBOClass) _context.newObject(User.class); 
 		Assert.assertNotNull(user);
-		Assert.assertTrue(user instanceof User);
+		Assert.assertTrue(user instanceof IDBOClass);
 	}	
 	
 	@Test
