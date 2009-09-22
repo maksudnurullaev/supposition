@@ -31,6 +31,7 @@ public class Class4Test {
 		
 		System.out.println(" validationResult has " + validationResult.getFailures().size() + " fails");
 		
+		_context.commitChanges();
 		
 		cgroup1.addToChilds(cgroup2);
 		

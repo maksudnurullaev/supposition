@@ -1,27 +1,28 @@
-package org.supposition.db.proxy;
+package org.supposition.tests.db;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
-import org.supposition.db.Cgroup;
+import org.supposition.db.Company;
 import org.supposition.db.proxy.abstracts.ADBProxyObject;
 import org.supposition.utils.DBUtils;
 
-public class CgroupProxy extends ADBProxyObject<Cgroup> {
+public class CompanyProxy extends ADBProxyObject<Company> {
+
 	
 	private static final long serialVersionUID = 1L;
 	
-	public CgroupProxy(){
+	public CompanyProxy(){
 		super();
 		
-		setEClass(Cgroup.class);
+		setEClass(Company.class);
 		_context = DBUtils.getInstance().getDBContext();
 	}
 
-	public CgroupProxy(DataContext inDataContext) {
+	public CompanyProxy(DataContext inDataContext) {
 		super();
-		setEClass(Cgroup.class);
+		setEClass(Company.class);
 		_context = inDataContext;
 	}	 	
 	
@@ -32,5 +33,6 @@ public class CgroupProxy extends ADBProxyObject<Cgroup> {
 		
 		String[] result = { "#", "Name"};
 		return Arrays.asList(result);
-	}
+	}	
+
 }

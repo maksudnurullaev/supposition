@@ -9,8 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.supposition.db.Cgroup;
-import org.supposition.db.proxy.CgroupProxy;
+import org.supposition.db.Company;
 import org.supposition.utils.DBUtils;
 
 /**
@@ -19,7 +18,7 @@ import org.supposition.utils.DBUtils;
  * @see Create100TestUsers
  * @author M.Nurullayev
  */
-public class DBTestCGroups {	
+public class DBTestCompanies {	
 	@BeforeClass
 	public static void start() {
 		delete_test_objects();		
@@ -30,20 +29,19 @@ public class DBTestCGroups {
 		delete_test_objects();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void test_1_common() {
-		String ename1 = "test_cgroup_element1";
-		String ename11 = "test_cgroup_element11";
-		String ename12 = "test_cgroup_element12";
-		String ename121 = "test_cgroup_element121";
+		String ename1 = "test_company_element1";
+		String ename11 = "test_company_element11";
+		String ename12 = "test_company_element12";
+		String ename121 = "test_company_element121";
 		
 		DataContext _context = DBUtils.getInstance().getDBContext();
 
-		Cgroup element1 = (Cgroup) _context.newObject(Cgroup.class);
-		Cgroup element11 = (Cgroup) _context.newObject(Cgroup.class);
-		Cgroup element12 = (Cgroup) _context.newObject(Cgroup.class);
-		Cgroup element121 = (Cgroup) _context.newObject(Cgroup.class);
+		Company element1 = (Company) _context.newObject(Company.class);
+		Company element11 = (Company) _context.newObject(Company.class);
+		Company element12 = (Company) _context.newObject(Company.class);
+		Company element121 = (Company) _context.newObject(Company.class);
 		
 		element1.setName(ename1);
 		element11.setName(ename11);
@@ -68,41 +66,15 @@ public class DBTestCGroups {
 		Assert.assertNotNull(element11.getUuid());
 		Assert.assertNotNull(element12.getUuid());
 		Assert.assertNotNull(element121.getUuid());		
-
-		_context.commitChanges();
-		
-		// ###
-		element1.addToChilds(element11);
-		element1.addToChilds(element12);
-		
-		_context.commitChanges();
-		
-		Assert.assertTrue(element1.getChilds().size() == 2);
-		
-		element12.addToChilds(element121);
-		
-		_context.commitChanges();
-		
-		Assert.assertTrue(element12.getChilds().size() == 1);
-		
-		// ###
-		
-		List<Cgroup> list1 = element1.getChilds();
-		for(Cgroup cgroup:list1){
-			Assert.assertTrue(cgroup.getParent().getName() == element1.getName());
-			Assert.assertTrue(cgroup.getName() == element11.getName() ||
-					cgroup.getName() == element12.getName());
-		}
-		
 		
 	}
 
 	private static void delete_test_objects() {
-		CgroupProxy cgroups = new CgroupProxy();
+		CompanyProxy cgroups = new CompanyProxy();
 				
 		cgroups.setPageSize(0);
-		cgroups.addExpression(ExpressionFactory.likeIgnoreCaseExp("name","test_cgroup_%"));
-		List<Cgroup> cgroups_list = cgroups.getAll();
+		cgroups.addExpression(ExpressionFactory.likeIgnoreCaseExp("name","test_company_%"));
+		List<Company> cgroups_list = cgroups.getAll();
 		if (cgroups_list != null && cgroups_list.size() > 0) {
 			cgroups.deleteObjects(cgroups_list);
 			cgroups.commitChanges();
