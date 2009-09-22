@@ -1,6 +1,6 @@
 package org.supposition.db.proxy;
 
-public class CgoupBean extends SimpleProxy {
+public class CgroupBean extends SimpleProxy {
 	private String name;
 		
 	public void setName(String name) {
