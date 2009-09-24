@@ -26,7 +26,7 @@ index.initPage = function(){
 	if( "undefined" == typeof dwr.util)       { alert("JS: Failed to Load [ dwr.util ]");       return false; }
 	if( "undefined" == typeof Tabs)           { alert("JS: Failed to Load [ Tabs ]");           return false; }
 	if( "undefined" == typeof LocalUserProxy) { alert("JS: Failed to Load [ LocalUserProxy ]"); return false; }
-	if( "undefined" == typeof Main)           { alert("JS: Failed to Load [ Main ]");			 return false; }
+	if( "undefined" == typeof Main) { alert("JS: Failed to Load [ Main ]");			 return false; }
 
 	// #### DEBUG TIME ####
 	dwr.engine.setErrorHandler(index.myErrorHandler);

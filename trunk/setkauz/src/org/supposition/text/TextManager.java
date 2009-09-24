@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.supposition.db.User;
 import org.supposition.db.proxy.UserProxy;
 import org.supposition.text.abstracts.PropertyLoader;
+import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 import org.supposition.utils.Utils;
@@ -122,6 +123,10 @@ public class TextManager extends PropertyLoader {
 					.getUniqueDateTime());
 		}else if (result.indexOf("INSTERT_SYSTEM_DEFAULTS") != -1) {
 			result = result.replaceAll("INSTERT_SYSTEM_DEFAULTS",  SessionManager.getSystemDefaultsAsHTMLMgmTable());
+		}else if (result.indexOf("CGROUPS_AS_SELECT") != -1) {
+			result = result.replaceAll("CGROUPS_AS_SELECT",  DBUtils.getGroupsAsHTMLSelect());
+		}else if (result.indexOf("CGROUPS_AS_HTML") != -1) {
+			result = result.replaceAll("CGROUPS_AS_HTML",  DBUtils.getGroupsAsHTML());
 		}
 		return result;
 	}

@@ -21,7 +21,7 @@
 		</create>
 		
 		<create creator="new" javascript="SystemDefaultsProxy">
-			<param name="class" value="org.supposition.db.proxy.SystemDefaultsProxy" />
+			<param name="class" value="org.supposition.proxy.SystemDefaultsProxy" />
 		</create>
 		
 		<create creator="new" javascript="AdsProxy">
@@ -38,7 +38,7 @@
 		
 		<convert match="org.supposition.db.proxy.RoleBean" converter="bean"/>
 		<convert match="org.supposition.db.proxy.UserBean" converter="bean"/>
-		<convert match="org.supposition.db.proxy.KeyValueBean" converter="bean"/>1
+		<convert match="org.supposition.db.proxy.KeyValueBean" converter="bean"/>
 		<convert match="org.supposition.db.proxy.AdsBean" converter="bean"/>
 		<convert match="org.supposition.db.proxy.CompanyBean" converter="bean"/>
 		<convert match="org.supposition.db.proxy.CgroupBean" converter="bean"/>

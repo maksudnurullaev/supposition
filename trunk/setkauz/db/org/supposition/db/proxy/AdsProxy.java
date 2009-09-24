@@ -16,13 +16,13 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		super();
 		
 		setEClass(Ads.class);
-		_context = DBUtils.getInstance().getDBContext();
+		setDataContext(DBUtils.getInstance().getDBContext());
 	}
 
 	public AdsProxy(DataContext inDataContext) {
 		super();
 		setEClass(Ads.class);
-		_context = inDataContext;
+		setDataContext(inDataContext);
 	}	 	
 	
 

@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.supposition.db.Cgroup;
 import org.supposition.db.Company;
 import org.supposition.db.proxy.CgroupProxy;
+import org.supposition.db.proxy.CompanyProxy;
 import org.supposition.utils.DBUtils;
 
 /**

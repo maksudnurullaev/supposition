@@ -11,7 +11,7 @@ public class _Role extends org.apache.cayenne.CayenneDataObject {
 
     public static final String NAME_PROPERTY = "name";
     public static final String UUID_PROPERTY = "uuid";
-    public static final String USERS_PROPERTY = "Users";
+    public static final String USERS_PROPERTY = "users";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -32,13 +32,13 @@ public class _Role extends org.apache.cayenne.CayenneDataObject {
     
     
     public void addToUsers(org.supposition.db.User obj) {
-        addToManyTarget("Users", obj, true);
+        addToManyTarget("users", obj, true);
     }
     public void removeFromUsers(org.supposition.db.User obj) {
-        removeToManyTarget("Users", obj, true);
+        removeToManyTarget("users", obj, true);
     }
     public List getUsers() {
-        return (List)readProperty("Users");
+        return (List)readProperty("users");
     }
     
     
