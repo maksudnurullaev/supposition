@@ -16,13 +16,13 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		super();
 		
 		setEClass(Company.class);
-		_context = DBUtils.getInstance().getDBContext();
+		setDataContext(DBUtils.getInstance().getDBContext());
 	}
 
 	public CompanyProxy(DataContext inDataContext) {
 		super();
 		setEClass(Company.class);
-		_context = inDataContext;
+		setDataContext(inDataContext);
 	}	 	
 	
 

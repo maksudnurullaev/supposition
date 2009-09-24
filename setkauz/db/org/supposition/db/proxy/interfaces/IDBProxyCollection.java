@@ -38,6 +38,5 @@ public interface IDBProxyCollection<E> {
 	boolean isSessionHasFilter();
 	String getRemoveFilterDef();
 	E getDBObjectByUuid(String inUuid);
-	List<E> getAll(DataContext inContext);
 	
 }

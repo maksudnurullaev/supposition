@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._Cgroup;
 import org.supposition.db.interfaces.IDBOClass;
+import org.supposition.db.proxy.CgroupBean;
 import org.supposition.utils.DBUtils;
 
 public class Cgroup extends _Cgroup implements IDBOClass{
@@ -32,6 +33,10 @@ public class Cgroup extends _Cgroup implements IDBOClass{
 
 	@Override
 	public void postValidationSave() {
+	}
+
+	public void setCgroup(CgroupBean inCgroupBean) {
+		setName(inCgroupBean.getName());
 	}
 
 }

@@ -12,7 +12,9 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     public static final String ADDITIONALS_PROPERTY = "additionals";
     public static final String NAME_PROPERTY = "name";
     public static final String UUID_PROPERTY = "uuid";
-    public static final String CGOUPS_PROPERTY = "Cgoups";
+    public static final String ADS_PROPERTY = "ads";
+    public static final String CGOUPS_PROPERTY = "cgoups";
+    public static final String USER_PROPERTY = "user";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -40,15 +42,35 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     }
     
     
+    public void addToAds(org.supposition.db.Ads obj) {
+        addToManyTarget("ads", obj, true);
+    }
+    public void removeFromAds(org.supposition.db.Ads obj) {
+        removeToManyTarget("ads", obj, true);
+    }
+    public List getAds() {
+        return (List)readProperty("ads");
+    }
+    
+    
     public void addToCgoups(org.supposition.db.Cgroup obj) {
-        addToManyTarget("Cgoups", obj, true);
+        addToManyTarget("cgoups", obj, true);
     }
     public void removeFromCgoups(org.supposition.db.Cgroup obj) {
-        removeToManyTarget("Cgoups", obj, true);
+        removeToManyTarget("cgoups", obj, true);
     }
     public List getCgoups() {
-        return (List)readProperty("Cgoups");
+        return (List)readProperty("cgoups");
     }
+    
+    
+    public void setUser(org.supposition.db.User user) {
+        setToOneTarget("user", user, true);
+    }
+
+    public org.supposition.db.User getUser() {
+        return (org.supposition.db.User)readProperty("user");
+    } 
     
     
 }

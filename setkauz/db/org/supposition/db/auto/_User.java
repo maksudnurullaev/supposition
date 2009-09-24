@@ -18,7 +18,9 @@ public class _User extends org.apache.cayenne.CayenneDataObject {
     public static final String STRING2VERIFY_PROPERTY = "string2verify";
     public static final String UPDATED_PROPERTY = "updated";
     public static final String UUID_PROPERTY = "uuid";
-    public static final String ROLES_PROPERTY = "Roles";
+    public static final String ADS_PROPERTY = "ads";
+    public static final String COMPANIES_PROPERTY = "companies";
+    public static final String ROLES_PROPERTY = "roles";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -94,14 +96,36 @@ public class _User extends org.apache.cayenne.CayenneDataObject {
     }
     
     
+    public void addToAds(org.supposition.db.Ads obj) {
+        addToManyTarget("ads", obj, true);
+    }
+    public void removeFromAds(org.supposition.db.Ads obj) {
+        removeToManyTarget("ads", obj, true);
+    }
+    public List getAds() {
+        return (List)readProperty("ads");
+    }
+    
+    
+    public void addToCompanies(org.supposition.db.Company obj) {
+        addToManyTarget("companies", obj, true);
+    }
+    public void removeFromCompanies(org.supposition.db.Company obj) {
+        removeToManyTarget("companies", obj, true);
+    }
+    public List getCompanies() {
+        return (List)readProperty("companies");
+    }
+    
+    
     public void addToRoles(org.supposition.db.Role obj) {
-        addToManyTarget("Roles", obj, true);
+        addToManyTarget("roles", obj, true);
     }
     public void removeFromRoles(org.supposition.db.Role obj) {
-        removeToManyTarget("Roles", obj, true);
+        removeToManyTarget("roles", obj, true);
     }
     public List getRoles() {
-        return (List)readProperty("Roles");
+        return (List)readProperty("roles");
     }
     
     

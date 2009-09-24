@@ -17,7 +17,7 @@ import org.supposition.utils.Utils;
 
 
 public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDBProxyCollection<E>{
-	public DataContext _context;
+	private DataContext _context;
 	private List<Expression> _expressions = new ArrayList<Expression>();
 	private Class<E> _eclass = null;
 	private int _pageSize = Utils.getIntFromStr(MessagesManager.getDefault("default.page.size"));
@@ -71,17 +71,15 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		return _context;
 	}
 	
+	public void setDataContext(DataContext inContext){
+		_context = inContext;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<E> getAll() {
 		return _context.performQuery(getSelectQuery());
-	}	
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<E> getAll(DataContext inContext) {
-		return inContext.performQuery(getSelectQuery());
-	}	
+	}		
 	
 	@Override
 	public int getCount() {
@@ -148,7 +146,8 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		
 		
 		if(pageCount == 1){
-			result += " 1 ";
+			result += String.format(MessagesManager.getText("template.simple.paginator.page_current.disabled"), 
+					getCurrentPageDef(), 1);
 		}else{
 			if(inPage != 1) 
 				result += 

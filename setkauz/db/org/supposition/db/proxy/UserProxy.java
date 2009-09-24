@@ -22,13 +22,13 @@ public class UserProxy extends ADBProxyObject<User> {
 	public UserProxy() {
 		super();
 		setEClass(User.class);
-		_context = DBUtils.getInstance().getDBContext();
+		setDataContext(DBUtils.getInstance().getDBContext());
 	}
 
 	public UserProxy(DataContext inDataContext) {
 		super();
 		setEClass(User.class);
-		_context = inDataContext;
+		setDataContext(inDataContext);
 	}
 
 	public String addDBORole(UserBean userBean) {
@@ -37,7 +37,7 @@ public class UserProxy extends ADBProxyObject<User> {
 
 		User user = getDBObjectByUuid(userBean.getUuid());
 		
-		Role role = (new RoleProxy(_context)).getDBObjectByUuid(userBean.getRoleuuid());
+		Role role = (new RoleProxy(getDataContext())).getDBObjectByUuid(userBean.getRoleuuid());
 		
 		user.addToRoles(role);
 		
@@ -86,7 +86,7 @@ public class UserProxy extends ADBProxyObject<User> {
 			
 			// Check for admin role
 			_log.debug("Check existance of admin role");
-			RoleProxy rolesProxy = new RoleProxy(_context);
+			RoleProxy rolesProxy = new RoleProxy(getDataContext());
 			Role role;
 			
 			rolesProxy.addExpression(ExpressionFactory.matchDbExp("name", "admin"));

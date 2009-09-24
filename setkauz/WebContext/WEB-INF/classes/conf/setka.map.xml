@@ -2,10 +2,13 @@
 <data-map project-version="2.0">
 	<property name="defaultPackage" value="org.supposition.db"/>
 	<db-entity name="ads">
+		<db-attribute name="cgroup_id" type="INTEGER"/>
+		<db-attribute name="company_id" type="INTEGER"/>
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="price" type="VARCHAR" length="16"/>
 		<db-attribute name="text" type="VARCHAR" isMandatory="true" length="256"/>
 		<db-attribute name="type" type="VARCHAR" isMandatory="true" length="1"/>
+		<db-attribute name="user_id" type="INTEGER"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
 	</db-entity>
 	<db-entity name="cgroups">
@@ -22,6 +25,7 @@
 		<db-attribute name="additionals" type="VARCHAR" length="256"/>
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="user_id" type="INTEGER"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
 	</db-entity>
 	<db-entity name="roles">
@@ -75,6 +79,18 @@
 		<obj-attribute name="updated" type="java.lang.String" db-attribute-path="updated"/>
 		<obj-attribute name="uuid" type="java.lang.String" db-attribute-path="uuid"/>
 	</obj-entity>
+	<db-relationship name="Cgrpoup" source="ads" target="cgroups" toMany="false">
+		<db-attribute-pair source="cgroup_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="Company" source="ads" target="companies" toMany="false">
+		<db-attribute-pair source="company_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="User" source="ads" target="users" toMany="false">
+		<db-attribute-pair source="user_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="Ads" source="cgroups" target="ads" toMany="true">
+		<db-attribute-pair source="id" target="cgroup_id"/>
+	</db-relationship>
 	<db-relationship name="CgroupIDs" source="cgroups" target="cgroups2companies" toMany="true">
 		<db-attribute-pair source="id" target="cgroup_id"/>
 	</db-relationship>
@@ -90,11 +106,23 @@
 	<db-relationship name="Companies" source="cgroups2companies" target="companies" toDependentPK="true" toMany="false">
 		<db-attribute-pair source="company_id" target="id"/>
 	</db-relationship>
+	<db-relationship name="Ads" source="companies" target="ads" toMany="true">
+		<db-attribute-pair source="id" target="company_id"/>
+	</db-relationship>
 	<db-relationship name="CompanyIDs" source="companies" target="cgroups2companies" toMany="true">
 		<db-attribute-pair source="id" target="company_id"/>
 	</db-relationship>
+	<db-relationship name="User" source="companies" target="users" toMany="false">
+		<db-attribute-pair source="user_id" target="id"/>
+	</db-relationship>
 	<db-relationship name="RoleIDs" source="roles" target="users2roles" toMany="true">
 		<db-attribute-pair source="id" target="role_id"/>
+	</db-relationship>
+	<db-relationship name="Ads" source="users" target="ads" toMany="true">
+		<db-attribute-pair source="id" target="user_id"/>
+	</db-relationship>
+	<db-relationship name="Companies" source="users" target="companies" toMany="true">
+		<db-attribute-pair source="id" target="user_id"/>
 	</db-relationship>
 	<db-relationship name="UserIDs" source="users" target="users2roles" toMany="true">
 		<db-attribute-pair source="id" target="user_id"/>
@@ -105,10 +133,18 @@
 	<db-relationship name="Users" source="users2roles" target="users" toDependentPK="true" toMany="false">
 		<db-attribute-pair source="user_id" target="id"/>
 	</db-relationship>
-	<obj-relationship name="Childs" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Childs"/>
-	<obj-relationship name="Companies" source="Cgroup" target="Company" deleteRule="Nullify" db-relationship-path="CgroupIDs.Companies"/>
-	<obj-relationship name="Parent" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Parent"/>
-	<obj-relationship name="Cgoups" source="Company" target="Cgroup" deleteRule="Nullify" db-relationship-path="CompanyIDs.Cgroups"/>
-	<obj-relationship name="Users" source="Role" target="User" deleteRule="Nullify" db-relationship-path="RoleIDs.Users"/>
-	<obj-relationship name="Roles" source="User" target="Role" deleteRule="Nullify" db-relationship-path="UserIDs.Roles"/>
+	<obj-relationship name="cgrpoup" source="Ads" target="Cgroup" db-relationship-path="Cgrpoup"/>
+	<obj-relationship name="company" source="Ads" target="Company" db-relationship-path="Company"/>
+	<obj-relationship name="user" source="Ads" target="User" db-relationship-path="User"/>
+	<obj-relationship name="ads" source="Cgroup" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>
+	<obj-relationship name="childs" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Childs"/>
+	<obj-relationship name="companies" source="Cgroup" target="Company" deleteRule="Nullify" db-relationship-path="CgroupIDs.Companies"/>
+	<obj-relationship name="parent" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Parent"/>
+	<obj-relationship name="ads" source="Company" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>
+	<obj-relationship name="cgoups" source="Company" target="Cgroup" deleteRule="Nullify" db-relationship-path="CompanyIDs.Cgroups"/>
+	<obj-relationship name="user" source="Company" target="User" db-relationship-path="User"/>
+	<obj-relationship name="users" source="Role" target="User" deleteRule="Nullify" db-relationship-path="RoleIDs.Users"/>
+	<obj-relationship name="ads" source="User" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>
+	<obj-relationship name="companies" source="User" target="Company" db-relationship-path="Companies"/>
+	<obj-relationship name="roles" source="User" target="Role" deleteRule="Nullify" db-relationship-path="UserIDs.Roles"/>
 </data-map>

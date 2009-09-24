@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.Company;
+import org.supposition.db.proxy.CompanyProxy;
 import org.supposition.utils.DBUtils;
 
 /**

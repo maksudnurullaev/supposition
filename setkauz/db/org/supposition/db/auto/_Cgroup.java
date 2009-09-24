@@ -11,9 +11,10 @@ public class _Cgroup extends org.apache.cayenne.CayenneDataObject {
 
     public static final String NAME_PROPERTY = "name";
     public static final String UUID_PROPERTY = "uuid";
-    public static final String CHILDS_PROPERTY = "Childs";
-    public static final String COMPANIES_PROPERTY = "Companies";
-    public static final String PARENT_PROPERTY = "Parent";
+    public static final String ADS_PROPERTY = "ads";
+    public static final String CHILDS_PROPERTY = "childs";
+    public static final String COMPANIES_PROPERTY = "companies";
+    public static final String PARENT_PROPERTY = "parent";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -33,34 +34,45 @@ public class _Cgroup extends org.apache.cayenne.CayenneDataObject {
     }
     
     
+    public void addToAds(org.supposition.db.Ads obj) {
+        addToManyTarget("ads", obj, true);
+    }
+    public void removeFromAds(org.supposition.db.Ads obj) {
+        removeToManyTarget("ads", obj, true);
+    }
+    public List getAds() {
+        return (List)readProperty("ads");
+    }
+    
+    
     public void addToChilds(org.supposition.db.Cgroup obj) {
-        addToManyTarget("Childs", obj, true);
+        addToManyTarget("childs", obj, true);
     }
     public void removeFromChilds(org.supposition.db.Cgroup obj) {
-        removeToManyTarget("Childs", obj, true);
+        removeToManyTarget("childs", obj, true);
     }
     public List getChilds() {
-        return (List)readProperty("Childs");
+        return (List)readProperty("childs");
     }
     
     
     public void addToCompanies(org.supposition.db.Company obj) {
-        addToManyTarget("Companies", obj, true);
+        addToManyTarget("companies", obj, true);
     }
     public void removeFromCompanies(org.supposition.db.Company obj) {
-        removeToManyTarget("Companies", obj, true);
+        removeToManyTarget("companies", obj, true);
     }
     public List getCompanies() {
-        return (List)readProperty("Companies");
+        return (List)readProperty("companies");
     }
     
     
-    public void setParent(org.supposition.db.Cgroup Parent) {
-        setToOneTarget("Parent", Parent, true);
+    public void setParent(org.supposition.db.Cgroup parent) {
+        setToOneTarget("parent", parent, true);
     }
 
     public org.supposition.db.Cgroup getParent() {
-        return (org.supposition.db.Cgroup)readProperty("Parent");
+        return (org.supposition.db.Cgroup)readProperty("parent");
     } 
     
     

@@ -19,13 +19,13 @@ public class RoleProxy extends ADBProxyObject<Role> {
 	public RoleProxy(){
 		super();
 		setEClass(Role.class);
-		_context = DBUtils.getInstance().getDBContext();
+		setDataContext(DBUtils.getInstance().getDBContext());
 	}
 
 	public RoleProxy(DataContext inDataContext) {
 		super();
 		setEClass(Role.class);
-		_context = inDataContext;
+		setDataContext(inDataContext);
 	}	
 	
 	public void setSessionFilter(UserBean inBean){
@@ -47,7 +47,6 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		
 		// Check for valid name		
 		if(!Utils.isValidString(roleBean.getName())){
-			_log.debug("addDBORole -> Constants.isValidString");			
 			_log.debug("addDBORole -> Constants.isValidString -> roleBean.getName() -> " + roleBean.getName());			
 			return MessagesManager.getDefault("web.error.result.prefix")
 						+ MessagesManager.getText("errors.empty.value");

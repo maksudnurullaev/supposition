@@ -1,5 +1,6 @@
 package org.supposition.utils;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.cayenne.PersistenceState;
@@ -10,6 +11,8 @@ import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.supposition.db.Cgroup;
+import org.supposition.db.proxy.CgroupProxy;
 import org.supposition.db.proxy.UserBean;
 
 public final class DBUtils {
@@ -94,5 +97,73 @@ public final class DBUtils {
 
 	public static String getUuid() {
 		return UUID.randomUUID().toString();
+	}
+
+	public static String getGroupsAsHTMLSelect() {
+		String result = "<select id='guuid'>";
+		String format = "<option value='%s'>%s</option>";
+		result += String.format(format, "root", MessagesManager.getText("text.root.cgroup"));
+
+		CgroupProxy cgroups = new CgroupProxy();		
+		List<Cgroup> cgroup_list = cgroups.getRootElements();
+		
+		if(cgroup_list == null ||
+				cgroup_list.size() == 0){
+			_log.debug("text.no.data");
+		} result += getOptionsFromCgroupList(cgroup_list, 0);
+		return result + "</select>";
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static String getOptionsFromCgroupList(List<Cgroup> cgroup_list, int deep) {
+		String result = "";
+		String format = "<option value='%s'>%s</option>";
+		for(Cgroup cgroup:cgroup_list){
+			result += String.format(format, cgroup.getUuid(), repitter(deep) + cgroup.getName());
+			List<Cgroup> child_list = cgroup.getChilds(); 
+			if(child_list != null && child_list.size() != 0){
+				result += getOptionsFromCgroupList(child_list, deep + 1);
+			}
+		}
+		
+		return result;
+	}
+
+	private static String repitter(int deep) {
+		if(deep <= 0) return "";
+		
+		String result = "";
+		String repit_string = "&rarr;";
+		while(deep != 0){
+			result += repit_string;
+			deep = deep - 1;
+		}
+		return result;
+	}
+
+	public static String getGroupsAsHTML() {
+		CgroupProxy cgroups = new CgroupProxy();
+		List<Cgroup> cgroup_list = cgroups.getRootElements();
+		
+		if(cgroup_list == null ||
+				cgroup_list.size() == 0){
+			return MessagesManager.getText("text.no.data");
+		}
+		
+		return getULsFromCgrouplist(cgroup_list);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static String getULsFromCgrouplist(List<Cgroup> cgroup_list) {
+		String result = "<ul>";
+		String format = "<li>%s</li>";
+		for(Cgroup cgroup:cgroup_list){
+			result += String.format(format, cgroup.getName());
+			List<Cgroup> child_list = cgroup.getChilds(); 
+			if(child_list != null && child_list.size() != 0){
+				result += getULsFromCgrouplist(child_list);
+			}			
+		}
+		return result + "</ul>";
 	}	
 }

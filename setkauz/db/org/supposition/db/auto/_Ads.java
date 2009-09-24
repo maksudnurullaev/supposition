@@ -11,6 +11,9 @@ public class _Ads extends org.apache.cayenne.CayenneDataObject {
     public static final String TEXT_PROPERTY = "text";
     public static final String TYPE_PROPERTY = "type";
     public static final String UUID_PROPERTY = "uuid";
+    public static final String CGRPOUP_PROPERTY = "cgrpoup";
+    public static final String COMPANY_PROPERTY = "company";
+    public static final String USER_PROPERTY = "user";
 
     public static final String ID_PK_COLUMN = "id";
 
@@ -44,6 +47,33 @@ public class _Ads extends org.apache.cayenne.CayenneDataObject {
     public String getUuid() {
         return (String)readProperty("uuid");
     }
+    
+    
+    public void setCgrpoup(org.supposition.db.Cgroup cgrpoup) {
+        setToOneTarget("cgrpoup", cgrpoup, true);
+    }
+
+    public org.supposition.db.Cgroup getCgrpoup() {
+        return (org.supposition.db.Cgroup)readProperty("cgrpoup");
+    } 
+    
+    
+    public void setCompany(org.supposition.db.Company company) {
+        setToOneTarget("company", company, true);
+    }
+
+    public org.supposition.db.Company getCompany() {
+        return (org.supposition.db.Company)readProperty("company");
+    } 
+    
+    
+    public void setUser(org.supposition.db.User user) {
+        setToOneTarget("user", user, true);
+    }
+
+    public org.supposition.db.User getUser() {
+        return (org.supposition.db.User)readProperty("user");
+    } 
     
     
 }
