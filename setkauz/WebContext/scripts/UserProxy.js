@@ -2,10 +2,9 @@ Namespace("UserProxy");
 
 //Update table
 UserProxy.updateTable = function() {
-	if (Main.byId("UserProxy.currentPage") != null) {
-		if (parseInt(dwr.util.getValue("UserProxy.currentPage"), 10) > 0) {
-			UserProxy.go2Page(parseInt(dwr.util
-					.getValue("UserProxy.currentPage"), 10));
+	if (Main.byId("UserProxy.currentPage")) {
+		if (parseInt(dwr.util.getValue("UserProxy.currentPage"),10) > 0) {
+			UserProxy.go2Page(parseInt(dwr.util.getValue("UserProxy.currentPage"),10));
 		}
 	} else {
 		UserProxy.go2Page(1);

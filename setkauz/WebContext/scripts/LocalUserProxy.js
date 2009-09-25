@@ -2,7 +2,7 @@ Namespace("LocalUserProxy");
 
 LocalUserProxy.updateUserData = function(){
 	// Check fields
-	if( !Main.isValidValue("mail"))return false;
+	if( !Main.isValidValue("mail")) { return false; }
 	
 	var User = {
 			uuid :null,
@@ -22,7 +22,7 @@ LocalUserProxy.updateUserData = function(){
 LocalUserProxy.updateUserPassword = function(){
 	// Check fields
 	if( !Main.isValidValue("newpassword") ||
-		!Main.isValidValue("newpassword2"))return false;
+		!Main.isValidValue("newpassword2")) { return false; }
 	
 	var User = {
 			uuid :null,
@@ -51,7 +51,7 @@ LocalUserProxy.addNewUser = function() {
 	if( !Main.isValidValue("mail") ||
 		!Main.isValidValue("newpassword") ||
 		!Main.isValidValue("newpassword2") ||
-		!Main.isValidValue("kaptcha"))return false;
+		!Main.isValidValue("kaptcha")) { return false; }
 
 	var User = {
 		mail :null,
@@ -79,7 +79,7 @@ LocalUserProxy.enterUser = function() {
 	// Check fields
 	if( !Main.isValidValue("mail") ||
 		!Main.isValidValue("password") ||
-		!Main.isValidValue("kaptcha"))return false;
+		!Main.isValidValue("kaptcha")) { return false; }
 
 	var User = {
 		mail :null,
@@ -129,7 +129,7 @@ LocalUserProxy.showMainEnterForm = function(){
 LocalUserProxy.userLogoff = function(){
 	Session.logOff(function(result){
 		alert(result);
-		if(Main.isOK(result)) {Main.loadPageContext(); }
+		if(Main.isOK(result)) { Main.loadPageContext(); }
 	});
 	
 	return false;
