@@ -7,7 +7,7 @@ RoleProxy.showNewForm = function() {
 
 RoleProxy.addNewRole = function(){
 	// Check fields
-	if(!Main.isValidValue("name")) return false;
+	if(!Main.isValidValue("name")) { return false; }
 	
 	Role = {name:null};
 	dwr.util.getValues(Role);
@@ -24,11 +24,12 @@ RoleProxy.addNewRole = function(){
 
 RoleProxy.updateTable = function() {
 	if(dwr.util.byId("RoleProxy.currentPage")){
-		if(parseInt(dwr.util.getValue("RoleProxy.currentPage")) > 0){
-			RoleProxy.go2Page(parseInt(dwr.util.getValue("RoleProxy.currentPage")));
+		if(parseInt(dwr.util.getValue("RoleProxy.currentPage"),10) > 0){
+			RoleProxy.go2Page(parseInt(dwr.util.getValue("RoleProxy.currentPage"),10));
 		}
-	}else
+	}else{
 		RoleProxy.go2Page(1);
+	}
 	
 	return false;
 };
@@ -39,17 +40,17 @@ RoleProxy.go2Page = function(inPage){
 		dwr.util.setValue('main.admin.roles.table', table, {escapeHtml :false});
 	});
 	return false;	
-}
+};
 
 RoleProxy.setPageDencity = function(){
-	if(parseInt(dwr.util.getValue("RoleProxy.pageDencity")) > 0){
-		RoleProxy.setPageSize(parseInt(dwr.util.getValue("RoleProxy.pageDencity")), function(){
+	if(parseInt(dwr.util.getValue("RoleProxy.pageDencity"),10) > 0){
+		RoleProxy.setPageSize(parseInt(dwr.util.getValue("RoleProxy.pageDencity"),10), function(){
 			RoleProxy.go2Page(1);
 		});
 	}	
 	
 	return false;
-}
+};
 
 RoleProxy.editRole = function(id) {
 	RoleProxy.getFormUpdate(id, function(form) {
@@ -62,7 +63,7 @@ RoleProxy.editRole = function(id) {
 
 RoleProxy.updateData = function() {
 	// Check fields
-	if(!Main.isValidValue("name")) return false;	
+	if(!Main.isValidValue("name")) { return false; }	
 	
 	var Role = {
 		uuid :null,

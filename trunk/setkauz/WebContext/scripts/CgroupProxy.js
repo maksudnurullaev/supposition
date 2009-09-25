@@ -1,8 +1,7 @@
 Namespace("CgroupProxy");
 
 CgroupProxy.showNewForm = function() {
-	if( "undefined" == typeof Main.getTextFromServerToDiv) { alert("JS: Failed to Load [ Main.getTextFromServerToDiv ]"); return false; }
-	Main.getTextFromServerToDiv("main.cgroups.formNew","main.cgroups.table", false);	
+	Main.getTextFromServerToDiv("main.cgroups.formNew","main.cgroups.table", false);
 	return false;
 };
 
