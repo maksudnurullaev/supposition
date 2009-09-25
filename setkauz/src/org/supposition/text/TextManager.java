@@ -62,7 +62,7 @@ public class TextManager extends PropertyLoader {
 
 	public String getTextByKey(String inKey, String inLocale) {
 		if (!hasKey(inKey, inLocale)){
-			_log.error("Could not find text by key = " + inKey);
+			_log.warn("Could not find text by key = " + inKey);
 			return "Could not find text by key = " + inKey;
 		}
 		
@@ -125,8 +125,10 @@ public class TextManager extends PropertyLoader {
 			result = result.replaceAll("INSTERT_SYSTEM_DEFAULTS",  SessionManager.getSystemDefaultsAsHTMLMgmTable());
 		}else if (result.indexOf("CGROUPS_AS_SELECT") != -1) {
 			result = result.replaceAll("CGROUPS_AS_SELECT",  DBUtils.getGroupsAsHTMLSelect());
+		}else if (result.indexOf("CGROUPS_AS_HTML_ADMIN") != -1) {
+			result = result.replaceAll("CGROUPS_AS_HTML_ADMIN",  DBUtils.getGroupsAsHTML(true));
 		}else if (result.indexOf("CGROUPS_AS_HTML") != -1) {
-			result = result.replaceAll("CGROUPS_AS_HTML",  DBUtils.getGroupsAsHTML());
+			result = result.replaceAll("CGROUPS_AS_HTML",  DBUtils.getGroupsAsHTML(false));
 		}
 		return result;
 	}

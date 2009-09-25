@@ -141,7 +141,7 @@ public final class DBUtils {
 		return result;
 	}
 
-	public static String getGroupsAsHTML() {
+	public static String getGroupsAsHTML(boolean forAdmin) {
 		CgroupProxy cgroups = new CgroupProxy();
 		List<Cgroup> cgroup_list = cgroups.getRootElements();
 		
@@ -150,20 +150,29 @@ public final class DBUtils {
 			return MessagesManager.getText("text.no.data");
 		}
 		
-		return getULsFromCgrouplist(cgroup_list);
+		return getULsFromCgrouplist(cgroup_list, forAdmin);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static String getULsFromCgrouplist(List<Cgroup> cgroup_list) {
+	private static String getULsFromCgrouplist(List<Cgroup> cgroup_list, boolean forAdmin) {
 		String result = "<ul>";
 		String format = "<li>%s</li>";
 		for(Cgroup cgroup:cgroup_list){
-			result += String.format(format, cgroup.getName());
+			result += String.format(format, cgroup.getName() 
+						+ (forAdmin?"&nbsp;" + makeDeleteCgroupLink(cgroup):""));
+			
 			List<Cgroup> child_list = cgroup.getChilds(); 
 			if(child_list != null && child_list.size() != 0){
-				result += getULsFromCgrouplist(child_list);
+				result += getULsFromCgrouplist(child_list, forAdmin);
 			}			
 		}
 		return result + "</ul>";
 	}	
+	
+	private static String makeDeleteCgroupLink(Cgroup inCgroup){
+		return String.format(MessagesManager.getDefault("link.with.onlick.template"), 
+				inCgroup.getUuid(),
+				"CgroupProxy.remove(this.id)",
+				MessagesManager.getText("text.remove"));
+	}
 }
