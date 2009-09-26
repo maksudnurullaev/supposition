@@ -29,6 +29,20 @@ public class CgroupProxy extends ADBProxyObject<Cgroup> {
 		setDataContext(inDataContext);
 	}	 	
 	
+	public String removeDBO(String inUuid){
+		Cgroup cgroup = getDBObjectByUuid(inUuid);
+		if(cgroup == null){
+			return MessagesManager.getDefault("web.error.result.prefix")
+			+ MessagesManager.getText("errors.object.not.found");
+		}
+		
+		deleteObject(cgroup);
+		commitChanges();
+
+		return MessagesManager.getDefault("web.ok.result.prefix") 
+		+ MessagesManager.getText("message.data.saved");			
+	}
+	
 	public String addDBONew(CgroupBean inCgroupBean){
 		_log.debug("addDBONew -> " + inCgroupBean.getName());
 

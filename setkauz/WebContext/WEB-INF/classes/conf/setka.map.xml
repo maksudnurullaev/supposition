@@ -137,7 +137,7 @@
 	<obj-relationship name="company" source="Ads" target="Company" db-relationship-path="Company"/>
 	<obj-relationship name="user" source="Ads" target="User" db-relationship-path="User"/>
 	<obj-relationship name="ads" source="Cgroup" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>
-	<obj-relationship name="childs" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Childs"/>
+	<obj-relationship name="childs" source="Cgroup" target="Cgroup" deleteRule="Cascade" db-relationship-path="Childs"/>
 	<obj-relationship name="companies" source="Cgroup" target="Company" deleteRule="Nullify" db-relationship-path="CgroupIDs.Companies"/>
 	<obj-relationship name="parent" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Parent"/>
 	<obj-relationship name="ads" source="Company" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>

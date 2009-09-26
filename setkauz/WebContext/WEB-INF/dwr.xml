@@ -7,18 +7,20 @@
 		<create creator="new" javascript="Session">
 			<param name="class" value="org.dwr.Session" />
 		</create>
+		<convert match="org.supposition.db.proxy.KeyValueBean" converter="bean"/>
 
 		<create creator="new" javascript="LocalUserProxy">
 			<param name="class" value="org.supposition.db.proxy.LocalUserProxy" />
 		</create>
-
 		<create creator="new" javascript="UserProxy">
 			<param name="class" value="org.supposition.db.proxy.UserProxy" />
 		</create>
+		<convert match="org.supposition.db.proxy.UserBean" converter="bean"/>
 		
 		<create creator="new" javascript="RoleProxy">
 			<param name="class" value="org.supposition.db.proxy.RoleProxy" />
 		</create>
+		<convert match="org.supposition.db.proxy.RoleBean" converter="bean"/>
 		
 		<create creator="new" javascript="SystemDefaultsProxy">
 			<param name="class" value="org.supposition.proxy.SystemDefaultsProxy" />
@@ -27,21 +29,18 @@
 		<create creator="new" javascript="AdsProxy">
 			<param name="class" value="org.supposition.db.proxy.AdsProxy" />
 		</create>		
+		<convert match="org.supposition.db.proxy.AdsBean" converter="bean"/>
 
 		<create creator="new" javascript="CompanyProxy">
 			<param name="class" value="org.supposition.db.proxy.CompanyProxy" />
 		</create>		
+		<convert match="org.supposition.db.proxy.CompanyBean" converter="bean"/>
 		
 		<create creator="new" javascript="CgroupProxy">
 			<param name="class" value="org.supposition.db.proxy.CgroupProxy" />
-		</create>
-		
-		<convert match="org.supposition.db.proxy.RoleBean" converter="bean"/>
-		<convert match="org.supposition.db.proxy.UserBean" converter="bean"/>
-		<convert match="org.supposition.db.proxy.KeyValueBean" converter="bean"/>
-		<convert match="org.supposition.db.proxy.AdsBean" converter="bean"/>
-		<convert match="org.supposition.db.proxy.CompanyBean" converter="bean"/>
+		</create>			
 		<convert match="org.supposition.db.proxy.CgroupBean" converter="bean"/>
+		
 	</allow>	
 
 </dwr>
