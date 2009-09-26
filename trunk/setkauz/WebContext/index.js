@@ -5,11 +5,13 @@ Load ("dwr/util.js");
 Load ("tabs/tabs.js");
 Load ("dwr/interface/Session.js");
 Load ("dwr/interface/LocalUserProxy.js");
+Load ("dwr/interface/AdsProxy.js");
 
 Load ("scripts/Gup.js");
 Load ("scripts/Stack.js");
 Load ("scripts/Main.js");
 Load ("scripts/LocalUserProxy.js");
+Load ("scripts/AdsProxy.js");
 
 index.myErrorHandler = function (msg){
 	alert("Error handler: " + msg);
@@ -26,7 +28,8 @@ index.initPage = function(){
 	if( "undefined" == typeof dwr.util)       { alert("JS: Failed to Load [ dwr.util ]");       return false; }
 	if( "undefined" == typeof Tabs)           { alert("JS: Failed to Load [ Tabs ]");           return false; }
 	if( "undefined" == typeof LocalUserProxy) { alert("JS: Failed to Load [ LocalUserProxy ]"); return false; }
-	if( "undefined" == typeof Main) { alert("JS: Failed to Load [ Main ]");			 return false; }
+	if( "undefined" == typeof Main) 		  { alert("JS: Failed to Load [ Main ]");			return false; }
+	if( "undefined" == typeof AdsProxy) 	  { alert("JS: Failed to Load [ AdsProxy ]");	    return false; }
 
 	// #### DEBUG TIME ####
 	dwr.engine.setErrorHandler(index.myErrorHandler);

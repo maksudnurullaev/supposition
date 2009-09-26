@@ -40,7 +40,7 @@ public class TextManager extends PropertyLoader {
 	}
 
 	public String getDefaultByKey(String inKey) {
-		_log.debug("Get text for key:" + inKey);
+		_log.debug("getDefaultByKey for inKey:" + inKey);
 		
 		if (!hasDefaultKey(inKey)){
 			_log.warn("Could not find DEFAULT by key = " + inKey);
@@ -61,6 +61,7 @@ public class TextManager extends PropertyLoader {
 	}
 
 	public String getTextByKey(String inKey, String inLocale) {
+		_log.debug("getTextByKey for key " + inKey);
 		if (!hasKey(inKey, inLocale)){
 			_log.warn("Could not find text by key = " + inKey);
 			return "Could not find text by key = " + inKey;
@@ -89,6 +90,7 @@ public class TextManager extends PropertyLoader {
 		// 4. FOOTER TAG
 		result += tryToGetText(inLocale,inKey + MessagesManager.getDefault("text.footer.def"));
 
+		_log.debug("Try to replace finale tokens for -> " + result);
 		return replaceFinalTokensInText(result);
 	}
 
@@ -111,25 +113,38 @@ public class TextManager extends PropertyLoader {
 	}
 
 	private String tryToGetText(String inLocale, String inKey){
+		_log.debug("tryToGetText for key " + inKey);
 		if (_propertiesMap.get(inLocale).containsKey(inKey)) {
+			_log.debug("tryToGetText for key " + inKey + " FOUND");
 			return _propertiesMap.get(inLocale).getProperty(inKey);
 		}		
 		return "";
 	}
 	
 	private String replaceFinalTokensInText(String result) {
+		_log.debug("replaceFinalTokensInText --> START");
 		if (result.indexOf("INSERT_UNIQUE_DATETIME") != -1) {
 			result = result.replaceAll("INSERT_UNIQUE_DATETIME", Utils
 					.getUniqueDateTime());
-		}else if (result.indexOf("INSTERT_SYSTEM_DEFAULTS") != -1) {
-			result = result.replaceAll("INSTERT_SYSTEM_DEFAULTS",  SessionManager.getSystemDefaultsAsHTMLMgmTable());
-		}else if (result.indexOf("CGROUPS_AS_SELECT") != -1) {
-			result = result.replaceAll("CGROUPS_AS_SELECT",  DBUtils.getGroupsAsHTMLSelect());
-		}else if (result.indexOf("CGROUPS_AS_HTML_ADMIN") != -1) {
-			result = result.replaceAll("CGROUPS_AS_HTML_ADMIN",  DBUtils.getGroupsAsHTML(true));
-		}else if (result.indexOf("CGROUPS_AS_HTML") != -1) {
-			result = result.replaceAll("CGROUPS_AS_HTML",  DBUtils.getGroupsAsHTML(false));
+			_log.debug("replaceFinalTokensInText --> FOUND --> INSERT_UNIQUE_DATETIME");
 		}
+		if (result.indexOf("INSTERT_SYSTEM_DEFAULTS") != -1) {
+			result = result.replaceAll("INSTERT_SYSTEM_DEFAULTS",  SessionManager.getSystemDefaultsAsHTMLMgmTable());
+			_log.debug("replaceFinalTokensInText --> FOUND --> INSTERT_SYSTEM_DEFAULTS");
+		}
+		if (result.indexOf("CGROUPS_AS_SELECT") != -1) {
+			result = result.replaceAll("CGROUPS_AS_SELECT",  DBUtils.getGroupsAsHTMLSelect());
+			_log.debug("replaceFinalTokensInText --> FOUND --> CGROUPS_AS_SELECT");
+		}
+		if (result.indexOf("CGROUPS_AS_HTML_ADMIN") != -1) {
+			result = result.replaceAll("CGROUPS_AS_HTML_ADMIN",  DBUtils.getGroupsAsHTML(true));
+			_log.debug("replaceFinalTokensInText --> FOUND --> CGROUPS_AS_HTML_ADMIN");
+		}
+		if (result.indexOf("CGROUPS_AS_HTML") != -1) {
+			result = result.replaceAll("CGROUPS_AS_HTML",  DBUtils.getGroupsAsHTML(false));
+			_log.debug("replaceFinalTokensInText --> FOUND --> CGROUPS_AS_HTML");
+		}
+		_log.debug("replaceFinalTokensInText --> END");
 		return result;
 	}
 
