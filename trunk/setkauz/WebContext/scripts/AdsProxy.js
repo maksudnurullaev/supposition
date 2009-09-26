@@ -7,12 +7,26 @@ AdsProxy.showNewForm = function() {
 
 AdsProxy.addNew = function(){
 	// Check fields
-	if(!Main.isValidValue("name")){ return false; }
+	if(!Main.isValidValue("text")){ return false; }
 	
-	Cgroup = {name:null, guuid:null};
-	dwr.util.getValues(Cgroup);
+	Ads = {text:null, 
+			kaptcha:null,
+			price:null,
+			weeks2keep:null,
+			cuuid:null,
+			guuid:null,
+			type:null};
+
+	dwr.util.getValues(Ads);
 	
-	AdsProxy.addDBONew(Cgroup, function(result){
+//	alert("Ads.type = " + Ads.type);
+//	alert("Ads.text = " + Ads.text);
+//	alert("Ads.price = " + Ads.price);
+//	alert("Ads.weeks2keep = " + Ads.weeks2keep);
+//	alert("Ads.cuuid = " + Ads.cuuid);
+//	alert("Ads.guuid = " + Ads.guuid);
+	
+	AdsProxy.addDBONew(Ads, function(result){
 		alert(result);
 		if (Main.isOK(result)) {
 			AdsProxy.updateTable();
@@ -23,7 +37,7 @@ AdsProxy.addNew = function(){
 };
 
 AdsProxy.updateTable = function() {
-	Main.getTextFromServerToDiv("text.constant.CGROUPS_AS_HTML_ADMIN","main.cgroups.table", false);	
+//	Main.getTextFromServerToDiv("text.constant.CGROUPS_AS_HTML_ADMIN","main.cgroups.table", false);	
 	return false;
 };
 

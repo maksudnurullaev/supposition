@@ -1,12 +1,16 @@
 package org.supposition.utils;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.PersistenceState;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.conf.Configuration;
 import org.apache.cayenne.conf.DefaultConfiguration;
+import org.apache.cayenne.validation.SimpleValidationFailure;
 import org.apache.cayenne.validation.ValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
@@ -89,7 +93,7 @@ public final class DBUtils {
 		String errorString= "";
 		for(Object fail:validationResult.getFailures()){
 			errorString = ((ValidationFailure)fail).getDescription();
-			_log.debug("Fails: " + errorString);
+			_log.warn("Fails: " + errorString);
 			result += "\t - " + MessagesManager.getText(errorString) + "\n";
 		}
 		return result;
@@ -175,4 +179,26 @@ public final class DBUtils {
 				"CgroupProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));
 	}
+
+	public static String removeHTMLTags(String inString){
+		if(inString == null) return null;
+		return inString.replaceAll("\\<.*?>","");
+	}
+
+	public static Date dateAfter(int weeks){
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.WEEK_OF_YEAR, weeks);
+		return now.getTime();		
+	}
+	
+	public static void checkKaptcha(String kaptcha, ValidationResult validationResult, CayenneDataObject inDataObject) {
+		String sessionKaptchaValue = (String) SessionManager
+				.getSessionValue(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
+		if (kaptcha == null
+				|| !kaptcha.equalsIgnoreCase(sessionKaptchaValue)) {
+			validationResult.addFailure(new SimpleValidationFailure(inDataObject,
+					"errors.invalid.kaptcha"));
+			_log.error(String.format("Invalid kaptcha(%s) should be %s", kaptcha, sessionKaptchaValue));
+		}
+	}		
 }

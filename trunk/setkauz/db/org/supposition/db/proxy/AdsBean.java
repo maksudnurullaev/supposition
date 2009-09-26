@@ -3,7 +3,14 @@ package org.supposition.db.proxy;
 public class AdsBean extends SimpleProxy {
 	private String text;
 	private String price;
+	private String kaptcha;	
+	private int weeks2keep;	
+	// Seller or Buyer
 	private String type;
+	// Cgroup uuid;
+	private String guuid;
+	// Company uuid;
+	private String cuuid;
 		
 	public void setText(String text) {
 		this.text = text;
@@ -22,5 +29,29 @@ public class AdsBean extends SimpleProxy {
 	}
 	public String getType() {
 		return type;
+	}
+	public void setCuuid(String cuuid) {
+		this.cuuid = cuuid;
+	}
+	public String getCuuid() {
+		return cuuid;
+	}
+	public void setGuuid(String guuid) {
+		this.guuid = guuid;
+	}
+	public String getGuuid() {
+		return guuid;
+	}
+	public void setKaptcha(String kaptcha) {
+		this.kaptcha = kaptcha;
+	}
+	public String getKaptcha() {
+		return kaptcha;
+	}
+	public void setWeeks2keep(int weeks2keep) {
+		this.weeks2keep = weeks2keep;
+	}
+	public int getWeeks2keep() {
+		return weeks2keep;
 	}
 }

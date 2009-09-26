@@ -18,7 +18,7 @@ public class Role extends _Role implements IDBOClass {
 	private Log _log = LogFactory.getLog(this.getClass());
 
 	public void setRole(RoleBean roleBean) {
-		setName(roleBean.getName());
+		setName(DBUtils.removeHTMLTags(roleBean.getName()));
 	}
 
 	@Override
