@@ -15,7 +15,6 @@ import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.CryptoManager;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
-import org.supposition.utils.SessionManager;
 import org.supposition.utils.Utils;
 
 public class User extends _User implements IDBOClass {
@@ -59,14 +58,7 @@ public class User extends _User implements IDBOClass {
 			return;
 		}
 		
-		String sessionKaptchaValue = (String) SessionManager
-				.getSessionValue(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
-		if (getKaptcha() == null
-				|| !getKaptcha().equalsIgnoreCase(sessionKaptchaValue)) {
-			validationResult.addFailure(new SimpleValidationFailure(this,
-					"errors.invalid.kaptcha"));
-			_log.error(String.format("Invalid kaptcha(%s) should be %s", getKaptcha(), sessionKaptchaValue));
-		}
+		DBUtils.checkKaptcha(getKaptcha(), validationResult, this);
 
 	}
 
@@ -165,8 +157,8 @@ public class User extends _User implements IDBOClass {
 	}
 
 	public void setUser(UserBean inUser) {
-		setMail(inUser.getMail().trim());
-		setAdditionals(inUser.getAdditionals().trim());
+		setMail(DBUtils.removeHTMLTags(inUser.getMail().trim()));
+		setAdditionals(DBUtils.removeHTMLTags(inUser.getAdditionals().trim()));
 		setKaptcha(inUser.getKaptcha());
 	}
 

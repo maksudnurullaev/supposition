@@ -7,16 +7,25 @@ package org.supposition.db.auto;
   */
 public class _Ads extends org.apache.cayenne.CayenneDataObject {
 
+    public static final String DELETE_AFTER_PROPERTY = "deleteAfter";
     public static final String PRICE_PROPERTY = "price";
     public static final String TEXT_PROPERTY = "text";
     public static final String TYPE_PROPERTY = "type";
     public static final String UUID_PROPERTY = "uuid";
-    public static final String CGRPOUP_PROPERTY = "cgrpoup";
+    public static final String CGROUP_PROPERTY = "cgroup";
     public static final String COMPANY_PROPERTY = "company";
     public static final String USER_PROPERTY = "user";
 
     public static final String ID_PK_COLUMN = "id";
 
+    public void setDeleteAfter(java.util.Date deleteAfter) {
+        writeProperty("deleteAfter", deleteAfter);
+    }
+    public java.util.Date getDeleteAfter() {
+        return (java.util.Date)readProperty("deleteAfter");
+    }
+    
+    
     public void setPrice(String price) {
         writeProperty("price", price);
     }
@@ -49,12 +58,12 @@ public class _Ads extends org.apache.cayenne.CayenneDataObject {
     }
     
     
-    public void setCgrpoup(org.supposition.db.Cgroup cgrpoup) {
-        setToOneTarget("cgrpoup", cgrpoup, true);
+    public void setCgroup(org.supposition.db.Cgroup cgroup) {
+        setToOneTarget("cgroup", cgroup, true);
     }
 
-    public org.supposition.db.Cgroup getCgrpoup() {
-        return (org.supposition.db.Cgroup)readProperty("cgrpoup");
+    public org.supposition.db.Cgroup getCgroup() {
+        return (org.supposition.db.Cgroup)readProperty("cgroup");
     } 
     
     
