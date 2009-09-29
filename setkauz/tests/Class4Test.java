@@ -1,23 +1,35 @@
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.cayenne.query.Ordering;
+import org.supposition.db.Ads;
+import org.supposition.db.proxy.AdsProxy;
 
 public class Class4Test {
 
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {		
-	    Calendar now = Calendar.getInstance();
-
-	    System.out.println("Current date : " + (now.get(Calendar.MONTH) + 1) + "-"
-	        + now.get(Calendar.DATE) + "-" + now.get(Calendar.YEAR));
-
-	    System.out.println("Current week of month is : " + now.get(Calendar.WEEK_OF_MONTH));
-	    System.out.println("Current week of year is : " + now.get(Calendar.WEEK_OF_YEAR));
-
-	    
-
-	    now.add(Calendar.WEEK_OF_YEAR, 1);
-	    System.out.println("date after one week : " + (now.get(Calendar.MONTH) + 1) + "-"
-	        + now.get(Calendar.DATE) + "-" + now.get(Calendar.YEAR));
+	public static void main(String[] args) {
+		AdsProxy adsProxy = new AdsProxy();
+		
+		List<Ads> adsList = adsProxy.getAll();
+		List<Ads> sortedAdsList = new ArrayList<Ads>();
+		for(Ads ads:adsList){
+			System.out.println(ads.getCreated());
+			sortedAdsList.add(ads);
+		}
+		
+		adsList = null;
+		
+		Ordering ordering  = new Ordering("created", false);
+		ordering.orderList(sortedAdsList);
+		
+		System.out.println("adsProxy.getPageSize = " + adsProxy.getPageSize());
+		
+		for(Ads ads:sortedAdsList){
+			System.out.println(ads.getCreated());
+		}		
+		
 	  }
 }

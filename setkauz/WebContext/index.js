@@ -7,7 +7,7 @@ Load ("dwr/interface/Session.js");
 Load ("dwr/interface/LocalUserProxy.js");
 Load ("dwr/interface/AdsProxy.js");
 
-Load ("scripts/Gup.js");
+//Load ("scripts/Gup.js");
 Load ("scripts/Stack.js");
 Load ("scripts/Main.js");
 Load ("scripts/LocalUserProxy.js");

@@ -4,6 +4,7 @@
 	<db-entity name="ads">
 		<db-attribute name="cgroup_id" type="INTEGER"/>
 		<db-attribute name="company_id" type="INTEGER"/>
+		<db-attribute name="created" type="TIMESTAMP" isMandatory="true"/>
 		<db-attribute name="delete_after" type="DATE" isMandatory="true"/>
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="price" type="VARCHAR" length="16"/>
@@ -51,6 +52,7 @@
 		<db-attribute name="user_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
 	<obj-entity name="Ads" className="org.supposition.db.Ads" dbEntityName="ads">
+		<obj-attribute name="created" type="java.util.Date" db-attribute-path="created"/>
 		<obj-attribute name="deleteAfter" type="java.util.Date" db-attribute-path="delete_after"/>
 		<obj-attribute name="price" type="java.lang.String" db-attribute-path="price"/>
 		<obj-attribute name="text" type="java.lang.String" db-attribute-path="text"/>

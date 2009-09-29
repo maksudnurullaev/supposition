@@ -1,5 +1,7 @@
 package org.supposition.db;
 
+import java.util.Date;
+
 import org.apache.cayenne.validation.SimpleValidationFailure;
 import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
@@ -51,7 +53,7 @@ public class Ads extends _Ads  implements IDBOClass{
 	}
 
 	private void setDeleteAfter(int weeks2keep) {
-		setDeleteAfter(DBUtils.dateAfter(weeks2keep));
+		setDeleteAfter(DBUtils.dateAfterInWeeks(weeks2keep));
 	}
 
 	public ValidationResult getValidationResult() {
@@ -63,8 +65,10 @@ public class Ads extends _Ads  implements IDBOClass{
 	}
 
 	private void validateBeforeSave(ValidationResult validationResult) {
-		if(isNew())
+		if(isNew()){
 			setUuid(DBUtils.getUuid());
+			setCreated(new Date());
+		}
 		
 		super.validateForSave(validationResult);
 		

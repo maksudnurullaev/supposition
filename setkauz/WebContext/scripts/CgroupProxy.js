@@ -37,8 +37,6 @@ CgroupProxy.edit = function(id) {
 };
 
 CgroupProxy.remove = function(uuid) {
-	alert("Go to move cgroup by uuid = " + uuid);
-		
 	CgroupProxy.removeDBO(uuid, function(result){
 		alert(result);
 		if (Main.isOK(result)) {
