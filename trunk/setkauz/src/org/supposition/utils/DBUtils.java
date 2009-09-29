@@ -94,7 +94,10 @@ public final class DBUtils {
 		for(Object fail:validationResult.getFailures()){
 			errorString = ((ValidationFailure)fail).getDescription();
 			_log.warn("Fails: " + errorString);
-			result += "\t - " + MessagesManager.getText(errorString) + "\n";
+			if(MessagesManager.hasMessageByKey(errorString))
+				result += "\t - " + MessagesManager.getText(errorString) + "\n";
+			else
+				result += "\t - " + errorString + "\n";
 		}
 		return result;
 	}
@@ -185,7 +188,7 @@ public final class DBUtils {
 		return inString.replaceAll("\\<.*?>","");
 	}
 
-	public static Date dateAfter(int weeks){
+	public static Date dateAfterInWeeks(int weeks){
 		Calendar now = Calendar.getInstance();
 		now.add(Calendar.WEEK_OF_YEAR, weeks);
 		return now.getTime();		
@@ -193,7 +196,7 @@ public final class DBUtils {
 	
 	public static void checkKaptcha(String kaptcha, ValidationResult validationResult, CayenneDataObject inDataObject) {
 		String sessionKaptchaValue = (String) SessionManager
-				.getSessionValue(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
+				.getFromSession(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);
 		if (kaptcha == null
 				|| !kaptcha.equalsIgnoreCase(sessionKaptchaValue)) {
 			validationResult.addFailure(new SimpleValidationFailure(inDataObject,

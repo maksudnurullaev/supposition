@@ -102,7 +102,7 @@ public class CgroupProxy extends ADBProxyObject<Cgroup> {
 	}
 
 	public List<Cgroup> getRootElements() {
-		cleanExpressions();
+		clearExpressions();
 		addExpression(ExpressionFactory.matchDbExp("pid", null));
 		return getAll();
 	}

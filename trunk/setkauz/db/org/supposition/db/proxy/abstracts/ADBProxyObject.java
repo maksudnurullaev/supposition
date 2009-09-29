@@ -37,7 +37,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	}		
 	
 	@Override	
-	public void cleanExpressions(){
+	public void clearExpressions(){
 		_expressions.clear();
 	}
 	
@@ -100,7 +100,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 			return null;
 		}
 		
-		cleanExpressions();
+		clearExpressions();
 		addExpression(ExpressionFactory.matchDbExp("uuid", inUuid));
 		List<E> listOfObjects = getAll();
 		if(listOfObjects == null || listOfObjects.size() == 0) {
@@ -134,9 +134,8 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	}	
 	
 	@Override
-	public String getHTMLPaginator(int inPage) {
-		String result = MessagesManager.getText("template.simple.paginator.header");
-		int pageCount = getPageCount();
+	public String getHTMLPaginator(int inPage, int itemsCount) {
+		int pageCount = getPageCount(itemsCount);
 
 		if(pageCount < inPage)
 			inPage = pageCount;
@@ -145,6 +144,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 			inPage = 1;
 		
 		
+		String result = MessagesManager.getText("template.simple.paginator.header");
 		if(pageCount == 1){
 			result += String.format(MessagesManager.getText("template.simple.paginator.page_current.disabled"), 
 					getCurrentPageDef(), 1);
@@ -174,6 +174,11 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		
 		return result;
 	}
+	
+	@Override
+	public String getHTMLPaginator(int inPage) {
+		return getHTMLPaginator(inPage, getCount());
+	}
 
 	@Override
 	public String getHTMLRowDensity() {
@@ -189,9 +194,8 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	}		
 	
 	@Override
-	public int getPageCount() {
+	public int getPageCount(int itemCount) {
 		int pageSize = getPageSize();
-		int itemCount = getCount();
 		
 		if(pageSize >= itemCount) return 1;
 		
@@ -203,9 +207,9 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		else 
 			result = (itemCount - lastItems) / pageSize +1;
 		
-		return result;
+		return result;		
 	}
-
+	
 	@Override
 	public String getPageCountDef() {
 		return getClass().getSimpleName() + MessagesManager.getDefault("page.count.def");

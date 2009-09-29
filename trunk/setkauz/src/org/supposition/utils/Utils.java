@@ -2,6 +2,7 @@ package org.supposition.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,6 +10,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
+import org.supposition.db.Ads;
 /**
  * 
  * @author M.Nurullayev
@@ -27,8 +30,12 @@ public final class Utils {
 	};
 	
 	public static String GetFormatedDate(String format) {
+		return GetFormatedDate(format, new Date());
+	};	
+	
+	public static String GetFormatedDate(String format, Date inDate) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		return String.format(sdf.format(new Date()));
+		return sdf.format(inDate);
 	};	
 
 	public static String GetCurrentDateTime(String inFormat) {
@@ -77,6 +84,11 @@ public final class Utils {
 		return sdf.format(cal.getTime());
 	}
 
+	protected static String getUniqueDateTime(Date inDate) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		return sdf.format(inDate);
+	}	
+	
 	public static String trimString(String inString) {
 		return trimString(inString, 
 				getIntFromStr(MessagesManager.getDefault("default.trim.length")),
@@ -108,4 +120,14 @@ public final class Utils {
 		return MessagesManager.getDefault("web.context.loader.as.string").equalsIgnoreCase(Thread
 				.currentThread().getContextClassLoader().getClass().getName());
 	}
+
+    public static final Comparator<Ads> ADS_DEFAULT_ORDER = new Comparator<Ads>() {
+    	public int compare(Ads e1, Ads e2) {
+    		
+    		return getUniqueDateTime(e2.getCreated()).compareTo(getUniqueDateTime(e1.getCreated()));
+    	}
+};
+
+
+
 }

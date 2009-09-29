@@ -1,6 +1,5 @@
 package org.supposition.text;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,8 +7,6 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.supposition.db.User;
-import org.supposition.db.proxy.UserProxy;
 import org.supposition.text.abstracts.PropertyLoader;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
@@ -19,8 +16,6 @@ import org.supposition.utils.Utils;
 public class TextManager extends PropertyLoader {
 	private static final String DEFAULTS_KEY = "defaults";
 	private static final String DEFAULTS_FILE_NAME = "defaults.properties";
-	private static final String DEFAULT_NONREGISTERED_POSTFIX = "nonregistered";
-	private static final String DEFAULT_REGISTERED_POSTFIX = "registered";
 
 	private static Log _log = LogFactory.getLog(PropertyLoader.class);
 
@@ -68,7 +63,7 @@ public class TextManager extends PropertyLoader {
 		}
 		
 		// Get list of roles
-		List<String> roles = getUserRoles();
+		List<String> roles = SessionManager.getUserRoles();
 
 		// Build string with start & end tags
 		String result = "";
@@ -80,36 +75,14 @@ public class TextManager extends PropertyLoader {
 		result += _propertiesMap.get(inLocale).getProperty(inKey);
 
 
-		// 3. Refistered & Non-registered part - REST
-		if(SessionManager.isUserLoggedIn()){
-			for(String role:roles)result += tryToGetText(inLocale,inKey + "." + role);
-		}else{
-			result += tryToGetText(inLocale,inKey + "." + DEFAULT_NONREGISTERED_POSTFIX);
-		}
+		// 3. Get parts by User roles
+		for(String role:roles)result += tryToGetText(inLocale,inKey + "." + role);
 		
 		// 4. FOOTER TAG
 		result += tryToGetText(inLocale,inKey + MessagesManager.getDefault("text.footer.def"));
 
 		_log.debug("Try to replace finale tokens for -> " + result);
 		return replaceFinalTokensInText(result);
-	}
-
-	private List<String> getUserRoles() {
-		List<String> resultList = new ArrayList<String>();
-		UserProxy users = new UserProxy();
-		User user = users.getDBObjectByUuid(SessionManager.getUserUuid());
-		if(user == null){
-			resultList.add(DEFAULT_NONREGISTERED_POSTFIX);
-			_log.debug("Current user has role:" + DEFAULT_NONREGISTERED_POSTFIX);
-		}else{
-			resultList.add(DEFAULT_REGISTERED_POSTFIX);
-			_log.debug("Current user has role:" + DEFAULT_REGISTERED_POSTFIX);
-			for(String role:user.getRolesAsList()){
-				resultList.add(role);
-				_log.debug("Current user has role:" + role);
-			}			
-		}
-		return resultList;
 	}
 
 	private String tryToGetText(String inLocale, String inKey){

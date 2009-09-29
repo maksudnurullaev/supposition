@@ -115,7 +115,7 @@ public class UserProxy extends ADBProxyObject<User> {
 	}
 
 	private void applyFilter(UserBean inUser) {
-		cleanExpressions();
+		clearExpressions();
 		addExpression(ExpressionFactory.likeIgnoreCaseExp("mail",
 				normalizeString4Filter(inUser.getMail())));
 	}
@@ -153,7 +153,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		}
 
 		// Validate for existing user (by mail)
-		cleanExpressions();
+		clearExpressions();
 		addExpression(ExpressionFactory.matchExp("mail", userBean.getMail()));
 
 		List<User> userList = getAll();
@@ -266,8 +266,7 @@ public class UserProxy extends ADBProxyObject<User> {
 					getCurrentRolesAsHTML(inUuid),
 					getAvailableRolesAsHTML(inUuid));
 		else
-			result = String.format(MessagesManager
-					.getText("main.admin.users.user_not_found_text"), inUuid);
+			result = MessagesManager.getText("error.data.not.found");
 
 		return result;
 	}
@@ -277,9 +276,6 @@ public class UserProxy extends ADBProxyObject<User> {
 
 		if (inPage <= 0)
 			return MessagesManager.getText("errors.too.many.objects");
-
-		String format = MessagesManager.getText("main.admin.users.table.tr");
-		String result = "";
 
 		// Check for filter
 		if (isSessionHasFilter()) {
@@ -296,6 +292,8 @@ public class UserProxy extends ADBProxyObject<User> {
 					+ MessagesManager.getText("errors.object.not.found");
 
 		// Formate result
+		String format = MessagesManager.getText("main.admin.users.table.tr");
+		String result = "";		
 		int startItem = (inPage - 1) * getPageSize();
 		int endItem = inPage * getPageSize();
 

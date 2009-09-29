@@ -1,20 +1,32 @@
 package org.supposition.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.supposition.db.User;
+import org.supposition.db.proxy.UserProxy;
 
 public final class SessionManager {
 
 	private static final boolean _isTomcatContext = Utils.isTomcatContext();
 	private static Map<String, Object> _valueHouse = new HashMap<String, Object>();
+	
+	public static String ADMIN_ROLE_DEF = "admin";
+	public static String MODERATOR_ROLE_DEF = "moderator";
+	
+	public static final String DEFAULT_NONREGISTERED_POSTFIX = "nonregistered";
+	private static final String DEFAULT_REGISTERED_POSTFIX = "registered";	
+	private static Log _log = LogFactory.getLog("org.supposition.utils.SessionManager");	
 	
 	public static WebContext getWebContext() {
 		return WebContextFactory.get();
@@ -47,12 +59,6 @@ public final class SessionManager {
 			_valueHouse.put(inKey, inObject);
 	}
 
-	public static Object getSessionValue(String inKey) {
-		if (_isTomcatContext)
-			return getFromSession(inKey);
-		return _valueHouse.get(inKey);
-	}
-
 	public static int getSessionIntValue(String inKey) {
 		if (_isTomcatContext)
 			return Utils.getIntFromStr(getFromSession(inKey).toString());
@@ -81,7 +87,7 @@ public final class SessionManager {
 	}
 
 	public static String getUserUuid() {
-		return (String) getSessionValue(MessagesManager.getDefault("session.userid.key"));
+		return (String) getFromSession(MessagesManager.getDefault("session.userid.key"));
 	}
 	
 	public static boolean isUserLoggedIn(){
@@ -119,5 +125,35 @@ public final class SessionManager {
 		// Table footer
 		result += MessagesManager.getText("main.admin.system.defaults.table.footer");		
 		return result;
+	}
+	
+	public static List<String> getUserRoles() {
+		List<String> resultList = new ArrayList<String>();
+		UserProxy users = new UserProxy();
+		User user = users.getDBObjectByUuid(getUserUuid());
+		if(user == null){
+			resultList.add(DEFAULT_NONREGISTERED_POSTFIX);
+			_log.debug("Current user has role:" + DEFAULT_NONREGISTERED_POSTFIX);
+		}else{
+			resultList.add(DEFAULT_REGISTERED_POSTFIX);
+			_log.debug("Current user has role:" + DEFAULT_REGISTERED_POSTFIX);
+			for(String role:user.getRolesAsList()){
+				resultList.add(role);
+				_log.debug("Current user has role:" + role);
+			}			
+		}
+		return resultList;
+	}	
+
+	public static boolean hasRole(String inRole){
+		//Return false if user not registered
+		if(!isUserLoggedIn()) return false;
+		for(String role:getUserRoles()){
+			if(role.equals(inRole)) return true;
+			// Admin should always access to everything
+			if(role.equals(ADMIN_ROLE_DEF)) return true;
+		}
+		// Return false if nothing found
+		return false;
 	}
 }

@@ -11,7 +11,7 @@ public interface IDBProxyCollection<E> {
 	List<String> getColumnNames();
 	void setPageSize(int inPageSize);
 	int getPageSize();
-	void cleanExpressions();
+	void clearExpressions();
 	boolean hasExpressions();
 	void addExpression(Expression inExpression);
 	List<Expression> getExpressions();
@@ -28,7 +28,6 @@ public interface IDBProxyCollection<E> {
 	String getPageSizeDef();
 	String getCurrentPageDef();
 	String getPageCountDef();
-	int getPageCount();
 	String getGo2PageDef();
 	String getHTMLPaginator(int inPage);
 	String getPageDencityDef();
@@ -38,5 +37,7 @@ public interface IDBProxyCollection<E> {
 	boolean isSessionHasFilter();
 	String getRemoveFilterDef();
 	E getDBObjectByUuid(String inUuid);
+	String getHTMLPaginator(int inPage, int itemsCount);
+	int getPageCount(int itemCount);
 	
 }

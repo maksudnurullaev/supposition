@@ -7,6 +7,7 @@ package org.supposition.db.auto;
   */
 public class _Ads extends org.apache.cayenne.CayenneDataObject {
 
+    public static final String CREATED_PROPERTY = "created";
     public static final String DELETE_AFTER_PROPERTY = "deleteAfter";
     public static final String PRICE_PROPERTY = "price";
     public static final String TEXT_PROPERTY = "text";
@@ -18,6 +19,14 @@ public class _Ads extends org.apache.cayenne.CayenneDataObject {
 
     public static final String ID_PK_COLUMN = "id";
 
+    public void setCreated(java.util.Date created) {
+        writeProperty("created", created);
+    }
+    public java.util.Date getCreated() {
+        return (java.util.Date)readProperty("created");
+    }
+    
+    
     public void setDeleteAfter(java.util.Date deleteAfter) {
         writeProperty("deleteAfter", deleteAfter);
     }
