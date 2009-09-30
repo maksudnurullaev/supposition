@@ -3,12 +3,14 @@
 	<property name="defaultPackage" value="org.supposition.db"/>
 	<db-entity name="ads">
 		<db-attribute name="cgroup_id" type="INTEGER"/>
+		<db-attribute name="city" type="VARCHAR" isMandatory="true" length="6"/>
 		<db-attribute name="company_id" type="INTEGER"/>
 		<db-attribute name="created" type="TIMESTAMP" isMandatory="true"/>
 		<db-attribute name="delete_after" type="DATE" isMandatory="true"/>
+		<db-attribute name="guuid" type="VARCHAR" isMandatory="true" length="40"/>
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="price" type="VARCHAR" length="16"/>
-		<db-attribute name="text" type="VARCHAR" isMandatory="true" length="256"/>
+		<db-attribute name="text" type="VARCHAR" isMandatory="true" length="1028"/>
 		<db-attribute name="type" type="VARCHAR" isMandatory="true" length="10"/>
 		<db-attribute name="user_id" type="INTEGER"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
@@ -27,7 +29,7 @@
 		<db-attribute name="additionals" type="VARCHAR" length="256"/>
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="128"/>
-		<db-attribute name="user_id" type="INTEGER"/>
+		<db-attribute name="user_id" type="INTEGER" isMandatory="true"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
 	</db-entity>
 	<db-entity name="roles">
@@ -52,8 +54,10 @@
 		<db-attribute name="user_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
 	<obj-entity name="Ads" className="org.supposition.db.Ads" dbEntityName="ads">
+		<obj-attribute name="city" type="java.lang.String" db-attribute-path="city"/>
 		<obj-attribute name="created" type="java.util.Date" db-attribute-path="created"/>
 		<obj-attribute name="deleteAfter" type="java.util.Date" db-attribute-path="delete_after"/>
+		<obj-attribute name="guuid" type="java.lang.String" db-attribute-path="guuid"/>
 		<obj-attribute name="price" type="java.lang.String" db-attribute-path="price"/>
 		<obj-attribute name="text" type="java.lang.String" db-attribute-path="text"/>
 		<obj-attribute name="type" type="java.lang.String" db-attribute-path="type"/>
@@ -149,6 +153,6 @@
 	<obj-relationship name="user" source="Company" target="User" db-relationship-path="User"/>
 	<obj-relationship name="users" source="Role" target="User" deleteRule="Nullify" db-relationship-path="RoleIDs.Users"/>
 	<obj-relationship name="ads" source="User" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>
-	<obj-relationship name="companies" source="User" target="Company" db-relationship-path="Companies"/>
+	<obj-relationship name="companies" source="User" target="Company" deleteRule="Cascade" db-relationship-path="Companies"/>
 	<obj-relationship name="roles" source="User" target="Role" deleteRule="Nullify" db-relationship-path="UserIDs.Roles"/>
 </data-map>

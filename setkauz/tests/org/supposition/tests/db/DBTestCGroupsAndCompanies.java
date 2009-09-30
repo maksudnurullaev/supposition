@@ -11,8 +11,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.supposition.db.Cgroup;
 import org.supposition.db.Company;
+import org.supposition.db.User;
 import org.supposition.db.proxy.CgroupProxy;
 import org.supposition.db.proxy.CompanyProxy;
+import org.supposition.db.proxy.UserProxy;
 import org.supposition.utils.DBUtils;
 
 /**
@@ -33,13 +35,26 @@ public class DBTestCGroupsAndCompanies {
 	
 	@Test
 	public void test_1_common() {
+		DataContext _context = DBUtils.getInstance().getDBContext();
+		
+		// Create test user
+		User user = (User) _context.newObject(User.class); 
+		user.check4Kaptcha(false);
+		
+		user.setMail("test_user_4company@test.com");
+		user.setPassword("1234");
+		
+		ValidationResult validationResult = user.getValidationResult();
+		Assert.assertFalse(validationResult.hasFailures());
+		user.postValidationSave();
+		_context.commitChanges();		
+		
 		// Create test groups
 		String group1 = "test_cgroup_element1";
 		String group11 = "test_cgroup_element11";
 		String group12 = "test_cgroup_element12";
 		String group121 = "test_cgroup_element121";
 		
-		DataContext _context = DBUtils.getInstance().getDBContext();
 
 		Cgroup gelement1 = (Cgroup) _context.newObject(Cgroup.class);
 		Cgroup gelement11 = (Cgroup) _context.newObject(Cgroup.class);
@@ -51,7 +66,7 @@ public class DBTestCGroupsAndCompanies {
 		gelement12.setName(group12);
 		gelement121.setName(group121);
 				
-		ValidationResult validationResult = gelement1.getValidationResult();		
+		validationResult = gelement1.getValidationResult();		
 		Assert.assertFalse(validationResult.hasFailures());
 		validationResult = gelement11.getValidationResult();
 		Assert.assertFalse(validationResult.hasFailures());
@@ -80,9 +95,13 @@ public class DBTestCGroupsAndCompanies {
 		Company celement121 = (Company) _context.newObject(Company.class);
 		
 		celement1.setName(ename1);
+		celement1.setUser(user);
 		celement11.setName(ename11);
+		celement11.setUser(user);
 		celement12.setName(ename12);
+		celement12.setUser(user);
 		celement121.setName(ename121);
+		celement121.setUser(user);
 				
 		validationResult = celement1.getValidationResult();		
 		Assert.assertFalse(validationResult.hasFailures());
@@ -121,6 +140,15 @@ public class DBTestCGroupsAndCompanies {
 	}
 
 	private static void delete_test_objects() {
+		// Delete test user
+		UserProxy users = new UserProxy();
+		users.addExpression(ExpressionFactory.likeIgnoreCaseExp("mail","test_user_%"));
+		List<User> usersList = users.getAll();
+		if (usersList != null && usersList.size() > 0) {
+			users.deleteObjects(usersList);
+			users.commitChanges();
+		}		
+		
 		// Delete test Groups
 		CgroupProxy cgroups = new CgroupProxy();
 				

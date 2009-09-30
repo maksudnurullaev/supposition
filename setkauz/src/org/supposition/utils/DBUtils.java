@@ -106,8 +106,8 @@ public final class DBUtils {
 		return UUID.randomUUID().toString();
 	}
 
-	public static String getGroupsAsHTMLSelect() {
-		String result = "<select id='guuid'>";
+	public static String getGroupsAsHTMLSelect(String inPrefix) {
+		String result = String.format("<select id='%s.guuid'>", inPrefix);
 		String format = "<option value='%s'>%s</option>";
 		result += String.format(format, "root", MessagesManager.getText("text.root.cgroup"));
 

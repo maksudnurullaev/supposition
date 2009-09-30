@@ -7,6 +7,7 @@ import org.apache.cayenne.CayenneDataObject;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
 import org.apache.cayenne.exp.ExpressionFactory;
+import org.apache.cayenne.query.Ordering;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,6 +20,7 @@ import org.supposition.utils.Utils;
 public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDBProxyCollection<E>{
 	private DataContext _context;
 	private List<Expression> _expressions = new ArrayList<Expression>();
+	private List<Ordering> _orderings = new ArrayList<Ordering>();
 	private Class<E> _eclass = null;
 	private int _pageSize = Utils.getIntFromStr(MessagesManager.getDefault("default.page.size"));
 	public Log _log = LogFactory.getLog(this.getClass());
@@ -29,6 +31,21 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		_log.debug("->addExpression: " + inExpression.toString());
 		_expressions.add(inExpression);
 		_log.debug("Expression count now = " + _expressions.size());
+	}
+	
+	@Override
+	public void addOrdering(Ordering inOrdering){
+		_orderings.add(inOrdering);
+	}
+	
+	@Override
+	public void clearOrderings(){
+		_orderings.clear();
+	}
+	
+	@Override
+	public void attachOrderings(SelectQuery inQuery){
+		for(Ordering ordering:_orderings) inQuery.addOrdering(ordering);
 	}
 	
 	@Override	
@@ -66,7 +83,6 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		
 	}
 	
-
 	public DataContext getDataContext(){
 		return _context;
 	}
@@ -120,6 +136,11 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		return _expressions;
 	}
 
+	@Override
+	public List<Ordering> getOrderings(){
+		return _orderings;
+	}
+	
 	@Override
 	public String getGo2PageDef() {
 		return getClass().getSimpleName() + MessagesManager.getDefault("go2Page.jsf.def");
@@ -248,6 +269,9 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 		if(hasExpressions())
 			attachExpressions(resultQuery);
 		
+		if(hasOrderings())
+			attachOrderings(resultQuery);
+		
 		return resultQuery;
 	}	
 	
@@ -267,6 +291,11 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	}	
 	
 	@Override
+	public boolean hasOrderings(){
+		return (!getOrderings().isEmpty());
+	} 
+	
+	@Override
 	public boolean isSessionHasFilter(){
 		return (SessionManager.getFromSession(getSessionFilterDef()) != null);		
 	}
@@ -283,6 +312,9 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 
 	@Override
 	public void setPageSize(int inPageSize) {
-		SessionManager.setToSession(getPageSizeDef(), inPageSize);
+		if(inPageSize <= 100)
+			SessionManager.setToSession(getPageSizeDef(), inPageSize);
+		else
+			SessionManager.setToSession(getPageSizeDef(), 100);
 	}	
 }

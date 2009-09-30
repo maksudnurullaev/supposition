@@ -11,6 +11,8 @@ public class AdsBean extends SimpleProxy {
 	private String guuid;
 	// Company uuid;
 	private String cuuid;
+	// Company city;
+	private String city;
 		
 	public void setText(String text) {
 		this.text = text;
@@ -53,5 +55,11 @@ public class AdsBean extends SimpleProxy {
 	}
 	public int getWeeks2keep() {
 		return weeks2keep;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getCity() {
+		return city;
 	}
 }

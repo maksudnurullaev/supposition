@@ -266,7 +266,7 @@ public class UserProxy extends ADBProxyObject<User> {
 					getCurrentRolesAsHTML(inUuid),
 					getAvailableRolesAsHTML(inUuid));
 		else
-			result = MessagesManager.getText("error.data.not.found");
+			result = MessagesManager.getText("errors.data.not.found");
 
 		return result;
 	}
@@ -289,7 +289,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		// Check for items
 		if (users == null || users.size() == 0)
 			return getHTMLPaginator(inPage)
-					+ MessagesManager.getText("errors.object.not.found");
+					+ MessagesManager.getText("errors.data.not.found");
 
 		// Formate result
 		String format = MessagesManager.getText("main.admin.users.table.tr");

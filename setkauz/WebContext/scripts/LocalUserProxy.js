@@ -45,7 +45,6 @@ LocalUserProxy.updateUserPassword = function(){
 	return false;
 };
 
-
 LocalUserProxy.addNewUser = function() {
 	// Check fields
 	if( !Main.isValidValue("mail") ||
@@ -67,7 +66,7 @@ LocalUserProxy.addNewUser = function() {
 		alert(result);
 		if (Main.isOK(result)) {
 			dwr.util.setValue("mainBody2", "");
-			Main.loadPageContext();
+			Main.reloadAll();
 		}
 
 	});
@@ -93,7 +92,7 @@ LocalUserProxy.enterUser = function() {
 		alert(result);
 		if (Main.isOK(result)) {
 			dwr.util.setValue("mainBody2", "");
-			Main.loadPageContext();
+			Main.reloadAll();
 		}
 	});
 	
@@ -129,7 +128,9 @@ LocalUserProxy.showMainEnterForm = function(){
 LocalUserProxy.userLogoff = function(){
 	Session.logOff(function(result){
 		alert(result);
-		if(Main.isOK(result)) { Main.loadPageContext(); }
+		if(Main.isOK(result)) { 
+			Main.reloadAll();
+		}
 	});
 	
 	return false;

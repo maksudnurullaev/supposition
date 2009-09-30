@@ -2,24 +2,16 @@ Namespace("index");
 
 Load ("dwr/engine.js");  
 Load ("dwr/util.js");
-Load ("tabs/tabs.js");
 Load ("dwr/interface/Session.js");
 Load ("dwr/interface/LocalUserProxy.js");
 Load ("dwr/interface/AdsProxy.js");
 
 //Load ("scripts/Gup.js");
+Load ("tabs/tabs.js");
 Load ("scripts/Stack.js");
 Load ("scripts/Main.js");
 Load ("scripts/LocalUserProxy.js");
 Load ("scripts/AdsProxy.js");
-
-index.myErrorHandler = function (msg){
-	alert("Error handler: " + msg);
-	// Clear stack
-	dwr.util.setValue("stack", "", {escapeHtml :false});
-	// Re-load page
-	Main.loadPageContext();
-};
 
 index.initPage = function(){
 	if( "undefined" == typeof Namespace)      { alert("JS: Failed to Load [ Namespace ]");      return false; }	
