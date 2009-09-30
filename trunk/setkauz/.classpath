@@ -9,6 +9,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Tomcat-6.0.20"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/localibs"/>
-	<classpathentry kind="lib" path="WebContext/WEB-INF/lib/postgresql-8.4-701.jdbc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

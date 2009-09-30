@@ -7,10 +7,12 @@ CgroupProxy.showNewForm = function() {
 
 CgroupProxy.addNew = function(){
 	// Check fields
-	if(!Main.isValidValue("name")){ return false; }
+	if(!Main.isValidValue("cgroup.name")){ return false; }
 	
 	Cgroup = {name:null, guuid:null};
-	dwr.util.getValues(Cgroup);
+	
+	Cgroup.name = dwr.util.getValue("cgroup.name");
+	Cgroup.guuid = dwr.util.getValue("cgroup.guuid");
 	
 	CgroupProxy.addDBONew(Cgroup, function(result){
 		alert(result);

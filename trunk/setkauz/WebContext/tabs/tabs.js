@@ -96,6 +96,11 @@ Tabs.initStack = function(){
 
 Tabs.clearStack = function(){
 	if(Tabs.initStack()){
-		dwr.util.setValue(Tabs.div_stack_id, "empty");
+		// Clear stack element
+		dwr.util.setValue(Tabs.div_stack_id, "");
+		// Clear last navigation path
+		Tabs.last_nav_path = ""; 
+		// Clear stack
+		dwr.util.setValue("stack", "", {escapeHtml :false});
 	}
 }

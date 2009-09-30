@@ -9,7 +9,7 @@ AdsProxy.showNewForm = function() {
 
 AdsProxy.addNew = function(){
 	// Check fields
-	if(!Main.isValidValue("text")){ return false; }
+	if(!Main.isValidValue("ads.text")){ return false; }
 	
 	Ads = {text:null, 
 			kaptcha:null,
@@ -17,9 +17,17 @@ AdsProxy.addNew = function(){
 			weeks2keep:null,
 			cuuid:null,
 			guuid:null,
-			type:null};
+			type:null,
+			city:null};
 
-	dwr.util.getValues(Ads);
+	Ads.text = dwr.util.getValue("ads.text"); 
+	Ads.kaptcha = dwr.util.getValue("kaptcha");
+	Ads.price = dwr.util.getValue("ads.price");
+	Ads.weeks2keep = dwr.util.getValue("ads.weeks2keep");
+	Ads.cuuid = dwr.util.getValue("ads.cuuid");
+	Ads.guuid = dwr.util.getValue("ads.guuid");
+	Ads.type = dwr.util.getValue("ads.type");
+	Ads.city = dwr.util.getValue("ads.city");
 	
 //	alert("Ads.type = " + Ads.type);
 //	alert("Ads.text = " + Ads.text);
@@ -27,6 +35,7 @@ AdsProxy.addNew = function(){
 //	alert("Ads.weeks2keep = " + Ads.weeks2keep);
 //	alert("Ads.cuuid = " + Ads.cuuid);
 //	alert("Ads.guuid = " + Ads.guuid);
+//	alert("Ads.city = " + Ads.city);
 	
 	AdsProxy.addDBONew(Ads, function(result){
 		alert(result);
@@ -50,7 +59,12 @@ AdsProxy.updateTable = function() {
 };
 
 AdsProxy.go2Page = function(inPage) {
-	AdsProxy.getPageAsHTMLTable(dwr.util.getValue("guuid"), inPage, function(table) {
+	GCFilter = {city:null, group:null};
+	
+	GCFilter.city = dwr.util.getValue("ads.city");
+	GCFilter.guuid = dwr.util.getValue("ads.guuid");
+	
+	AdsProxy.getPageAsHTMLTable(GCFilter, inPage, function(table) {
 		dwr.util.setValue(AdsProxy.mainDiv, table, {
 			escapeHtml :false
 		});

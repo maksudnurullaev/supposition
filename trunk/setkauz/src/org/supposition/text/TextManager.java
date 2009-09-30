@@ -105,10 +105,18 @@ public class TextManager extends PropertyLoader {
 			result = result.replaceAll("INSTERT_SYSTEM_DEFAULTS",  SessionManager.getSystemDefaultsAsHTMLMgmTable());
 			_log.debug("replaceFinalTokensInText --> FOUND --> INSTERT_SYSTEM_DEFAULTS");
 		}
-		if (result.indexOf("CGROUPS_AS_SELECT") != -1) {
-			result = result.replaceAll("CGROUPS_AS_SELECT",  DBUtils.getGroupsAsHTMLSelect());
-			_log.debug("replaceFinalTokensInText --> FOUND --> CGROUPS_AS_SELECT");
+		if (result.indexOf("CGROUPS_AS_SELECT4ADS") != -1) {
+			result = result.replaceAll("CGROUPS_AS_SELECT4ADS",  DBUtils.getGroupsAsHTMLSelect("ads"));
+			_log.debug("replaceFinalTokensInText --> FOUND --> CGROUPS_AS_SELECT4ADS");
 		}
+		if (result.indexOf("CGROUPS_AS_SELECT4COMPANY") != -1) {
+			result = result.replaceAll("CGROUPS_AS_SELECT4COMPANY",  DBUtils.getGroupsAsHTMLSelect("company"));
+			_log.debug("replaceFinalTokensInText --> FOUND -->CGROUPS_AS_SELECT4COMPANY");
+		}		
+		if (result.indexOf("CGROUPS_AS_SELECT4CGROUPS") != -1) {
+			result = result.replaceAll("CGROUPS_AS_SELECT4CGROUPS",  DBUtils.getGroupsAsHTMLSelect("cgroup"));
+			_log.debug("replaceFinalTokensInText --> FOUND -->CGROUPS_AS_SELECT4CGROUPS");
+		}		
 		if (result.indexOf("CGROUPS_AS_HTML_ADMIN") != -1) {
 			result = result.replaceAll("CGROUPS_AS_HTML_ADMIN",  DBUtils.getGroupsAsHTML(true));
 			_log.debug("replaceFinalTokensInText --> FOUND --> CGROUPS_AS_HTML_ADMIN");
@@ -117,6 +125,15 @@ public class TextManager extends PropertyLoader {
 			result = result.replaceAll("CGROUPS_AS_HTML",  DBUtils.getGroupsAsHTML(false));
 			_log.debug("replaceFinalTokensInText --> FOUND --> CGROUPS_AS_HTML");
 		}
+		if (result.indexOf("HTML_SELECT_CITIES4ADS") != -1) {
+			result = result.replaceAll("HTML_SELECT_CITIES4ADS", Utils.getHTMLSelectCity4("ads"));
+			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_SELECT_CITIES4ADS");
+		}	
+		if (result.indexOf("HTML_SELECT_CITIES4COMPANY") != -1) {
+			result = result.replaceAll("HTML_SELECT_CITIES4COMPANY", Utils.getHTMLSelectCity4("company"));
+			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_SELECT_CITIES4COMPANY");
+		}
+		
 		_log.debug("replaceFinalTokensInText --> END");
 		return result;
 	}

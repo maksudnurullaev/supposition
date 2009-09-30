@@ -38,7 +38,7 @@ public final class SessionManager {
 
 	public static boolean isExist(String inKey) {
 		if (_isTomcatContext)
-			return getHttpSession().getAttribute(inKey) != null;
+			return getHttpSession().getAttribute(inKey) != null;		
 		return false;
 	}
 
@@ -96,7 +96,7 @@ public final class SessionManager {
 
 
 	public static void logoffUser(){
-		removeFromSession(MessagesManager.getDefault("session.userid.key"));
+		getHttpSession().invalidate();
 	}
 	
 	public static void loginUser(User user){

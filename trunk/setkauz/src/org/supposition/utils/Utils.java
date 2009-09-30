@@ -128,6 +128,13 @@ public final class Utils {
     	}
 };
 
+	public static String getHTMLSelectCity4(String inPrefix) {
+		String result = String.format(MessagesManager.getText("html.select.cities.header"), inPrefix);
+		result += MessagesManager.getText("html.select.cities.body");
+		result += MessagesManager.getText("html.select.cities.footer");
+		return result;
+	}
+
 
 
 }

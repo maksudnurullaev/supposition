@@ -26,6 +26,8 @@ public class Ads extends _Ads  implements IDBOClass{
 		setPrice(DBUtils.removeHTMLTags(inAdsBean.getPrice()));
 		setDeleteAfter(inAdsBean.getWeeks2keep());
 		setKaptcha(inAdsBean.getKaptcha());
+		setCity(inAdsBean.getCity());
+		setGuuid(inAdsBean.getGuuid());
 		
 		// Check for owner
 		if(SessionManager.getUserUuid() != null){

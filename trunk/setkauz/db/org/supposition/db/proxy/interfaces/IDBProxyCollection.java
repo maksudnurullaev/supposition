@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.query.Ordering;
 import org.apache.cayenne.query.SelectQuery;
 
 public interface IDBProxyCollection<E> {
@@ -39,5 +40,10 @@ public interface IDBProxyCollection<E> {
 	E getDBObjectByUuid(String inUuid);
 	String getHTMLPaginator(int inPage, int itemsCount);
 	int getPageCount(int itemCount);
+	void addOrdering(Ordering inOrdering);
+	void clearOrderings();
+	void attachOrderings(SelectQuery inQuery);
+	boolean hasOrderings();
+	List<Ordering> getOrderings();
 	
 }

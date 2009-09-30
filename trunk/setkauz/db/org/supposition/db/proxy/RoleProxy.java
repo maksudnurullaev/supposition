@@ -124,7 +124,7 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		if(roles == null ||
 				roles.size() == 0)
 			return getHTMLPaginator(inPage) + 
-				MessagesManager.getText("errors.object.not.found");
+				MessagesManager.getText("errors.data.not.found");
 		
 		// Formate result		
 		int startItem = (inPage - 1) * getPageSize();

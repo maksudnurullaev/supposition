@@ -144,3 +144,10 @@ Main.updateSessionTable = function() {
 	});
 	return false;
 };
+
+Main.reloadAll = function(){
+	// Clear stack
+	Tabs.clearStack();
+	// Reload page
+	Main.loadPageContext(); 	
+}

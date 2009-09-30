@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
+import org.apache.cayenne.exp.ExpressionFactory;
 import org.apache.cayenne.query.Ordering;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Ads;
@@ -31,7 +32,6 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		setDataContext(inDataContext);
 	}	 	
 	
-
 	public String removeDBO(String inUuid){
 		if(!SessionManager.hasRole(SessionManager.MODERATOR_ROLE_DEF)){
 			return MessagesManager.getDefault("web.error.result.prefix")
@@ -50,6 +50,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		return MessagesManager.getDefault("web.ok.result.prefix") 
 		+ MessagesManager.getText("message.data.saved");
 	}
+
 	public String addDBONew(AdsBean inAdsBean){
 		_log.debug("addDBORole ->");
 		
@@ -93,95 +94,89 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		return null;
 	}	
 
-	public String getPageAsHTMLTable(String guuid, int inPage) {
+	public String getPageAsHTMLTable(CgroupCityFilterBean inFilter, int inPage) {
 		_log.debug("-> getPageAsHTMLTable");
+		_log.debug("inFilter.getCity(): " + inFilter.getCity());		
+		_log.debug("inFilter.getGuuid(): " + inFilter.getGuuid());
 		
 		// Check page value 
-		if (inPage <= 0)
+		if (inPage <= 0 // if page negative
+			||	inFilter.getCity().length() > 6) // if city has not format "[N|6][#]"
 			return MessagesManager.getText("errors.too.many.objects");
+			
 				
-		// For all ads
-		if(guuid.equals("root")) return getFromAllAds(inPage);	
+		// Set cgroup filter
+		if(!inFilter.getGuuid().equals("root")){
+			CgroupProxy cgroupProxy = new CgroupProxy();
+			Cgroup cgroup = cgroupProxy.getDBObjectByUuid(inFilter.getGuuid());
+			
+			if(cgroup != null){
+				List<String> cgroupUuidList = new ArrayList<String>();				
+				getCgroupUuidAsList(cgroupUuidList, cgroup);
+				addExpression(ExpressionFactory.inDbExp("guuid", cgroupUuidList));
+			}
+		}	
 		
-		CgroupProxy cgroupProxy = new CgroupProxy();
-		Cgroup cgroup = cgroupProxy.getDBObjectByUuid(guuid);
-		
-		if(cgroup == null){
-			return MessagesManager.getText("error.data.not.found");
-		}
-		
-		List<Ads> adsList = new ArrayList<Ads>();
-		getAdsAsList(adsList, cgroup);
-		
-		if(adsList.size() == 0){
-			return MessagesManager.getText("error.data.not.found");	
-		}
-		
-		return getAdsAsHTMLTable(inPage, adsList);
-	}
-
-	private List<Ads> getAdsAsList(List<Ads> adsList, Cgroup cgroup) {
-		List<?>objects  = cgroup.getAds();
-		
-		for(final Object ads:objects){
-			adsList.add((Ads) ads);
-		}
-		
-		if(cgroup.getChilds() != null){
-			List<?> child_cgroups = cgroup.getChilds();
-			for (Object child_cgroup:child_cgroups) {
-				getAdsAsList(adsList, (Cgroup) child_cgroup);
+		// Set city filter
+		if(!inFilter.getCity().equals("root")){
+			String cityFilter = inFilter.getCity();
+			if(cityFilter.indexOf("#") != -1 &&
+					cityFilter.indexOf("#") == (cityFilter.length() - 1)){
+				cityFilter.replace("#", "%");
+				addExpression(ExpressionFactory.likeIgnoreCaseExp("city", cityFilter));
+			}else{
+				addExpression(ExpressionFactory.matchDbExp("city", cityFilter));
 			}
 		}
 		
-		return adsList;
-	}
-
-	private String getFromAllAds(int inPage) {
-		// Get all
+		// Set ordering by DEFAULT
+		addOrdering(new Ordering("created", false));
+		
 		List<Ads> adsList = getAll();
-				
+		
+		if(adsList == null || adsList.size() == 0){
+			return MessagesManager.getText("errors.data.not.found");	
+		}
+		
 		return getAdsAsHTMLTable(inPage, adsList);
 	}
 
+	private void getCgroupUuidAsList(List<String> inList, Cgroup inCgroup) {
+		inList.add(inCgroup.getUuid());
+		
+		List<?> childList = inCgroup.getChilds();
+		if(childList != null){
+			for(Object cgroup:childList){
+				getCgroupUuidAsList(inList, (Cgroup) cgroup);
+			}
+		}
+	}
+
 	private String getAdsAsHTMLTable(int inPage, List<Ads> adsList) {
-		// Check for result 
-		if (adsList == null || adsList.size() == 0)
-			return MessagesManager.getText("errors.object.not.found");		
-		
-		// Created "sorted by created property list" of ads
-		List<Ads> sortedAdsList = new ArrayList<Ads>();
-		for(Ads ads:adsList)sortedAdsList.add(ads);	
-		
-		adsList = null;
-		
-		Ordering ordering  = new Ordering("created", false);
-		ordering.orderList(sortedAdsList);
-				
-		
+		// Define start & end items
+		int startItem = (inPage - 1) * getPageSize();
+		int endItem = inPage * getPageSize();
+		int allItemCount = adsList.size();
 		
 		// Formate result
 		String result = "";		
 		String format = MessagesManager.getText("main.ads.table.tr");
-		int startItem = (inPage - 1) * getPageSize();
-		int endItem = inPage * getPageSize();
 		
 		// Define medorator role
 		boolean isMedorator = SessionManager.hasRole(SessionManager.MODERATOR_ROLE_DEF);
 		
 		for (int j = startItem; j < endItem; j++) {
-			if (j >= sortedAdsList.size())
-				break;
-			Ads ads = sortedAdsList.get(j);
+			if (j >= adsList.size()) break;
+			Ads ads = adsList.get(j);
 			result = result
 					+ String.format(format, 
-							(j + 1), 
-							ads.getText() + getAdditionalLinks(ads, isMedorator),
+							(++startItem), 
+							"<u>" + MessagesManager.getText(ads.getType()) + "</u> - " + ads.getText() + getAdditionalLinks(ads, isMedorator),
 							Utils.GetFormatedDate("yyyy.MM.dd", ads.getDeleteAfter()),
 							Utils.GetFormatedDate("yyyy.MM.dd HH:mm:ss.SSS", ads.getCreated()));
 		}
 		
-		return getHTMLPaginator(inPage, sortedAdsList.size())
+		return getHTMLPaginator(inPage, allItemCount)
 			+ MessagesManager.getText("main.ads.table.header")
 			+ result
 			+ MessagesManager.getText("main.ads.table.footer");
