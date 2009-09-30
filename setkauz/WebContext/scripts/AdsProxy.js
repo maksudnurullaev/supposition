@@ -59,7 +59,7 @@ AdsProxy.updateTable = function() {
 };
 
 AdsProxy.go2Page = function(inPage) {
-	GCFilter = {city:null, group:null};
+	GCFilter = {city:null, guuid:null};
 	
 	GCFilter.city = dwr.util.getValue("ads.city");
 	GCFilter.guuid = dwr.util.getValue("ads.guuid");
