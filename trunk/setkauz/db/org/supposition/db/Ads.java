@@ -39,10 +39,10 @@ public class Ads extends _Ads  implements IDBOClass{
 		
 		// Check for group
 		if(inAdsBean.getGuuid() != null){
-			CgroupProxy cgroup = new CgroupProxy(getDataContext());
-			Cgroup group = cgroup.getDBObjectByUuid(inAdsBean.getGuuid());
-			if(group != null)
-				this.setCgroup(group);
+			CgroupProxy cgroups = new CgroupProxy(getDataContext());
+			Cgroup cgroup = cgroups.getDBObjectByUuid(inAdsBean.getGuuid());
+			if(cgroup != null)
+				this.setCgroup(cgroup);
 		}
 		
 		// Check for company
