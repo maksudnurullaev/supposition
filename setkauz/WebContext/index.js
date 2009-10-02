@@ -16,8 +16,6 @@ Load ("scripts/AdsProxy.js");
 index.initPage = function(){
 	if( "undefined" == typeof Namespace)      { alert("JS: Failed to Load [ Namespace ]");      return false; }	
 	if( "undefined" == typeof dwr)            { alert("JS: Failed to Load [ dwr ]");            return false; }
-	if( "undefined" == typeof dwr.engine)     { alert("JS: Failed to Load [ dwr.engine ]");     return false; }
-	if( "undefined" == typeof dwr.util)       { alert("JS: Failed to Load [ dwr.util ]");       return false; }
 	if( "undefined" == typeof Tabs)           { alert("JS: Failed to Load [ Tabs ]");           return false; }
 	if( "undefined" == typeof LocalUserProxy) { alert("JS: Failed to Load [ LocalUserProxy ]"); return false; }
 	if( "undefined" == typeof Main) 		  { alert("JS: Failed to Load [ Main ]");			return false; }

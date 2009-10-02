@@ -10,11 +10,13 @@ import java.util.List;
 public class _Company extends org.apache.cayenne.CayenneDataObject {
 
     public static final String ADDITIONALS_PROPERTY = "additionals";
+    public static final String CITY_PROPERTY = "city";
+    public static final String GUUID_PROPERTY = "guuid";
     public static final String NAME_PROPERTY = "name";
     public static final String UUID_PROPERTY = "uuid";
     public static final String WWW_PROPERTY = "www";
     public static final String ADS_PROPERTY = "ads";
-    public static final String CGOUPS_PROPERTY = "cgoups";
+    public static final String CGROUP_PROPERTY = "cgroup";
     public static final String USER_PROPERTY = "user";
 
     public static final String ID_PK_COLUMN = "id";
@@ -24,6 +26,22 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     }
     public String getAdditionals() {
         return (String)readProperty("additionals");
+    }
+    
+    
+    public void setCity(String city) {
+        writeProperty("city", city);
+    }
+    public String getCity() {
+        return (String)readProperty("city");
+    }
+    
+    
+    public void setGuuid(String guuid) {
+        writeProperty("guuid", guuid);
+    }
+    public String getGuuid() {
+        return (String)readProperty("guuid");
     }
     
     
@@ -62,15 +80,13 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     }
     
     
-    public void addToCgoups(org.supposition.db.Cgroup obj) {
-        addToManyTarget("cgoups", obj, true);
+    public void setCgroup(org.supposition.db.Cgroup cgroup) {
+        setToOneTarget("cgroup", cgroup, true);
     }
-    public void removeFromCgoups(org.supposition.db.Cgroup obj) {
-        removeToManyTarget("cgoups", obj, true);
-    }
-    public List getCgoups() {
-        return (List)readProperty("cgoups");
-    }
+
+    public org.supposition.db.Cgroup getCgroup() {
+        return (org.supposition.db.Cgroup)readProperty("cgroup");
+    } 
     
     
     public void setUser(org.supposition.db.User user) {

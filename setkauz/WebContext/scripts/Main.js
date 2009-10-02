@@ -28,53 +28,23 @@ Main.byId = function(id) {
 
 Main.loadPageContext = function() {
 	Tabs.clearStack();
-	Main.getTextFromServer('title', false);
-	Main.getTextFromServer('tabList', false);
+	Main.getTextFromServerToDiv('title','title', false);
+	Main.getTextFromServerToDiv('tabList','tabList', false);
 	Main.showMainTabList();
 
 	return false;
 };
 
-Main.getTextFromServer = function(key, nonFormat) {
-	Session.getTextByKey(key, function(data) {
-		dwr.util.setValue(key, data, {
-			escapeHtml :nonFormat
-		});
-		Main.evaluateItByKey(key);
-	});
-	return false;
-};
-
 Main.getTextFromServerToDiv = function(key, divId, nonFormat) {
-	if ("undefined" == typeof Session.getTextByKey) {
-		alert("JS: Failed to Load [ Session.getTextByKey ]");
-		return false;
-	}
-	if ("undefined" == typeof dwr.util.setValue) {
-		alert("JS: Failed to Load [ dwr.util.setValue ]");
-		return false;
-	}
-	if ("undefined" == typeof Main.evaluateItByKey) {
-		alert("JS: Failed to Load [ Main.evaluateItByKey ]");
-		return false;
-	}
-	Session.getTextByKey(key, function(data) {
-		dwr.util.setValue(divId, data, {
-			escapeHtml :nonFormat
-		});
-		Main.evaluateItByKey(key);
-	});
-
-	return false;
-};
-
-Main.evaluateItByKey = function(key) {
-	var keyID = key + ".eval";
-	Session.hasMessageByKey(keyID, function(found) {
-		if (found) {
-			Session.getTextByKey(keyID, function(data) {
-				eval(data);
-			});
+	Session.getTextByKey2(key, function(result) {
+		// Eval Part
+		if(result.eval){
+			eval(result.eval);
+		}
+		
+		// Text Part
+		if(result.text){
+			dwr.util.setValue(divId, result.text, {escapeHtml :nonFormat});
 		}
 	});
 

@@ -177,7 +177,7 @@ public final class DBUtils {
 	}	
 	
 	private static String makeDeleteCgroupLink(Cgroup inCgroup){
-		return String.format(MessagesManager.getDefault("link.with.onlick.template"), 
+		return String.format(Utils.linkTemplate, 
 				inCgroup.getUuid(),
 				"CgroupProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));

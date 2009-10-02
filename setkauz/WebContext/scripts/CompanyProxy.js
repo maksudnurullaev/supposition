@@ -11,24 +11,26 @@ CompanyProxy.addNew = function(){
 	// Check fields
 	if(!Main.isValidValue("company.name")){ return false; }
 	
-	Company = {name:null, additional:null, www:null, city:null};
+	Company = {name:null, additionals:null, www:null, guuid:null, city:null};
 
 	Company.name = dwr.util.getValue("company.name");
-	Company.additional = dwr.util.getValue("company. additional");
+	Company.additionals = dwr.util.getValue("company.additionals");
 	Company.www = dwr.util.getValue("company.www");
 	Company.city = dwr.util.getValue("company.city");
+	Company.guuid = dwr.util.getValue("company.guuid");
 	
-	alert("ACompany.name = " + Company.name);
-	alert("Company.additional = " + Company.additional);
-	alert("Company.www = " + Company.www);
-	alert("Company.city = " + Company.city);
+//	alert("ACompany.name = " + Company.name);
+//	alert("Company.additional = " + Company.additionals);
+//	alert("Company.www = " + Company.www);
+//	alert("Company.city = " + Company.city);
+//	alert("Company.guuid = " + Company.guuid);
 	
-//	CompanyProxy.addDBONew(Ads, function(result){
-//		alert(result);
-//		if (Main.isOK(result)) {
-//			CompanyProxy.updateTable();
-//		}			
-//	});
+	CompanyProxy.addDBONew(Company, function(result){
+		alert(result);
+		if (Main.isOK(result)) {
+			CompanyProxy.updateTable();
+		}			
+	});
 	
 	return false;	
 };

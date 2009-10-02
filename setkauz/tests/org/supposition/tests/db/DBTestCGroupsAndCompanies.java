@@ -47,7 +47,7 @@ public class DBTestCGroupsAndCompanies {
 		ValidationResult validationResult = user.getValidationResult();
 		Assert.assertFalse(validationResult.hasFailures());
 		user.postValidationSave();
-		_context.commitChanges();		
+		_context.commitChanges();	
 		
 		// Create test groups
 		String group1 = "test_cgroup_element1";
@@ -129,14 +129,7 @@ public class DBTestCGroupsAndCompanies {
 		gelement12.addToCompanies(celement12);
 		gelement121.addToCompanies(celement121);
 		
-		_context.commitChanges();		
-		
-		Assert.assertTrue(celement1.getCgoups().size() == 1);
-		Assert.assertTrue(celement11.getCgoups().size() == 1);
-		Assert.assertTrue(celement12.getCgoups().size() == 1);
-		Assert.assertTrue(celement121.getCgoups().size() == 1);
-		
-		
+		_context.commitChanges();				
 	}
 
 	private static void delete_test_objects() {
