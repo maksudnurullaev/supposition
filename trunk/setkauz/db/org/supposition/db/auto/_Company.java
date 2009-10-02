@@ -12,6 +12,7 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     public static final String ADDITIONALS_PROPERTY = "additionals";
     public static final String NAME_PROPERTY = "name";
     public static final String UUID_PROPERTY = "uuid";
+    public static final String WWW_PROPERTY = "www";
     public static final String ADS_PROPERTY = "ads";
     public static final String CGOUPS_PROPERTY = "cgoups";
     public static final String USER_PROPERTY = "user";
@@ -39,6 +40,14 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     }
     public String getUuid() {
         return (String)readProperty("uuid");
+    }
+    
+    
+    public void setWww(String www) {
+        writeProperty("www", www);
+    }
+    public String getWww() {
+        return (String)readProperty("www");
     }
     
     

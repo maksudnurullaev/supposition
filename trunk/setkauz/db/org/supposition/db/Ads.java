@@ -20,7 +20,7 @@ public class Ads extends _Ads  implements IDBOClass{
 	private Log _log = LogFactory.getLog(this.getClass());
 	private String kaptcha = "";
 
-	public void setAds(AdsBean inAdsBean){
+	public void setBean(AdsBean inAdsBean){
 		setType(inAdsBean.getType());
 		setText(DBUtils.removeHTMLTags(inAdsBean.getText()));
 		setPrice(DBUtils.removeHTMLTags(inAdsBean.getPrice()));
