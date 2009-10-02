@@ -31,6 +31,7 @@
 		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="128"/>
 		<db-attribute name="user_id" type="INTEGER" isMandatory="true"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
+		<db-attribute name="www" type="VARCHAR" length="64"/>
 	</db-entity>
 	<db-entity name="roles">
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
@@ -71,6 +72,7 @@
 		<obj-attribute name="additionals" type="java.lang.String" db-attribute-path="additionals"/>
 		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
 		<obj-attribute name="uuid" type="java.lang.String" db-attribute-path="uuid"/>
+		<obj-attribute name="www" type="java.lang.String" db-attribute-path="www"/>
 	</obj-entity>
 	<obj-entity name="Role" className="org.supposition.db.Role" dbEntityName="roles">
 		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>

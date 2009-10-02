@@ -71,7 +71,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		}
 		
 		// Setup user bean
-		ads.setAds(inAdsBean);
+		ads.setBean(inAdsBean);
 
 		// Validate
 		ValidationResult validationResult = ads.getValidationResult();

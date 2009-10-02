@@ -9,31 +9,26 @@ CompanyProxy.showNewForm = function() {
 
 CompanyProxy.addNew = function(){
 	// Check fields
-	if(!Main.isValidValue("text")){ return false; }
+	if(!Main.isValidValue("company.name")){ return false; }
 	
-	Ads = {text:null, 
-			kaptcha:null,
-			price:null,
-			weeks2keep:null,
-			cuuid:null,
-			guuid:null,
-			type:null};
+	Company = {name:null, additional:null, www:null, city:null};
 
-	dwr.util.getValues(Ads);
+	Company.name = dwr.util.getValue("company.name");
+	Company.additional = dwr.util.getValue("company. additional");
+	Company.www = dwr.util.getValue("company.www");
+	Company.city = dwr.util.getValue("company.city");
 	
-//	alert("Ads.type = " + Ads.type);
-//	alert("Ads.text = " + Ads.text);
-//	alert("Ads.price = " + Ads.price);
-//	alert("Ads.weeks2keep = " + Ads.weeks2keep);
-//	alert("Ads.cuuid = " + Ads.cuuid);
-//	alert("Ads.guuid = " + Ads.guuid);
+	alert("ACompany.name = " + Company.name);
+	alert("Company.additional = " + Company.additional);
+	alert("Company.www = " + Company.www);
+	alert("Company.city = " + Company.city);
 	
-	CompanyProxy.addDBONew(Ads, function(result){
-		alert(result);
-		if (Main.isOK(result)) {
-			CompanyProxy.updateTable();
-		}			
-	});
+//	CompanyProxy.addDBONew(Ads, function(result){
+//		alert(result);
+//		if (Main.isOK(result)) {
+//			CompanyProxy.updateTable();
+//		}			
+//	});
 	
 	return false;	
 };
