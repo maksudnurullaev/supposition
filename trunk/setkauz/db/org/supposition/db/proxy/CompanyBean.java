@@ -4,7 +4,11 @@ public class CompanyBean extends SimpleProxy {
 	private String name;
 	private String additionals;
 	private String www;
-		
+	// Cgroup uuid;
+	private String guuid;
+	// Company city;
+	private String city;
+	
 	public void setName(String name) {
 		this.name = name;
 	}	
@@ -22,6 +26,18 @@ public class CompanyBean extends SimpleProxy {
 	}
 	public String getWww() {
 		return www;
+	}
+	public void setGuuid(String guuid) {
+		this.guuid = guuid;
+	}
+	public String getGuuid() {
+		return guuid;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getCity() {
+		return city;
 	}
 
 }

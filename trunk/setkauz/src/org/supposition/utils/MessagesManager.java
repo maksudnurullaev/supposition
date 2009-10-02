@@ -1,5 +1,7 @@
 package org.supposition.utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -21,6 +23,30 @@ public final class MessagesManager {
 		return _textManager.getTextByKey(inKey, getLocale());
 	}
 
+	// *** TEXT MANAGER part  # 2****
+	public static Map<String, String> getText2(String inKey) {
+		checkInitTextManager();
+		
+		//DefaultHttpRequestBeanProxy result = new DefaultHttpRequestBeanProxy();
+		
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("eval", null);
+		result.put("text", null);
+		
+		// Get Eval part
+		if(_textManager.hasKey(inKey + ".eval", getLocale())){
+			_log.debug("Found EVAL part of " + inKey + ".eval");
+			result.put("eval",_textManager.getTextByKey(inKey + ".eval", getLocale()));
+		}
+
+		// Get Text part
+		if(_textManager.hasKey(inKey, getLocale())){
+			_log.debug("Found TEXT part of " + inKey);
+			result.put("text",_textManager.getTextByKey(inKey, getLocale()));
+		}			
+		return result;
+	}
+	
 	public static String getDefault(String inKey) {
 		checkInitTextManager();
 		return _textManager.getDefaultByKey(inKey);

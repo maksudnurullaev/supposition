@@ -33,7 +33,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 	}	 	
 	
 	public String removeDBO(String inUuid){
-		if(!SessionManager.hasRole(SessionManager.MODERATOR_ROLE_DEF)){
+		if(!SessionManager.hasRole(SessionManager.MANAGER_ROLE_DEF)){
 			return MessagesManager.getDefault("web.error.result.prefix")
 				+ MessagesManager.getText("errors.user.has.not.access");
 		}
@@ -52,7 +52,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 	}
 
 	public String addDBONew(AdsBean inAdsBean){
-		_log.debug("addDBORole ->");
+		_log.debug("addDBONew ->");
 		
 		// Check for valid text
 		if(!Utils.isValidString(inAdsBean.getText())){
@@ -163,7 +163,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		String format = MessagesManager.getText("main.ads.table.tr");
 		
 		// Define medorator role
-		boolean isMedorator = SessionManager.hasRole(SessionManager.MODERATOR_ROLE_DEF);
+		boolean isMedorator = SessionManager.hasRole(SessionManager.MANAGER_ROLE_DEF);
 		
 		for (int j = startItem; j < endItem; j++) {
 			if (j >= adsList.size()) break;
@@ -185,9 +185,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 	private String getAdditionalLinks(Ads ads, boolean isMedorator) {
 		if(!isMedorator) return "";
 		
-		String linkTemplate = MessagesManager.getDefault("link.with.onlick.template");
-		
-		return "&nbsp;" + String.format(linkTemplate,
+		return "&nbsp;" + String.format(Utils.linkTemplate,
 				ads.getUuid(),
 				"AdsProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));

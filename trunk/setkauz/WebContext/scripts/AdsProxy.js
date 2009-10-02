@@ -1,5 +1,9 @@
 Namespace("AdsProxy");
 
+AdsProxy.testRequest = function(){
+	alert('test');
+};
+
 AdsProxy.mainDiv = "main.ads.table";
 
 AdsProxy.showNewForm = function() {

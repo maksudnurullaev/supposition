@@ -21,8 +21,8 @@ public final class SessionManager {
 	private static final boolean _isTomcatContext = Utils.isTomcatContext();
 	private static Map<String, Object> _valueHouse = new HashMap<String, Object>();
 	
-	public static String ADMIN_ROLE_DEF = "admin";
-	public static String MODERATOR_ROLE_DEF = "moderator";
+	public static final String ADMIN_ROLE_DEF   = "admin";
+	public static final String MANAGER_ROLE_DEF = "manager";
 	
 	public static final String DEFAULT_NONREGISTERED_POSTFIX = "nonregistered";
 	private static final String DEFAULT_REGISTERED_POSTFIX = "registered";	

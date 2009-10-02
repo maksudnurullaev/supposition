@@ -28,7 +28,6 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		setDataContext(inDataContext);
 	}	 	
 	
-
 	@Override
 	public List<String> getColumnNames() {
 		_log.debug("-> getColumnNames");
@@ -51,14 +50,14 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		Company company = null;
 		try {
 			company = createNew();
+			company.setBean(inBean);
 		} catch (Exception e) {
+			deleteObject(company);
+			e.printStackTrace();
 			return MessagesManager.getDefault("web.error.result.prefix") 
 				+ MessagesManager.getText("errors.could.not.create.dbobject");
 		}
 		
-		// Setup user bean
-		company.setBean(inBean);
-
 		// Validate
 		ValidationResult validationResult = company.getValidationResult();
 
@@ -74,4 +73,6 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return MessagesManager.getDefault("web.ok.result.prefix") 
 			+ MessagesManager.getText("message.data.saved");		
 	}	
+
+
 }

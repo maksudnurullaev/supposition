@@ -4,15 +4,20 @@ import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.auto._Company;
-import org.supposition.db.interfaces.IDBOClass; 
+import org.supposition.db.interfaces.IDBOClass;
+import org.supposition.db.proxy.CgroupProxy;
 import org.supposition.db.proxy.CompanyBean;
+import org.supposition.db.proxy.UserProxy;
+import org.supposition.exceptions.NullObject;
+import org.supposition.exceptions.UserAccessException;
 import org.supposition.utils.DBUtils;
+import org.supposition.utils.SessionManager;
 
-public class Company extends _Company  implements IDBOClass {
+public class Company extends _Company implements IDBOClass {
 
 	private static final long serialVersionUID = 1L;
 	private Log _log = LogFactory.getLog(this.getClass());
-	
+
 	@Override
 	public ValidationResult getValidationResult() {
 		_log.debug("getValidationResult -> ");
@@ -22,9 +27,9 @@ public class Company extends _Company  implements IDBOClass {
 	}
 
 	private void validateBeforeSave(ValidationResult validationResult) {
-		if(isNew())
+		if (isNew())
 			setUuid(DBUtils.getUuid());
-		
+
 	}
 
 	@Override
@@ -36,18 +41,35 @@ public class Company extends _Company  implements IDBOClass {
 	public void postValidationSave() {
 	}
 
-	public void setBean(CompanyBean inBean) {
+	public void setBean(CompanyBean inBean) throws UserAccessException,
+			UserAccessException, NullObject{
 		setName(inBean.getName());
 		setAdditionals(inBean.getAdditionals());
 		setWww(inBean.getWww());
-		
-		// TODO Add current logged user 
-		// TODO Add current group
-		// TODO Add current city
+		setCity(inBean.getCity());
+		setGuuid(inBean.getGuuid());
+
+		if (isNew()) {
+			// Add current logged user as owner
+			if (SessionManager.isUserLoggedIn()) {
+				UserProxy userProxy = new UserProxy(getDataContext());
+				User user = userProxy.getDBObjectByUuid(SessionManager
+						.getUserUuid());
+				if (user == null)
+					throw new NullObject();
+				setUser(user);
+			} else
+				throw new UserAccessException();
+		}
+
+		// Add to group
+		if (inBean.getGuuid() != null) {
+			CgroupProxy cgroups = new CgroupProxy(getDataContext());
+			Cgroup cgroup = cgroups.getDBObjectByUuid(inBean.getGuuid());
+			if (cgroup != null)
+				this.setCgroup(cgroup);
+		}		
+
 	}
-	
-	
+
 }
-
-
-

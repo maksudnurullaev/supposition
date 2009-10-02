@@ -40,13 +40,17 @@ Tabs.onClik = function(elem) {
 	}	
 	
 	// * Get active Div from stack or server
-	var oldStackedDiv = document.getElementById(Tabs.div_id_prefix + activeDivID)
+	var oldStackedDiv = dwr.util.byId(Tabs.div_id_prefix + activeDivID)
 	if(!oldStackedDiv){// ...from server
-		Session.getTextByKeyAsDiv(activeDivID, function(data) {
-			dwr.util.setValue(activeRootDivID, data, {
-				escapeHtml :false
-			});
-			Main.evaluateItByKey(activeDivID);
+		Session.getDivByKey4Tabs(activeDivID, function(result) {
+			// Eval Part
+			if(result.eval){
+				eval(result.eval);
+			}
+			// Text Part
+			if(result.text){
+				dwr.util.setValue(activeRootDivID, result.text,  {escapeHtml :false});
+			}						
 		});
 	}else { // ...from local stack
 		activeRootDiv.appendChild(oldStackedDiv);

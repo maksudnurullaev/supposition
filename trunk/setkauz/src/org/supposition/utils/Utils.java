@@ -19,6 +19,9 @@ import org.supposition.db.Ads;
  */
 public final class Utils {
 	public static Log _log = LogFactory.getLog("org.supposition.utils.Utils");
+
+
+	public static final String linkTemplate = "<a href=\"#\" id=\"%s\" onclick=\"javascript:void(%s)\">%s</a>";
 	
 	
 	public static final Pattern _pattern_to_cheack_email = 

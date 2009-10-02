@@ -2,6 +2,7 @@ package org.dwr;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 
@@ -45,8 +46,14 @@ public class Session
     	return MessagesManager.getText(inKey);
     } 
     
-	public String getTextByKeyAsDiv(String inKey){
-		return String.format("<div id=\"ID.%s\">%s</div>", inKey, MessagesManager.getText(inKey));
+    public Map<String, String> getTextByKey2(String inKey){
+    	return MessagesManager.getText2(inKey);
+    } 
+    
+	public Map<String, String> getDivByKey4Tabs(String inKey){
+		Map<String, String> result = MessagesManager.getText2(inKey);		
+		result.put("text", String.format("<div id=\"ID.%s\">%s</div>", inKey, result.get("text")));
+		return result;
 	}    
     
     public String getSessionID(){
