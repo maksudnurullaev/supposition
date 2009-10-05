@@ -18,7 +18,7 @@ CompanyProxy.addNew = function(){
 	Company.www = dwr.util.getValue("company.www");
 	Company.city = dwr.util.getValue("company.city");
 	Company.guuid = dwr.util.getValue("company.guuid");
-	
+
 //	alert("ACompany.name = " + Company.name);
 //	alert("Company.additional = " + Company.additionals);
 //	alert("Company.www = " + Company.www);
@@ -47,16 +47,24 @@ CompanyProxy.updateTable = function() {
 };
 
 CompanyProxy.go2Page = function(inPage) {
-	CompanyProxy.getPageAsHTMLTable(dwr.util.getValue("guuid"), inPage, function(table) {
+	CFilter = {city:null, guuid:null, owner:null};
+	
+	CFilter.city = dwr.util.getValue("company.city");
+	CFilter.guuid = dwr.util.getValue("company.guuid");
+	CFilter.owner = dwr.util.getValue("company.owner");
+	
+	CompanyProxy.getPageAsHTMLTable(CFilter, inPage, function(table) {
 		dwr.util.setValue(CompanyProxy.mainDiv, table, {
 			escapeHtml :false
 		});
 	});
+	
 	return false;
 };
 
-//Set page size
+//  Set page size
 CompanyProxy.setPageDencity = function() {
+	alert(dwr.util.getValue("CompanyProxy.pageDencity"));
 	if (parseInt(dwr.util.getValue("CompanyProxy.pageDencity"), 10) > 0) {
 		CompanyProxy.setPageSize(parseInt(dwr.util
 				.getValue("CompanyProxy.pageDencity"), 10), function() {
@@ -74,5 +82,23 @@ CompanyProxy.remove = function(uuid) {
 		}			
 	});
 	
+	return false;
+};
+
+CompanyProxy.remove = function(uuid) {
+	if(!confirm("Are you sure!? Вы уверены!?")) return false;
+	
+	CompanyProxy.removeDBO(uuid, function(result){
+		alert(result);
+		if (Main.isOK(result)) {
+			CompanyProxy.updateTable();
+		}			
+	});
+	
+	return false;
+};
+
+CompanyProxy.edit = function(uuid) {
+	alert(uuid);
 	return false;
 };

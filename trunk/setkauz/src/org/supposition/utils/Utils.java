@@ -119,9 +119,12 @@ public final class Utils {
 		return result;
 	}
 
-	public static boolean isTomcatContext() {
-		return MessagesManager.getDefault("web.context.loader.as.string").equalsIgnoreCase(Thread
-				.currentThread().getContextClassLoader().getClass().getName());
+	public static boolean isWebContext() {
+		return MessagesManager.getDefault("web.context.loader.as.string.tomcat").equalsIgnoreCase(Thread
+				.currentThread().getContextClassLoader().getClass().getName()) 
+				||
+				MessagesManager.getDefault("web.context.loader.as.string.jetty").equalsIgnoreCase(Thread
+						.currentThread().getContextClassLoader().getClass().getName());
 	}
 
     public static final Comparator<Ads> ADS_DEFAULT_ORDER = new Comparator<Ads>() {

@@ -69,9 +69,17 @@
 				<include name="**/*.*" />
 			</fileset>
 		</copy>
+	</target>	
+	
+	<target name="deploy.jetty" depends="build" description="Deploy application">
+		<copy todir="${deploy.path.jetty}/${name}" preservelastmodified="true">
+			<fileset dir="${web.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
 	</target>
 	
-	<target name="deploy.and.reload" depends="deploy, reload" description="Deploy application and Reload Tomcat"/>
+	<target name="deploy.and.reload.tomcat" depends="deploy, reload" description="Deploy application and Reload Tomcat"/>
 	
 	<target name="zzz_deploywar" depends="build"
 		description="Deploy application as a WAR file">

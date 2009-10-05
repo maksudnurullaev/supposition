@@ -94,7 +94,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		return null;
 	}	
 
-	public String getPageAsHTMLTable(CgroupCityFilterBean inFilter, int inPage) {
+	public String getPageAsHTMLTable(CompanyFilterBean inFilter, int inPage) {
 		_log.debug("-> getPageAsHTMLTable");
 		_log.debug("inFilter.getCity(): " + inFilter.getCity());		
 		_log.debug("inFilter.getGuuid(): " + inFilter.getGuuid());
@@ -132,13 +132,13 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		// Set ordering by DEFAULT
 		addOrdering(new Ordering("created", false));
 		
-		List<Ads> adsList = getAll();
+		List<Ads> objectsList = getAll();
 		
-		if(adsList == null || adsList.size() == 0){
+		if(objectsList == null || objectsList.size() == 0){
 			return MessagesManager.getText("errors.data.not.found");	
 		}
 		
-		return getAdsAsHTMLTable(inPage, adsList);
+		return getHTMLTable(inPage, objectsList);
 	}
 
 	private void getCgroupUuidAsList(List<String> inList, Cgroup inCgroup) {
@@ -152,7 +152,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		}
 	}
 
-	private String getAdsAsHTMLTable(int inPage, List<Ads> adsList) {
+	private String getHTMLTable(int inPage, List<Ads> adsList) {
 		// Define start & end items
 		int startItem = (inPage - 1) * getPageSize();
 		int endItem = inPage * getPageSize();
@@ -163,7 +163,8 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		String format = MessagesManager.getText("main.ads.table.tr");
 		
 		// Define medorator role
-		boolean isMedorator = SessionManager.hasRole(SessionManager.MANAGER_ROLE_DEF);
+		boolean isMedorator = (SessionManager.hasRole(SessionManager.MANAGER_ROLE_DEF) 
+				||	SessionManager.hasRole(SessionManager.ADMIN_ROLE_DEF));
 		
 		for (int j = startItem; j < endItem; j++) {
 			if (j >= adsList.size()) break;

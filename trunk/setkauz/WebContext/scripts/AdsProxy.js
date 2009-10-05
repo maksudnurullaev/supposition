@@ -73,7 +73,9 @@ AdsProxy.go2Page = function(inPage) {
 			escapeHtml :false
 		});
 	});
+	
 	return false;
+	
 };
 
 //Set page size

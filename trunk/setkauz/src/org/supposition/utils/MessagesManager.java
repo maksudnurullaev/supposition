@@ -13,7 +13,7 @@ public final class MessagesManager {
 	public static Log _log = LogFactory.getLog("org.supposition.utils.MessageFactory");
 	private static final String _beans_text_manager_id = "textManager";
 	private static final String _defaultBaseName = "messages";
-	private static final boolean _isTomcatContext = Utils.isTomcatContext();
+	private static final boolean _isTomcatContext = Utils.isWebContext();
 
 	private static TextManager _textManager = null;
 

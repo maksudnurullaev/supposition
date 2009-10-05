@@ -41,6 +41,6 @@
 		</create>			
 		<convert match="org.supposition.db.proxy.CgroupBean" converter="bean"/>
 		
-		<convert match="org.supposition.db.proxy.CgroupCityFilterBean" converter="bean"/>
+		<convert match="org.supposition.db.proxy.CompanyFilterBean" converter="bean"/>
 	</allow>	
 </dwr>

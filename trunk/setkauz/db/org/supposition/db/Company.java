@@ -58,6 +58,7 @@ public class Company extends _Company implements IDBOClass {
 				if (user == null)
 					throw new NullObject();
 				setUser(user);
+				setUuuid(user.getUuid());
 			} else
 				throw new UserAccessException();
 		}
