@@ -78,6 +78,100 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			+ MessagesManager.getText("message.data.saved");		
 	}	
 
+
+	
+	public String removeDBO(String uuid){
+		CompanyProxy companyProxy = new CompanyProxy(getDataContext());
+		
+		Company company = companyProxy.getDBObjectByUuid(uuid);
+		
+		if(company == null){
+			return MessagesManager.getText("errors.object.not.found");
+		}
+		
+		if(!isManager(company)){
+			return MessagesManager.getText("errors.user.has.not.access");
+		}
+		
+		deleteObject(company);
+		commitChanges();
+		
+		return MessagesManager.getDefault("web.ok.result.prefix") 
+			+ MessagesManager.getText("message.data.saved");		
+	}
+	public String updateDBO(CompanyBean inBean){
+		_log.debug("updateDBO ->" + Thread.currentThread().getContextClassLoader().getClass().getName());
+		
+		// Check for valid text
+		if(!Utils.isValidString(inBean.getName())){
+			_log.debug("addDBONew -> Constants.isValidString -> inBean.getName -> " + inBean.getName());			
+			return MessagesManager.getDefault("web.error.result.prefix")
+						+ MessagesManager.getText("errors.empty.value");
+		}
+			
+
+		CompanyProxy companyProxy = new CompanyProxy(getDataContext());
+		
+		Company company = companyProxy.getDBObjectByUuid(inBean.getUuid());
+		
+		if(company == null){
+			return MessagesManager.getText("errors.object.not.found");
+		}
+		
+		if(!isManager(company)){
+			return MessagesManager.getText("errors.user.has.not.access");
+		}
+		
+		try {
+			company.setBean(inBean);
+		} catch (Exception e) {
+			_log.warn("Changes rollbacked");
+			e.printStackTrace();
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.could.not.create.dbobject");
+		}
+		
+		// Validate
+		ValidationResult validationResult = company.getValidationResult();
+
+		if(validationResult.hasFailures()){
+			// Delete Object before commit
+			_log.warn("Changes rollbacked");
+			rollbackChanges();
+			return MessagesManager.getDefault("web.error.result.prefix")
+						+ DBUtils.getFailuresAsString(validationResult);
+		}
+
+		_log.debug("Changes commited");
+		commitChanges();		
+		
+		return MessagesManager.getDefault("web.ok.result.prefix") 
+			+ MessagesManager.getText("message.data.saved");			
+	}
+	
+	public String getUpdateForm(String uuid){
+		
+		CompanyProxy companyProxy = new CompanyProxy();
+		
+		Company company = companyProxy.getDBObjectByUuid(uuid);
+		
+		if(company == null){
+			return MessagesManager.getText("errors.object.not.found");
+		}
+		
+		if(!isManager(company)){
+			return MessagesManager.getText("errors.user.has.not.access");
+		}
+		
+		String format = MessagesManager.getText("main.company.formUpdate");
+		
+		return String.format(format, 
+				company.getName(),
+				company.getAdditionals(),
+				company.getWww(),
+				company.getUuid());
+	} 
+	
 	public String getPageAsHTMLTable(CompanyFilterBean inFilter, int inPage) {
 		_log.debug("-> getPageAsHTMLTable");
 		_log.debug("inFilter.getCity(): " + inFilter.getCity());		
@@ -150,18 +244,13 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		String result = "";		
 		String format = MessagesManager.getText("main.company.table.tr");
 		
-		// Define medorator role
-		boolean isMedorator = (SessionManager.hasRole(SessionManager.MANAGER_ROLE_DEF) 
-				|| SessionManager.hasRole(SessionManager.ADMIN_ROLE_DEF));
-				// || SessionManager.getUserUuid().equals(anObject));
-		
 		for (int j = startItem; j < endItem; j++) {
 			if (j >= inList.size()) break;
 			Company item = inList.get(j);
 			result = result
 					+ String.format(format,
 							(++startItem),
-							getURLAsLink(item) + getAdditionalLinks(item, (isMedorator || item.getUser().getUuid().equals(SessionManager.getUserUuid()))),
+							getURLAsLink(item) + (isManager(item)?getAdditionalLinks(item):""),
 							item.getAdditionals()
 							);
 		}
@@ -172,6 +261,11 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			+ MessagesManager.getText("main.company.table.footer");
 	}
 
+	private boolean isManager(Company inCompany) {
+		if(SessionManager.isMedorator()) return true;
+		return inCompany.getUser().getUuid().equals(SessionManager.getUserUuid());
+	}
+
 	private String getURLAsLink(Company inItem) {
 		if(inItem.getWww().isEmpty() || 
 				inItem.getWww().equals("http://"))
@@ -180,20 +274,20 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return String.format("<a href=\"%s\" target=\"_blank\">%s</a>", inItem.getWww(), inItem.getName());
 	}
 
-	private String getAdditionalLinks(Company inItem, boolean isMedorator) {
-		if(!isMedorator) return "";
-		
+	private String getAdditionalLinks(Company inCompany) {
 		String result = " [" + String.format(Utils.linkTemplate,
-				inItem.getUuid(),
+				inCompany.getUuid(),
 				"CompanyProxy.edit(this.id)",
 				MessagesManager.getText("text.edit")) + "]";
 		
 		result += " [" + String.format(Utils.linkTemplate,
-				inItem.getUuid(),
+				inCompany.getUuid(),
 				"CompanyProxy.remove(this.id)",
 				MessagesManager.getText("text.remove")) + "]";
 		
 		return result;
 	}
 
+	
+	
 }

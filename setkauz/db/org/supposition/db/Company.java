@@ -41,8 +41,7 @@ public class Company extends _Company implements IDBOClass {
 	public void postValidationSave() {
 	}
 
-	public void setBean(CompanyBean inBean) throws UserAccessException,
-			UserAccessException, NullObject{
+	public void setBean(CompanyBean inBean) throws UserAccessException, NullObject{
 		setName(inBean.getName());
 		setAdditionals(inBean.getAdditionals());
 		setWww(inBean.getWww());
@@ -67,7 +66,8 @@ public class Company extends _Company implements IDBOClass {
 		if (inBean.getGuuid() != null) {
 			CgroupProxy cgroups = new CgroupProxy(getDataContext());
 			Cgroup cgroup = cgroups.getDBObjectByUuid(inBean.getGuuid());
-			if (cgroup != null)
+			
+			if (cgroup == null)
 				this.setCgroup(cgroup);
 		}		
 
