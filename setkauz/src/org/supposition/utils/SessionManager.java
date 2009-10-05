@@ -18,7 +18,7 @@ import org.supposition.db.proxy.UserProxy;
 
 public final class SessionManager {
 
-	private static final boolean _isTomcatContext = Utils.isTomcatContext();
+	private static final boolean _isWebContext = Utils.isWebContext();
 	private static Map<String, Object> _valueHouse = new HashMap<String, Object>();
 	
 	public static final String ADMIN_ROLE_DEF   = "admin";
@@ -37,7 +37,7 @@ public final class SessionManager {
 	}
 
 	public static boolean isExist(String inKey) {
-		if (_isTomcatContext)
+		if (_isWebContext)
 			return getHttpSession().getAttribute(inKey) != null;		
 		return false;
 	}
@@ -47,33 +47,33 @@ public final class SessionManager {
 	 * @return null or Object
 	 */
 	public static Object getFromSession(String inKey) {
-		if (_isTomcatContext)
+		if (_isWebContext)
 			return getHttpSession().getAttribute(inKey);
 		return _valueHouse.get(inKey);
 	}
 
 	public static void setToSession(String inKey, Object inObject) {
-		if (_isTomcatContext)
+		if (_isWebContext)
 			getHttpSession().setAttribute(inKey, inObject);
 		else
 			_valueHouse.put(inKey, inObject);
 	}
 
 	public static int getSessionIntValue(String inKey) {
-		if (_isTomcatContext)
+		if (_isWebContext)
 			return Utils.getIntFromStr(getFromSession(inKey).toString());
 		return Utils.getIntFromStr(_valueHouse.get(inKey).toString());
 	}
 
 	public static void removeFromSession(String inKey) {
-		if (_isTomcatContext)
+		if (_isWebContext)
 			getHttpSession().removeAttribute(inKey);
 		else
 			_valueHouse.remove(inKey);
 	}
 
 	public static String getSessionLocale() {
-		if(_isTomcatContext){
+		if(_isWebContext){
 			if(SessionManager.isExist(MessagesManager.getDefault("session.locale.def"))){
 				return (String) SessionManager.getFromSession(MessagesManager.getDefault("session.locale.def"));
 			}
@@ -82,7 +82,7 @@ public final class SessionManager {
 	}
 
 	public static void setSessionLocale(String inLocale) {
-		if (_isTomcatContext)
+		if (_isWebContext)
 			setToSession(MessagesManager.getDefault("session.locale.def"), inLocale);
 	}
 
