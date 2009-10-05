@@ -64,7 +64,6 @@ CompanyProxy.go2Page = function(inPage) {
 
 //  Set page size
 CompanyProxy.setPageDencity = function() {
-	alert(dwr.util.getValue("CompanyProxy.pageDencity"));
 	if (parseInt(dwr.util.getValue("CompanyProxy.pageDencity"), 10) > 0) {
 		CompanyProxy.setPageSize(parseInt(dwr.util
 				.getValue("CompanyProxy.pageDencity"), 10), function() {
@@ -99,6 +98,41 @@ CompanyProxy.remove = function(uuid) {
 };
 
 CompanyProxy.edit = function(uuid) {
-	alert(uuid);
+	CompanyProxy.getUpdateForm(uuid, function(result){
+		dwr.util.setValue(CompanyProxy.mainDiv, result, {
+			escapeHtml :false
+		});		
+	});
 	return false;
+};
+
+
+CompanyProxy.update = function() {
+	// Check fields
+	if(!Main.isValidValue("company.name")){ return false; }
+	
+	Company = {name:null, additionals:null, www:null, guuid:null, city:null, uuid:null};
+
+	Company.name = dwr.util.getValue("company.name");
+	Company.additionals = dwr.util.getValue("company.additionals");
+	Company.www = dwr.util.getValue("company.www");
+	Company.city = dwr.util.getValue("company.city");
+	Company.guuid = dwr.util.getValue("company.guuid");
+	Company.uuid = dwr.util.getValue("company.uuid");
+
+//	alert("Company.name = " + Company.name);
+//	alert("Company.additional = " + Company.additionals);
+//	alert("Company.www = " + Company.www);
+//	alert("Company.city = " + Company.city);
+//	alert("Company.guuid = " + Company.guuid);
+//	alert("Company.uuid = " + Company.uuid);
+	
+	CompanyProxy.updateDBO(Company, function(result){
+		alert(result);
+		if (Main.isOK(result)) {
+			CompanyProxy.updateTable();
+		}			
+	});
+	
+	return false;	
 };
