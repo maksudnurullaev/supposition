@@ -1,5 +1,7 @@
 package org.supposition.db;
 
+import java.util.Date;
+
 import org.apache.cayenne.validation.ValidationResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +31,8 @@ public class Company extends _Company implements IDBOClass {
 	private void validateBeforeSave(ValidationResult validationResult) {
 		if (isNew())
 			setUuid(DBUtils.getUuid());
-
+		// Final
+		super.validateForSave(validationResult);
 	}
 
 	@Override
@@ -70,7 +73,10 @@ public class Company extends _Company implements IDBOClass {
 			if (cgroup == null)
 				this.setCgroup(cgroup);
 		}		
-
+		
+		// Set updated time
+		setUpdated(new Date());
+		
 	}
 
 }

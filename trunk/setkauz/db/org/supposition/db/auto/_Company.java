@@ -13,11 +13,13 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     public static final String CITY_PROPERTY = "city";
     public static final String GUUID_PROPERTY = "guuid";
     public static final String NAME_PROPERTY = "name";
+    public static final String UPDATED_PROPERTY = "updated";
     public static final String UUID_PROPERTY = "uuid";
     public static final String UUUID_PROPERTY = "uuuid";
     public static final String WWW_PROPERTY = "www";
     public static final String ADS_PROPERTY = "ads";
     public static final String CGROUP_PROPERTY = "cgroup";
+    public static final String GROUPS_PROPERTY = "groups";
     public static final String USER_PROPERTY = "user";
 
     public static final String ID_PK_COLUMN = "id";
@@ -51,6 +53,14 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     }
     public String getName() {
         return (String)readProperty("name");
+    }
+    
+    
+    public void setUpdated(java.util.Date updated) {
+        writeProperty("updated", updated);
+    }
+    public java.util.Date getUpdated() {
+        return (java.util.Date)readProperty("updated");
     }
     
     
@@ -96,6 +106,17 @@ public class _Company extends org.apache.cayenne.CayenneDataObject {
     public org.supposition.db.Cgroup getCgroup() {
         return (org.supposition.db.Cgroup)readProperty("cgroup");
     } 
+    
+    
+    public void addToGroups(org.supposition.db.Group obj) {
+        addToManyTarget("groups", obj, true);
+    }
+    public void removeFromGroups(org.supposition.db.Group obj) {
+        removeToManyTarget("groups", obj, true);
+    }
+    public List getGroups() {
+        return (List)readProperty("groups");
+    }
     
     
     public void setUser(org.supposition.db.User user) {

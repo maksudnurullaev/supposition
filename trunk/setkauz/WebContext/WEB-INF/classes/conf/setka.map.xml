@@ -7,6 +7,7 @@
 		<db-attribute name="company_id" type="INTEGER"/>
 		<db-attribute name="created" type="TIMESTAMP" isMandatory="true"/>
 		<db-attribute name="delete_after" type="DATE" isMandatory="true"/>
+		<db-attribute name="group_id" type="INTEGER"/>
 		<db-attribute name="guuid" type="VARCHAR" isMandatory="true" length="40"/>
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="price" type="VARCHAR" length="16"/>
@@ -17,7 +18,7 @@
 	</db-entity>
 	<db-entity name="cgroups">
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="60"/>
 		<db-attribute name="pid" type="INTEGER"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
 	</db-entity>
@@ -28,15 +29,30 @@
 		<db-attribute name="guuid" type="VARCHAR" isMandatory="true" length="40"/>
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="128"/>
+		<db-attribute name="updated" type="TIMESTAMP" isMandatory="true"/>
 		<db-attribute name="user_id" type="INTEGER" isMandatory="true"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
 		<db-attribute name="uuuid" type="VARCHAR" isMandatory="true" length="40"/>
 		<db-attribute name="www" type="VARCHAR" length="64"/>
 	</db-entity>
+	<db-entity name="companies2groups">
+		<db-attribute name="company_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="group_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+	</db-entity>
+	<db-entity name="groups">
+		<db-attribute name="cgroup_id" type="INTEGER" isMandatory="true"/>
+		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="60"/>
+		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="60"/>
+	</db-entity>
 	<db-entity name="roles">
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 		<db-attribute name="name" type="VARCHAR" isMandatory="true" length="32"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
+	</db-entity>
+	<db-entity name="roles2users">
+		<db-attribute name="role_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
+		<db-attribute name="user_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
 	<db-entity name="users">
 		<db-attribute name="additionals" type="VARCHAR" length="256"/>
@@ -49,10 +65,6 @@
 		<db-attribute name="string2verify" type="VARCHAR" length="64"/>
 		<db-attribute name="updated" type="VARCHAR" length="23"/>
 		<db-attribute name="uuid" type="VARCHAR" isMandatory="true" length="40"/>
-	</db-entity>
-	<db-entity name="users2roles">
-		<db-attribute name="role_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
-		<db-attribute name="user_id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
 	</db-entity>
 	<obj-entity name="Ads" className="org.supposition.db.Ads" dbEntityName="ads">
 		<obj-attribute name="city" type="java.lang.String" db-attribute-path="city"/>
@@ -73,9 +85,14 @@
 		<obj-attribute name="city" type="java.lang.String" db-attribute-path="city"/>
 		<obj-attribute name="guuid" type="java.lang.String" db-attribute-path="guuid"/>
 		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+		<obj-attribute name="updated" type="java.util.Date" db-attribute-path="updated"/>
 		<obj-attribute name="uuid" type="java.lang.String" db-attribute-path="uuid"/>
 		<obj-attribute name="uuuid" type="java.lang.String" db-attribute-path="uuuid"/>
 		<obj-attribute name="www" type="java.lang.String" db-attribute-path="www"/>
+	</obj-entity>
+	<obj-entity name="Group" className="org.supposition.db.Group" dbEntityName="groups">
+		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
+		<obj-attribute name="uuid" type="java.lang.String" db-attribute-path="uuid"/>
 	</obj-entity>
 	<obj-entity name="Role" className="org.supposition.db.Role" dbEntityName="roles">
 		<obj-attribute name="name" type="java.lang.String" db-attribute-path="name"/>
@@ -98,6 +115,9 @@
 	<db-relationship name="Company" source="ads" target="companies" toMany="false">
 		<db-attribute-pair source="company_id" target="id"/>
 	</db-relationship>
+	<db-relationship name="Group" source="ads" target="groups" toMany="false">
+		<db-attribute-pair source="group_id" target="id"/>
+	</db-relationship>
 	<db-relationship name="User" source="ads" target="users" toMany="false">
 		<db-attribute-pair source="user_id" target="id"/>
 	</db-relationship>
@@ -110,6 +130,9 @@
 	<db-relationship name="Companies" source="cgroups" target="companies" toMany="true">
 		<db-attribute-pair source="id" target="cgroup_id"/>
 	</db-relationship>
+	<db-relationship name="Groups" source="cgroups" target="groups" toMany="true">
+		<db-attribute-pair source="id" target="cgroup_id"/>
+	</db-relationship>
 	<db-relationship name="Parent" source="cgroups" target="cgroups" toMany="false">
 		<db-attribute-pair source="pid" target="id"/>
 	</db-relationship>
@@ -119,11 +142,35 @@
 	<db-relationship name="Cgroup" source="companies" target="cgroups" toMany="false">
 		<db-attribute-pair source="cgroup_id" target="id"/>
 	</db-relationship>
+	<db-relationship name="CompanyIDs" source="companies" target="companies2groups" toMany="true">
+		<db-attribute-pair source="id" target="company_id"/>
+	</db-relationship>
 	<db-relationship name="User" source="companies" target="users" toMany="false">
 		<db-attribute-pair source="user_id" target="id"/>
 	</db-relationship>
-	<db-relationship name="RoleIDs" source="roles" target="users2roles" toMany="true">
+	<db-relationship name="Companies" source="companies2groups" target="companies" toDependentPK="true" toMany="false">
+		<db-attribute-pair source="company_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="Groups" source="companies2groups" target="groups" toDependentPK="true" toMany="false">
+		<db-attribute-pair source="group_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="Ads" source="groups" target="ads" toMany="true">
+		<db-attribute-pair source="id" target="group_id"/>
+	</db-relationship>
+	<db-relationship name="Cgroup" source="groups" target="cgroups" toMany="false">
+		<db-attribute-pair source="cgroup_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="GroupIDs" source="groups" target="companies2groups" toMany="true">
+		<db-attribute-pair source="id" target="group_id"/>
+	</db-relationship>
+	<db-relationship name="RoleIDs" source="roles" target="roles2users" toMany="true">
 		<db-attribute-pair source="id" target="role_id"/>
+	</db-relationship>
+	<db-relationship name="Roles" source="roles2users" target="roles" toDependentPK="true" toMany="false">
+		<db-attribute-pair source="role_id" target="id"/>
+	</db-relationship>
+	<db-relationship name="Users" source="roles2users" target="users" toDependentPK="true" toMany="false">
+		<db-attribute-pair source="user_id" target="id"/>
 	</db-relationship>
 	<db-relationship name="Ads" source="users" target="ads" toMany="true">
 		<db-attribute-pair source="id" target="user_id"/>
@@ -131,27 +178,27 @@
 	<db-relationship name="Companies" source="users" target="companies" toMany="true">
 		<db-attribute-pair source="id" target="user_id"/>
 	</db-relationship>
-	<db-relationship name="UserIDs" source="users" target="users2roles" toMany="true">
+	<db-relationship name="UserIDs" source="users" target="roles2users" toMany="true">
 		<db-attribute-pair source="id" target="user_id"/>
-	</db-relationship>
-	<db-relationship name="Roles" source="users2roles" target="roles" toDependentPK="true" toMany="false">
-		<db-attribute-pair source="role_id" target="id"/>
-	</db-relationship>
-	<db-relationship name="Users" source="users2roles" target="users" toDependentPK="true" toMany="false">
-		<db-attribute-pair source="user_id" target="id"/>
 	</db-relationship>
 	<obj-relationship name="cgroup" source="Ads" target="Cgroup" db-relationship-path="Cgroup"/>
 	<obj-relationship name="company" source="Ads" target="Company" db-relationship-path="Company"/>
+	<obj-relationship name="group" source="Ads" target="Group" db-relationship-path="Group"/>
 	<obj-relationship name="user" source="Ads" target="User" db-relationship-path="User"/>
-	<obj-relationship name="ads" source="Cgroup" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>
+	<obj-relationship name="ads" source="Cgroup" target="Ads" deleteRule="Cascade" db-relationship-path="Ads"/>
 	<obj-relationship name="childs" source="Cgroup" target="Cgroup" deleteRule="Cascade" db-relationship-path="Childs"/>
 	<obj-relationship name="companies" source="Cgroup" target="Company" deleteRule="Nullify" db-relationship-path="Companies"/>
+	<obj-relationship name="groups" source="Cgroup" target="Group" db-relationship-path="Groups"/>
 	<obj-relationship name="parent" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Parent"/>
-	<obj-relationship name="ads" source="Company" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>
-	<obj-relationship name="cgroup" source="Company" target="Cgroup" db-relationship-path="Cgroup"/>
+	<obj-relationship name="ads" source="Company" target="Ads" deleteRule="Cascade" db-relationship-path="Ads"/>
+	<obj-relationship name="cgroup" source="Company" target="Cgroup" deleteRule="Nullify" db-relationship-path="Cgroup"/>
+	<obj-relationship name="groups" source="Company" target="Group" deleteRule="Cascade" db-relationship-path="CompanyIDs.Groups"/>
 	<obj-relationship name="user" source="Company" target="User" db-relationship-path="User"/>
-	<obj-relationship name="users" source="Role" target="User" deleteRule="Nullify" db-relationship-path="RoleIDs.Users"/>
-	<obj-relationship name="ads" source="User" target="Ads" deleteRule="Nullify" db-relationship-path="Ads"/>
+	<obj-relationship name="ads" source="Group" target="Ads" deleteRule="Cascade" db-relationship-path="Ads"/>
+	<obj-relationship name="cgroup" source="Group" target="Cgroup" db-relationship-path="Cgroup"/>
+	<obj-relationship name="companies" source="Group" target="Company" deleteRule="Nullify" db-relationship-path="GroupIDs.Companies"/>
+	<obj-relationship name="users" source="Role" target="User" db-relationship-path="RoleIDs.Users"/>
+	<obj-relationship name="ads" source="User" target="Ads" deleteRule="Cascade" db-relationship-path="Ads"/>
 	<obj-relationship name="companies" source="User" target="Company" deleteRule="Cascade" db-relationship-path="Companies"/>
 	<obj-relationship name="roles" source="User" target="Role" deleteRule="Nullify" db-relationship-path="UserIDs.Roles"/>
 </data-map>
