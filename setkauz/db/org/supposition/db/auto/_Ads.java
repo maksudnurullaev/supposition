@@ -17,6 +17,7 @@ public class _Ads extends org.apache.cayenne.CayenneDataObject {
     public static final String UUID_PROPERTY = "uuid";
     public static final String CGROUP_PROPERTY = "cgroup";
     public static final String COMPANY_PROPERTY = "company";
+    public static final String GROUP_PROPERTY = "group";
     public static final String USER_PROPERTY = "user";
 
     public static final String ID_PK_COLUMN = "id";
@@ -100,6 +101,15 @@ public class _Ads extends org.apache.cayenne.CayenneDataObject {
 
     public org.supposition.db.Company getCompany() {
         return (org.supposition.db.Company)readProperty("company");
+    } 
+    
+    
+    public void setGroup(org.supposition.db.Group group) {
+        setToOneTarget("group", group, true);
+    }
+
+    public org.supposition.db.Group getGroup() {
+        return (org.supposition.db.Group)readProperty("group");
     } 
     
     

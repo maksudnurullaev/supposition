@@ -106,7 +106,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 			
 				
 		// Set cgroup filter
-		if(!inFilter.getGuuid().equals("root")){
+		if(!inFilter.getGuuid().equals(Utils.ROOT_ID_DEF)){
 			CgroupProxy cgroupProxy = new CgroupProxy();
 			Cgroup cgroup = cgroupProxy.getDBObjectByUuid(inFilter.getGuuid());
 			
@@ -118,7 +118,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		}	
 		
 		// Set city filter
-		if(!inFilter.getCity().equals("root")){
+		if(!inFilter.getCity().equals(Utils.ROOT_ID_DEF)){
 			String cityFilter = inFilter.getCity();
 			if(cityFilter.indexOf("#") != -1 &&
 					cityFilter.indexOf("#") == (cityFilter.length() - 1)){
@@ -186,7 +186,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 	private String getAdditionalLinks(Ads ads, boolean isMedorator) {
 		if(!isMedorator) return "";
 		
-		return "&nbsp;" + String.format(Utils.linkTemplate,
+		return "&nbsp;" + String.format(Utils.LINK_TEMPLATE,
 				ads.getUuid(),
 				"AdsProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));

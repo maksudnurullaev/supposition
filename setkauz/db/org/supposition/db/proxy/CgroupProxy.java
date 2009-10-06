@@ -76,7 +76,7 @@ public class CgroupProxy extends ADBProxyObject<Cgroup> {
 		}
 		
 		// Link with parent element
-		if(inCgroupBean.getGuuid() != "root"){
+		if(!inCgroupBean.getGuuid().equals(Utils.ROOT_ID_DEF)){
 			CgroupProxy cgroupProxy = new CgroupProxy(getDataContext());
 			Cgroup pcgroup = cgroupProxy.getDBObjectByUuid(inCgroupBean.getGuuid());
 			if(pcgroup != null)

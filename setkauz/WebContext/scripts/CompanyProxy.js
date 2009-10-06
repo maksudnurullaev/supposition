@@ -1,6 +1,7 @@
 Namespace("CompanyProxy");
 
-CompanyProxy.mainDiv = "main.company.table";
+CompanyProxy.mainDiv = "main.company.div";
+CompanyProxy.mainDivBody = "main.company.div.body";
 
 CompanyProxy.showNewForm = function() {
 	Main.getTextFromServerToDiv("main.company.formNew",CompanyProxy.mainDiv, false);
@@ -135,4 +136,14 @@ CompanyProxy.update = function() {
 	});
 	
 	return false;	
+};
+
+
+CompanyProxy.showDetails = function(uuid){
+	CompanyProxy.getDetails(uuid, function(result){
+		dwr.util.setValue(CompanyProxy.mainDivBody, result, {escapeHtml :false});		
+	});
+	return false;	
+	
+	
 };

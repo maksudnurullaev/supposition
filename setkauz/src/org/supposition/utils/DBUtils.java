@@ -109,7 +109,7 @@ public final class DBUtils {
 	public static String getGroupsAsHTMLSelect(String inPrefix) {
 		String result = String.format("<select id='%s.guuid'>", inPrefix);
 		String format = "<option value='%s'>%s</option>";
-		result += String.format(format, "root", MessagesManager.getText("text.root.cgroup"));
+		result += String.format(format, Utils.ROOT_ID_DEF, MessagesManager.getText("text.root.cgroup"));
 
 		CgroupProxy cgroups = new CgroupProxy();		
 		List<Cgroup> cgroup_list = cgroups.getRootElements();
@@ -177,7 +177,7 @@ public final class DBUtils {
 	}	
 	
 	private static String makeDeleteCgroupLink(Cgroup inCgroup){
-		return String.format(Utils.linkTemplate, 
+		return String.format(Utils.LINK_TEMPLATE, 
 				inCgroup.getUuid(),
 				"CgroupProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));
