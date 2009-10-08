@@ -42,7 +42,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		Ads ads = adsProxy.getDBObjectByUuid(inUuid);
 		
 		if(ads == null) return MessagesManager.getDefault("web.error.result.prefix")
-		+ MessagesManager.getText("errors.object.not.found");
+		+ MessagesManager.getText("errors.data.not.found");
 		
 		deleteObject(ads);
 		commitChanges();

@@ -70,8 +70,10 @@ public class Company extends _Company implements IDBOClass {
 			CgroupProxy cgroups = new CgroupProxy(getDataContext());
 			Cgroup cgroup = cgroups.getDBObjectByUuid(inBean.getGuuid());
 			
-			if (cgroup == null)
+			if (cgroup != null)
 				this.setCgroup(cgroup);
+			else
+				throw new NullObject();
 		}		
 		
 		// Set updated time

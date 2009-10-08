@@ -144,6 +144,44 @@ CompanyProxy.showDetails = function(uuid){
 		dwr.util.setValue(CompanyProxy.mainDivBody, result, {escapeHtml :false});		
 	});
 	return false;	
+};
+
+CompanyProxy.groupShow = function(){
+	alert(uuid);
+	return false;
+};
+
+CompanyProxy.groupShowAddForm = function(){
+	CompanyProxy.getGroupAddForm(dwr.util.getValue("company.uuid"), function(result){
+		dwr.util.setValue(dwr.util.getValue("company.uuid"), result, {escapeHtml :false});		
+	});
+	return false;
+};
+
+CompanyProxy.groupDelete = function(){
+	alert(uuid);
+	return false;
+};
+
+CompanyProxy.addNewGroup= function(){
+	// Check fields
+	if(!Main.isValidValue("group.name")){ return false; }
 	
+	Group = {name:null, cuuid:null};
 	
+	Group.name = dwr.util.getValue("group.name");
+	Group.cuuid = dwr.util.getValue("company.uuid");
+
+	alert(Group.name);
+	alert(Group.cuuid);	
+	
+	CompanyProxy.addDBONewGroup(Group, function(result){
+		dwr.util.setValue(CompanyProxy.mainDivBody, result, {escapeHtml :false});		
+	});
+	
+	return false;
+};
+
+CompanyProxy.addExistanceGroup = function(){
+	return false;
 };

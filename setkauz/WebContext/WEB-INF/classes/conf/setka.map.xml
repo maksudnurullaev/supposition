@@ -24,7 +24,7 @@
 	</db-entity>
 	<db-entity name="companies">
 		<db-attribute name="additionals" type="VARCHAR" length="1024"/>
-		<db-attribute name="cgroup_id" type="INTEGER"/>
+		<db-attribute name="cgroup_id" type="INTEGER" isMandatory="true"/>
 		<db-attribute name="city" type="VARCHAR" isMandatory="true" length="6"/>
 		<db-attribute name="guuid" type="VARCHAR" isMandatory="true" length="40"/>
 		<db-attribute name="id" type="INTEGER" isPrimaryKey="true" isMandatory="true"/>
@@ -187,18 +187,18 @@
 	<obj-relationship name="user" source="Ads" target="User" db-relationship-path="User"/>
 	<obj-relationship name="ads" source="Cgroup" target="Ads" deleteRule="Cascade" db-relationship-path="Ads"/>
 	<obj-relationship name="childs" source="Cgroup" target="Cgroup" deleteRule="Cascade" db-relationship-path="Childs"/>
-	<obj-relationship name="companies" source="Cgroup" target="Company" deleteRule="Nullify" db-relationship-path="Companies"/>
-	<obj-relationship name="groups" source="Cgroup" target="Group" db-relationship-path="Groups"/>
-	<obj-relationship name="parent" source="Cgroup" target="Cgroup" deleteRule="Nullify" db-relationship-path="Parent"/>
+	<obj-relationship name="companies" source="Cgroup" target="Company" deleteRule="Cascade" db-relationship-path="Companies"/>
+	<obj-relationship name="groups" source="Cgroup" target="Group" deleteRule="Cascade" db-relationship-path="Groups"/>
+	<obj-relationship name="parent" source="Cgroup" target="Cgroup" db-relationship-path="Parent"/>
 	<obj-relationship name="ads" source="Company" target="Ads" deleteRule="Cascade" db-relationship-path="Ads"/>
-	<obj-relationship name="cgroup" source="Company" target="Cgroup" deleteRule="Nullify" db-relationship-path="Cgroup"/>
+	<obj-relationship name="cgroup" source="Company" target="Cgroup" db-relationship-path="Cgroup"/>
 	<obj-relationship name="groups" source="Company" target="Group" deleteRule="Cascade" db-relationship-path="CompanyIDs.Groups"/>
 	<obj-relationship name="user" source="Company" target="User" db-relationship-path="User"/>
 	<obj-relationship name="ads" source="Group" target="Ads" deleteRule="Cascade" db-relationship-path="Ads"/>
 	<obj-relationship name="cgroup" source="Group" target="Cgroup" db-relationship-path="Cgroup"/>
-	<obj-relationship name="companies" source="Group" target="Company" deleteRule="Nullify" db-relationship-path="GroupIDs.Companies"/>
-	<obj-relationship name="users" source="Role" target="User" db-relationship-path="RoleIDs.Users"/>
+	<obj-relationship name="companies" source="Group" target="Company" deleteRule="Cascade" db-relationship-path="GroupIDs.Companies"/>
+	<obj-relationship name="users" source="Role" target="User" deleteRule="Cascade" db-relationship-path="RoleIDs.Users"/>
 	<obj-relationship name="ads" source="User" target="Ads" deleteRule="Cascade" db-relationship-path="Ads"/>
 	<obj-relationship name="companies" source="User" target="Company" deleteRule="Cascade" db-relationship-path="Companies"/>
-	<obj-relationship name="roles" source="User" target="Role" deleteRule="Nullify" db-relationship-path="UserIDs.Roles"/>
+	<obj-relationship name="roles" source="User" target="Role" deleteRule="Cascade" db-relationship-path="UserIDs.Roles"/>
 </data-map>

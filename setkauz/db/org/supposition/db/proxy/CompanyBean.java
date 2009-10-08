@@ -1,6 +1,6 @@
 package org.supposition.db.proxy;
 
-public class CompanyBean extends SimpleProxy {
+public class CompanyBean extends SimpleBean {
 	private String name;
 	private String additionals;
 	private String www;

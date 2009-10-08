@@ -1,6 +1,6 @@
 package org.supposition.db.proxy;
 
-public class RoleBean extends SimpleProxy {
+public class RoleBean extends SimpleBean {
 	private String name;
 		
 	public void setName(String name) {

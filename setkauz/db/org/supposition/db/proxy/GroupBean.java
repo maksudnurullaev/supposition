@@ -1,8 +1,8 @@
 package org.supposition.db.proxy;
 
-public class CgroupBean extends SimpleBean {
+public class GroupBean extends SimpleBean {
 	private String name;
-	private String guuid;
+	private String cuuid;
 		
 	public void setName(String name) {
 		this.name = name;
@@ -10,10 +10,10 @@ public class CgroupBean extends SimpleBean {
 	public String getName() {
 		return name;
 	}
-	public void setGuuid(String guuid) {
-		this.guuid = guuid;
+	public void setCuuid(String cuuid) {
+		this.cuuid = cuuid;
 	}
-	public String getGuuid() {
-		return guuid;
+	public String getCuuid() {
+		return cuuid;
 	}
 }

@@ -107,18 +107,18 @@ public final class DBUtils {
 	}
 
 	public static String getGroupsAsHTMLSelect(String inPrefix) {
-		String result = String.format("<select id='%s.guuid'>", inPrefix);
-		String format = "<option value='%s'>%s</option>";
-		result += String.format(format, Utils.ROOT_ID_DEF, MessagesManager.getText("text.root.cgroup"));
-
 		CgroupProxy cgroups = new CgroupProxy();		
 		List<Cgroup> cgroup_list = cgroups.getRootElements();
 		
 		if(cgroup_list == null ||
 				cgroup_list.size() == 0){
-			_log.debug("text.no.data");
-		} result += getOptionsFromCgroupList(cgroup_list, 0);
-		return result + "</select>";
+			_log.debug("errors.data.not.found");
+			return MessagesManager.getText("errors.data.not.found");
+		} 
+		
+		return String.format("<select id='%s.guuid'>%s</select>", 
+				inPrefix,
+				getOptionsFromCgroupList(cgroup_list, 0));
 	}
 	
 	@SuppressWarnings("unchecked")
