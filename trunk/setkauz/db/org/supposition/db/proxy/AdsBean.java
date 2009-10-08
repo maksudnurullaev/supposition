@@ -1,6 +1,6 @@
 package org.supposition.db.proxy;
 
-public class AdsBean extends SimpleProxy {
+public class AdsBean extends SimpleBean {
 	private String text;
 	private String price;
 	private String kaptcha;	

@@ -42,5 +42,6 @@
 		<convert match="org.supposition.db.proxy.CgroupBean" converter="bean"/>
 		
 		<convert match="org.supposition.db.proxy.CompanyFilterBean" converter="bean"/>
+		<convert match="org.supposition.db.proxy.GroupBean" converter="bean"/>
 	</allow>	
 </dwr>

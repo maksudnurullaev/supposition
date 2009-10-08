@@ -24,6 +24,8 @@ public class Cgroup extends _Cgroup implements IDBOClass{
 		if(isNew())
 			setUuid(DBUtils.getUuid());
 		
+		super.validateForSave(validationResult);
+		
 	}
 
 	@Override

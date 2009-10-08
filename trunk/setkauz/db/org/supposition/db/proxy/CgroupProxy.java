@@ -33,7 +33,7 @@ public class CgroupProxy extends ADBProxyObject<Cgroup> {
 		Cgroup cgroup = getDBObjectByUuid(inUuid);
 		if(cgroup == null){
 			return MessagesManager.getDefault("web.error.result.prefix")
-			+ MessagesManager.getText("errors.object.not.found");
+			+ MessagesManager.getText("errors.data.not.found");
 		}
 		
 		deleteObject(cgroup);

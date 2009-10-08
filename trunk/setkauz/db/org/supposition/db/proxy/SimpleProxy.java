@@ -1,19 +1,29 @@
 package org.supposition.db.proxy;
 
-public class SimpleProxy {
+import java.util.List;
 
-	private String uuid;
+import org.apache.cayenne.CayenneDataObject;
+import org.apache.cayenne.access.DataContext;
+import org.supposition.db.proxy.abstracts.ADBProxyObject;
+import org.supposition.utils.DBUtils;
 
-	public SimpleProxy() {
+public class SimpleProxy<E extends CayenneDataObject> extends ADBProxyObject<E> {
+
+	@Override
+	public List<String> getColumnNames() {
+		return null;
+	}
+
+	public SimpleProxy(Class<E> inClass){
 		super();
+		setEClass(inClass);
+		setDataContext(DBUtils.getInstance().getDBContext());
 	}
 
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String inUuid) {
-		uuid = inUuid;
-	}
-
+	public SimpleProxy(DataContext inDataContext, Class<E> inClass) {
+		super();
+		setEClass(inClass);
+		setDataContext(inDataContext);
+	}	 		
+	
 }
