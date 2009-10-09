@@ -67,6 +67,15 @@ Main.isOK = function(result) {
 	return false;
 };
 
+Main.isERROR = function(result) {
+	if (result.substring(0, 6) == "ERROR:") {
+		return true;
+	}
+
+	return false;
+};
+
+
 Main.trim = function(s) {
 	var l = 0;
 	var r = s.length - 1;
