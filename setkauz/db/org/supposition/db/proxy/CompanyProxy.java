@@ -71,6 +71,132 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			+ MessagesManager.getText("message.data.saved");		
 	}
 	
+	public String addDBONewGroup(GroupBean inBean){
+		log(inBean);
+		
+		CompanyProxy companyProxy = new CompanyProxy(getDataContext());
+		
+		Company company = companyProxy.getDBObjectByUuid(inBean.getCuuid());
+		
+		if(company == null){
+			return MessagesManager.getText("errors.data.not.found");
+		}
+		
+		if(!isManager(company)){
+			return MessagesManager.getText("errors.user.has.not.access");
+		}		
+		
+		GroupProxy groupProxy = new GroupProxy(getDataContext());
+		
+		Group group = null;
+		try {
+			group = groupProxy.createNew();
+		} catch (Exception e) {
+			getDataContext().deleteObject(group);
+			e.printStackTrace();
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.could.not.create.dbobject");
+		}
+		
+		group.setBean(inBean);
+		
+		company.addToGroups(group);
+		company.getCgroup().addToGroups(group);
+		
+		// Validate
+		ValidationResult validationResult = group.getValidationResult();
+
+		if(validationResult.hasFailures()){
+			// Delete Object before commit
+			getDataContext().deleteObject(group);
+			return MessagesManager.getDefault("web.error.result.prefix")
+						+ DBUtils.getFailuresAsString(validationResult);
+		}
+		
+		commitChanges();
+				
+		return getDetails(inBean.getCuuid());
+	}	
+	
+	public String addDBOGroup(GroupBean inBean){
+		log(inBean);
+		
+		CompanyProxy companyProxy = new CompanyProxy(getDataContext());
+		
+		Company company = companyProxy.getDBObjectByUuid(inBean.getCuuid());
+		
+		if(company == null){
+			return MessagesManager.getText("errors.data.not.found");
+		}
+		
+		if(!isManager(company)){
+			return MessagesManager.getText("errors.user.has.not.access");
+		}		
+		
+		GroupProxy groupProxy = new GroupProxy(getDataContext());
+		
+		Group group = groupProxy.getDBObjectByUuid(inBean.getUuid());
+		
+		if(group == null){
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.null.object");
+		}
+				
+		company.addToGroups(group);
+		
+		try {
+			commitChanges();			
+		} catch (Exception e) {
+			return MessagesManager.getDefault("web.error.result.prefix") 
+			+ e.getMessage();
+		}
+				
+		return getDetails(inBean.getCuuid());
+	}	
+	
+	public String removeDBOGroup(GroupBean inBean){
+		log(inBean);
+		
+		CompanyProxy companyProxy = new CompanyProxy(getDataContext());
+		
+		Company company = companyProxy.getDBObjectByUuid(inBean.getCuuid());
+		
+		if(company == null){
+			return MessagesManager.getText("errors.data.not.found");
+		}
+		
+		if(!isManager(company)){
+			return MessagesManager.getText("errors.user.has.not.access");
+		}		
+		
+		GroupProxy groupProxy = new GroupProxy(getDataContext());
+		
+		Group group = groupProxy.getDBObjectByUuid(inBean.getUuid());
+		
+		if(group == null){
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.null.object");
+		}
+				
+		_log.debug(String.format("XXXXXXXXXXX:Group(%s) removed from company(%s)", group.getUuid(), company.getUuid()));
+		company.removeFromGroups(group);
+		
+		try {
+			commitChanges();			
+		} catch (Exception e) {
+			return MessagesManager.getDefault("web.error.result.prefix") 
+			+ e.getMessage();
+		}
+				
+		return getDetails(inBean.getCuuid());
+	}		
+
+	private void log(GroupBean inBean) {
+		_log.debug("inBean.getName():" + inBean.getName());
+		_log.debug("inBean.getUuid():" + inBean.getUuid());
+		_log.debug("inBean.getCuuid():" + inBean.getCuuid());
+	}
+
 	private String getAdditionalGroupLinks(Company company) {
 		String result = String.format(Utils.INPUT_BUTTON_TEMPLATE,
 				"CompanyProxy.groupShow()",
@@ -86,8 +212,8 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		}
 		
 		return result; 
-	}	
-
+	}
+	
 	private String getAdditionalLinks(Company inCompany) {
 		String result = " [" + String.format(Utils.LINK_TEMPLATE,
 				inCompany.getUuid(),
@@ -111,7 +237,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				getCgroupUuidAsList(inList, (Cgroup) cgroup);
 			}
 		}
-	}
+	} 
 	
 	@Override
 	public List<String> getColumnNames() {
@@ -119,7 +245,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		
 		String[] result = {"#","Name"};
 		return Arrays.asList(result);
-	} 
+	}
 	
 	public String getDetails(String uuid){
 		CompanyProxy companyProxy = new CompanyProxy();
@@ -142,15 +268,32 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				getGroupAsHTMLSelect(company),
 				company.getUuid(), 
 				company.getUuid());
-	}
-	
+	}	
+
 	private String getDetailsLink(Company item) {
 		return String.format(Utils.LINK_TEMPLATE,
 				item.getUuid(),
 				"CompanyProxy.showDetails(this.id)",
 				item.getName());
+	}
+	
+	public String getGroupAddForm(String inUuid){
+		CompanyProxy companyProxy = new CompanyProxy();
+		
+		Company company = companyProxy.getDBObjectByUuid(inUuid);
+		
+		if(company == null){
+			return MessagesManager.getText("errors.data.not.found");
+		}
+		
+		if(!isManager(company)){
+			return MessagesManager.getText("errors.user.has.not.access");
+		}
+				
+		return String.format(MessagesManager.getText("main.company.formGroupAdd"),
+				getGroupNotJoinedAsHTMLSelect(company));
 	}	
-
+	
 	private String getGroupAsHTMLSelect(Company company) {
 		String result = "<select id=\"company.group\">";
 		String resultOption = "<option value=\"%s\">%s</option>";
@@ -166,7 +309,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		if(company.getCgroup() == null) return result + resultFooter;
 		if(company.getCgroup().getGroups() == null) return result + resultFooter;
 		
-		List<?> groupsList = company.getCgroup().getGroups();
+		List<?> groupsList = company.getGroups();
 		for(Object object:groupsList){
 			Group group = (Group) object;
 			result += String.format(resultOption,
@@ -177,7 +320,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return result 
 			+ resultFooter;
 	}
-	
+
 	private String getGroupNotJoinedAsHTMLSelect(Company company) {
 		if(company.getCgroup() == null) 
 			return MessagesManager.getText("errors.data.not.found");
@@ -185,22 +328,39 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				company.getCgroup().getGroups().size() == 0)
 			return MessagesManager.getText("errors.data.not.found");
 		
-		String result = "<select id=\"company.notjoined.group\">";
-		String resultOption = "<option value=\"%s\">%s</option>";		
-		String resultFooter = "</select> ";
+		String result = "";		
+		List<?> groupsAllList = company.getCgroup().getGroups();
+		List<?> groupsList = company.getGroups();
+		boolean found = false;
 		
-		List<?> groupsList = company.getCgroup().getGroups();
-		for(Object object:groupsList){
+		for(Object object:groupsAllList){
 			Group group = (Group) object;
-			result += String.format(resultOption,
-					group.getUuid(),
-					group.getName());
+			if(!isGroupExist(group, groupsList)){
+				result += String.format("<option value=\"%s\">%s</option>",
+						group.getUuid(),
+						group.getName());
+				found = true;
+			}
 		}	
 		
-		return result 
-			+ resultFooter;
-	}	
-	
+		if(!found){
+			return MessagesManager.getText("errors.data.not.found");
+		}
+		
+		return  "<select id=\"company.notjoined.groups\">" 
+			+ result 
+			+ "</select> ";
+	}
+
+	private boolean isGroupExist(Group group, List<?> groupsAllList) {
+		for(Object tempObject:groupsAllList){
+			Group tempGroup = (Group) tempObject;
+			if(tempGroup.getUuid().equals(group.getUuid()))
+				return true;
+		}
+		return false;
+	}
+
 	private String getHTMLTable(int inPage, List<Company> inList) {
 		// Define start & end items
 		int startItem = (inPage - 1) * getPageSize();
@@ -385,68 +545,6 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		
 		return MessagesManager.getDefault("web.ok.result.prefix") 
 			+ MessagesManager.getText("message.data.saved");			
-	}
-
-	public String getGroupAddForm(String inUuid){
-		CompanyProxy companyProxy = new CompanyProxy();
-		
-		Company company = companyProxy.getDBObjectByUuid(inUuid);
-		
-		if(company == null){
-			return MessagesManager.getText("errors.data.not.found");
-		}
-		
-		if(!isManager(company)){
-			return MessagesManager.getText("errors.user.has.not.access");
-		}
-				
-		return String.format(MessagesManager.getText("main.company.formGroupAdd"),
-				getGroupNotJoinedAsHTMLSelect(company));
-	}
-
-	public String addDBONewGroup(GroupBean inBean){
-		CompanyProxy companyProxy = new CompanyProxy(getDataContext());
-		
-		Company company = companyProxy.getDBObjectByUuid(inBean.getCuuid());
-		
-		if(company == null){
-			return MessagesManager.getText("errors.data.not.found");
-		}
-		
-		if(!isManager(company)){
-			return MessagesManager.getText("errors.user.has.not.access");
-		}		
-		
-		GroupProxy groupProxy = new GroupProxy(getDataContext());
-		
-		Group group = null;
-		try {
-			group = groupProxy.createNew();
-		} catch (Exception e) {
-			getDataContext().deleteObject(group);
-			e.printStackTrace();
-			return MessagesManager.getDefault("web.error.result.prefix") 
-				+ MessagesManager.getText("errors.could.not.create.dbobject");
-		}
-		
-		group.setBean(inBean);
-		
-		company.addToGroups(group);
-		company.getCgroup().addToGroups(group);
-		
-		// Validate
-		ValidationResult validationResult = group.getValidationResult();
-
-		if(validationResult.hasFailures()){
-			// Delete Object before commit
-			getDataContext().deleteObject(group);
-			return MessagesManager.getDefault("web.error.result.prefix")
-						+ DBUtils.getFailuresAsString(validationResult);
-		}
-		
-		commitChanges();
-				
-		return null;
 	}
 	
 

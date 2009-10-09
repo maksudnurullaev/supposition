@@ -159,7 +159,28 @@ CompanyProxy.groupShowAddForm = function(){
 };
 
 CompanyProxy.groupDelete = function(){
-	alert(uuid);
+	Group = {uuid:null, cuuid:null};
+	
+	Group.uuid = dwr.util.getValue("company.group");
+	
+	if(Group.uuid == "root"){
+		Main.highlight("company.group");
+		return false;
+	}
+	
+	Group.cuuid = dwr.util.getValue("company.uuid");
+
+	alert("Group.uuid: " + Group.uuid);
+	alert("Group.cuuid: " + Group.cuuid);
+	
+	CompanyProxy.removeDBOGroup(Group, function(result){
+		if(Main.isERROR(result)){
+			alert(result);
+		}else{
+			dwr.util.setValue(CompanyProxy.mainDivBody, result, {escapeHtml :false});
+		}
+	});	
+	
 	return false;
 };
 
@@ -176,12 +197,33 @@ CompanyProxy.addNewGroup= function(){
 	alert(Group.cuuid);	
 	
 	CompanyProxy.addDBONewGroup(Group, function(result){
-		dwr.util.setValue(CompanyProxy.mainDivBody, result, {escapeHtml :false});		
+		if(Main.isERROR(result)){
+			alert(result);
+		}else{
+			dwr.util.setValue(CompanyProxy.mainDivBody, result, {escapeHtml :false});
+		}
 	});
 	
 	return false;
 };
 
 CompanyProxy.addExistanceGroup = function(){
+	
+	Group = {uuid:null, cuuid:null};
+	
+	Group.uuid = dwr.util.getValue("company.notjoined.groups");
+	Group.cuuid = dwr.util.getValue("company.uuid");
+
+	alert("Group.uuid: " + Group.uuid);
+	alert("Group.cuuid: " + Group.cuuid);		
+	
+	CompanyProxy.addDBOGroup(Group, function(result){
+		if(Main.isERROR(result)){
+			alert(result);
+		}else{
+			dwr.util.setValue(CompanyProxy.mainDivBody, result, {escapeHtml :false});
+		}
+	});	
+	
 	return false;
 };
