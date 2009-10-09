@@ -17,6 +17,51 @@ public final class MessagesManager {
 
 	private static TextManager _textManager = null;
 
+	public static void changeLocale(String inLocale) {
+		checkInitTextManager();
+		// Set locale
+		SessionManager.setSessionLocale(inLocale);
+	}
+
+	private static void checkInitTextManager() {
+		if (_textManager == null) {
+			// Get TextManager bean from spring framework
+			if(_isTomcatContext){
+				_textManager = (TextManager) ContextLoader
+					.getCurrentWebApplicationContext().getBean(_beans_text_manager_id);
+			}else{
+				_textManager = new TextManager();
+				_textManager.setBasename(_defaultBaseName);
+			}
+		}
+
+	}
+	
+	public static String errorDataNotSaveMessage() {
+		return  errorPrefix() + getText("message.data.NOT.saved");
+	}	
+	
+	public static String errorPrefix(){
+		return  getDefault("web.error.result.prefix");
+	}
+
+	public static String getDefault(String inKey) {
+		checkInitTextManager();
+		return _textManager.getDefaultByKey(inKey);
+	}
+	
+	public static Properties getDefaults() {
+		return  _textManager.getDefaults();
+	}
+
+	public static String getLocale() {
+		return SessionManager.getSessionLocale();
+	}
+
+	public static int getSessionIntValue(String inKey) {
+		return SessionManager.getSessionIntValue(inKey);
+	}
+
 	// *** TEXT MANAGER part ****
 	public static String getText(String inKey) {
 		checkInitTextManager();
@@ -26,8 +71,6 @@ public final class MessagesManager {
 	// *** TEXT MANAGER part  # 2****
 	public static Map<String, String> getText2(String inKey) {
 		checkInitTextManager();
-		
-		//DefaultHttpRequestBeanProxy result = new DefaultHttpRequestBeanProxy();
 		
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("eval", null);
@@ -46,69 +89,24 @@ public final class MessagesManager {
 		}			
 		return result;
 	}
-	
-	public static String getDefault(String inKey) {
+
+	public static boolean hasDefaultByKey(String inKey) {
 		checkInitTextManager();
-		return _textManager.getDefaultByKey(inKey);
-	}	
-	
-	private static void checkInitTextManager() {
-		if (_textManager == null) {
-			// Get TextManager bean from spring framework
-			if(_isTomcatContext){
-				_textManager = (TextManager) ContextLoader
-					.getCurrentWebApplicationContext().getBean(_beans_text_manager_id);
-			}else{
-				_textManager = new TextManager();
-				_textManager.setBasename(_defaultBaseName);
-			}
-		}
-
+		return _textManager.hasDefaultKey(inKey);
 	}
-
+	
 	// *** MESSAGE SENDER part ****
 	public static boolean hasMessageByKey(String inKey) {
 		checkInitTextManager();
 		return _textManager.hasKey(inKey, getLocale());
 	}
 	
-	public static boolean hasDefaultByKey(String inKey) {
-		checkInitTextManager();
-		return _textManager.hasDefaultKey(inKey);
-	}
-
-	public static void changeLocale(String inLocale) {
-		checkInitTextManager();
-		// Set locale
-		SessionManager.setSessionLocale(inLocale);
-	}
-
-	public static String getLocale() {
-		return SessionManager.getSessionLocale();
-	}
-
-	public static int getSessionIntValue(String inKey) {
-		return SessionManager.getSessionIntValue(inKey);
-	}
-
 	public static String okDataSaveMessage() {
 		return  okPrefix() + getText("message.data.saved");
 	}
 
-	public static String errorDataNotSaveMessage() {
-		return  errorPrefix() + getText("message.data.NOT.saved");
-	}
-	
-	public static String errorPrefix(){
-		return  getDefault("web.error.result.prefix");
-	}
-	
 	public static String okPrefix(){
 		return  getDefault("web.ok.result.prefix");
-	}
-
-	public static Properties getDefaults() {
-		return  _textManager.getDefaults();
 	}
 	
 

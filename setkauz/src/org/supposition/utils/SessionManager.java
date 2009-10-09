@@ -130,13 +130,13 @@ public final class SessionManager {
 	public static List<String> getUserRoles() {
 		List<String> resultList = new ArrayList<String>();
 		UserProxy users = new UserProxy();
-		User user = users.getDBObjectByUuid(getUserUuid());
-		if(user == null){
+		if(!SessionManager.isUserLoggedIn()){
 			resultList.add(DEFAULT_NONREGISTERED_POSTFIX);
 			_log.debug("Current user has role:" + DEFAULT_NONREGISTERED_POSTFIX);
 		}else{
 			resultList.add(DEFAULT_REGISTERED_POSTFIX);
 			_log.debug("Current user has role:" + DEFAULT_REGISTERED_POSTFIX);
+			User user = users.getDBObjectByUuid(getUserUuid());
 			for(String role:user.getRolesAsList()){
 				resultList.add(role);
 				_log.debug("Current user has role:" + role);

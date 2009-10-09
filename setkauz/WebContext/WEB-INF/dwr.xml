@@ -21,11 +21,7 @@
 			<param name="class" value="org.supposition.db.proxy.RoleProxy" />
 		</create>
 		<convert match="org.supposition.db.proxy.RoleBean" converter="bean"/>
-		
-		<create creator="new" javascript="SystemDefaultsProxy">
-			<param name="class" value="org.supposition.proxy.SystemDefaultsProxy" />
-		</create>
-		
+				
 		<create creator="new" javascript="AdsProxy">
 			<param name="class" value="org.supposition.db.proxy.AdsProxy" />
 		</create>		

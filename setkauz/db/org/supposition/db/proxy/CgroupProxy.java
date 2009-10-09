@@ -7,7 +7,7 @@ import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.ExpressionFactory;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Cgroup;
-import org.supposition.db.proxy.abstracts.ADBProxyObject;
+import org.supposition.db.abstracts.ADBProxyObject;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.Utils;

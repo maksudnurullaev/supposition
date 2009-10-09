@@ -1,4 +1,4 @@
-package org.supposition.db.proxy.interfaces;
+package org.supposition.db.interfaces;
 
 import java.util.List;
 
