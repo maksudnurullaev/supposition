@@ -9,7 +9,7 @@ import org.apache.cayenne.query.Ordering;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Ads;
 import org.supposition.db.Cgroup;
-import org.supposition.db.proxy.abstracts.ADBProxyObject;
+import org.supposition.db.abstracts.ADBProxyObject;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
@@ -95,14 +95,13 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 	}	
 
 	public String getPageAsHTMLTable(CompanyFilterBean inFilter, int inPage) {
-		_log.debug("-> getPageAsHTMLTable");
-		_log.debug("inFilter.getCity(): " + inFilter.getCity());		
-		_log.debug("inFilter.getGuuid(): " + inFilter.getGuuid());
+		_log.debug("inFilter.getCity() = " + inFilter.getCity());		
+		_log.debug("inFilter.getGuuid() = " + inFilter.getGuuid());
 		
 		// Check page value 
 		if (inPage <= 0 // if page negative
 			||	inFilter.getCity().length() > 6) // if city has not format "[N|6][#]"
-			return MessagesManager.getText("errors.too.many.objects");
+			return MessagesManager.getText("errors.unmatched.data.objects");
 			
 				
 		// Set cgroup filter
@@ -120,12 +119,15 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		// Set city filter
 		if(!inFilter.getCity().equals(Utils.ROOT_ID_DEF)){
 			String cityFilter = inFilter.getCity();
-			if(cityFilter.indexOf("#") != -1 &&
-					cityFilter.indexOf("#") == (cityFilter.length() - 1)){
+			if(cityFilter.indexOf("#") != -1){
+				_log.debug("# symbol found!");
 				cityFilter.replace("#", "%");
-				addExpression(ExpressionFactory.likeIgnoreCaseExp("city", cityFilter));
+				addExpression(ExpressionFactory.likeIgnoreCaseExp("city", cityFilter.replace("#", "%")));
+				_log.debug(String.format("Filter is (city LIKE %s)", cityFilter.replace("#", "%")));
 			}else{
+				_log.debug("# symbol NOT found!");
 				addExpression(ExpressionFactory.matchDbExp("city", cityFilter));
+				_log.debug(String.format("Filter is (city = %s)", cityFilter));
 			}
 		}
 		

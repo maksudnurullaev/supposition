@@ -147,7 +147,22 @@ CompanyProxy.showDetails = function(uuid){
 };
 
 CompanyProxy.groupShow = function(){
-	alert(uuid);
+	Group = {uuid:null, cuuid:null};
+	
+	Group.uuid = dwr.util.getValue("company.group");	
+	Group.cuuid = dwr.util.getValue("company.uuid");
+
+	alert("Group.uuid: " + Group.uuid);
+	alert("Group.cuuid: " + Group.cuuid);
+	
+	CompanyProxy.getGroupItemsAsHTMLTable(Group, function(result){
+		if(Main.isERROR(result)){
+			alert(result);
+		}else{
+			dwr.util.setValue(Group.cuuid, result, {escapeHtml :false});
+		}
+	});	
+	
 	return false;
 };
 

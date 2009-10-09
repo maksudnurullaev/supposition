@@ -1,4 +1,4 @@
-package org.supposition.db.proxy.abstracts;
+package org.supposition.db.abstracts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.apache.cayenne.query.Ordering;
 import org.apache.cayenne.query.SelectQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.supposition.db.proxy.interfaces.IDBProxyCollection;
+import org.supposition.db.interfaces.IDBProxyCollection;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 import org.supposition.utils.Utils;
@@ -28,9 +28,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	
 	@Override
 	public void addExpression(Expression inExpression) {
-		_log.debug("->addExpression: " + inExpression.toString());
 		_expressions.add(inExpression);
-		_log.debug("Expression count now = " + _expressions.size());
 	}
 	
 	@Override
@@ -113,6 +111,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	public E getDBObjectByUuid(String inUuid){
 		if(inUuid == null){
 			_log.debug(String.format("%s: Could not find object by when UUID = null", getClass().getSimpleName()));
+				
 			return null;
 		}
 		

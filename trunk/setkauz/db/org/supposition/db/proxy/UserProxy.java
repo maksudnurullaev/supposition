@@ -9,7 +9,7 @@ import org.apache.cayenne.exp.ExpressionFactory;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Role;
 import org.supposition.db.User;
-import org.supposition.db.proxy.abstracts.ADBProxyObject;
+import org.supposition.db.abstracts.ADBProxyObject;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
@@ -165,9 +165,9 @@ public class UserProxy extends ADBProxyObject<User> {
 					+ MessagesManager.getText("errors.wrong.mail.or.password");
 		} else {
 			if (userList.size() > 1) {
-				_log.error("errors.too.many.objects");
+				_log.error("errors.unmatched.data.objects");
 				return MessagesManager.getDefault("web.error.result.prefix")
-						+ MessagesManager.getText("errors.too.many.objects");
+						+ MessagesManager.getText("errors.unmatched.data.objects");
 			} else {
 				if (!userList.get(0).checkPassword(userBean.getPassword())) {
 					_log.warn("errors.wrong.mail.or.password");
@@ -275,7 +275,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		_log.debug("-> getPageAsHTMLTable");
 
 		if (inPage <= 0)
-			return MessagesManager.getText("errors.too.many.objects");
+			return MessagesManager.getText("errors.unmatched.data.objects");
 
 		// Check for filter
 		if (isSessionHasFilter()) {

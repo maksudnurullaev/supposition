@@ -31,7 +31,7 @@ public class LocalUserProxy {
 			_log.warn(String.format(
 					"userBean.getUuid(%s) != SessionManager.getUserUuid(%s)",
 					userBean.getUuid(), SessionManager.getUserUuid()));
-			return MessagesManager.getText("errors.too.many.objects");
+			return MessagesManager.getText("errors.unmatched.data.objects");
 		}
 
 		// Check for errors - user valid or not

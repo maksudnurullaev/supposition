@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
 import org.supposition.db.Group;
-import org.supposition.db.proxy.abstracts.ADBProxyObject;
+import org.supposition.db.abstracts.ADBProxyObject;
 import org.supposition.utils.DBUtils;
 
 public class GroupProxy extends ADBProxyObject<Group> {

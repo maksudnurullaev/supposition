@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.validation.ValidationResult;
 import org.supposition.db.Role;
-import org.supposition.db.proxy.abstracts.ADBProxyObject;
+import org.supposition.db.abstracts.ADBProxyObject;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
@@ -111,7 +111,7 @@ public class RoleProxy extends ADBProxyObject<Role> {
 		_log.debug("-> getPageAsHTMLTable");
 		
 		if(inPage <= 0)
-			return MessagesManager.getText("errors.too.many.objects");
+			return MessagesManager.getText("errors.unmatched.data.objects");
 		
 		String format = MessagesManager.getText("main.admin.roles.table.tr");
 		

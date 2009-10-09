@@ -8,10 +8,11 @@ import org.apache.cayenne.access.DataContext;
 import org.apache.cayenne.exp.ExpressionFactory;
 import org.apache.cayenne.query.Ordering;
 import org.apache.cayenne.validation.ValidationResult;
+import org.supposition.db.Ads;
 import org.supposition.db.Cgroup;
 import org.supposition.db.Company;
 import org.supposition.db.Group;
-import org.supposition.db.proxy.abstracts.ADBProxyObject;
+import org.supposition.db.abstracts.ADBProxyObject;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
@@ -154,6 +155,64 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return getDetails(inBean.getCuuid());
 	}	
 	
+	public String getGroupItemsAsHTMLTable(GroupBean inBean){
+		log(inBean);
+		// 0. check incoming beans
+		if(inBean == null 
+				|| inBean.getCuuid() == null
+				|| inBean.getUuid() == null){
+			_log.warn("errors.null.object");
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.null.object");
+		}
+		
+		boolean isGetAllItems = false;
+		
+		// 1. get group
+		GroupProxy groupProxy = new GroupProxy(getDataContext());
+		
+		Group group = groupProxy.getDBObjectByUuid(inBean.getUuid());
+		
+		if(group == null){
+			if(inBean.getUuid().equals(Utils.ROOT_ID_DEF)){
+				isGetAllItems = true;
+			}else{
+				_log.warn("errors.null.object");
+				return MessagesManager.getDefault("web.error.result.prefix") 
+					+ MessagesManager.getText("errors.null.object");
+			}
+		} 
+		
+		if(!isGetAllItems){
+			_log.debug("get ads from group");
+			return "getAdsAsHTMLTable(group.getAds())";
+		}
+		
+		
+		// 2. get company								
+		_log.debug("get ads from company");
+		return "getAdsAsHTMLTable(getCompanyAds(inBean.getCuuid()))";
+	}	
+	
+	private List<?> getCompanyAds(String inUuid){
+		CompanyProxy companyProxy = new CompanyProxy(getDataContext());
+		
+		Company company = companyProxy.getDBObjectByUuid(inUuid);
+		
+		if(company == null){
+			_log.warn("errors.null.object");
+			return null;
+		}		
+		
+		return company.getAds();
+	}
+	
+	private String getAdsAsHTMLTable(List<?> ads) {
+		if(ads.size() == 0)
+			return MessagesManager.getText("errors.data.not.found");
+		return "Found " + ads.size() + "items";
+	}
+
 	public String removeDBOGroup(GroupBean inBean){
 		log(inBean);
 		
@@ -399,7 +458,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		// Check page value 
 		if (inPage <= 0 // if page negative
 			||	inFilter.getCity().length() > 6) // if city has not format "[N|6][#]"
-			return MessagesManager.getText("errors.too.many.objects");		
+			return MessagesManager.getText("errors.unmatched.data.objects");		
 		
 		// Set cgroup filter
 		if(!inFilter.getGuuid().equals(Utils.ROOT_ID_DEF)){
