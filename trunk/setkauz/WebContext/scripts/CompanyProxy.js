@@ -223,7 +223,6 @@ CompanyProxy.addNewGroup= function(){
 };
 
 CompanyProxy.addExistanceGroup = function(){
-	
 	Group = {uuid:null, cuuid:null};
 	
 	Group.uuid = dwr.util.getValue("company.notjoined.groups");
@@ -241,4 +240,37 @@ CompanyProxy.addExistanceGroup = function(){
 	});	
 	
 	return false;
+};
+
+CompanyProxy.showAddAdsForm = function(){
+	Main.getTextFromServerToDiv("main.company.ads.formNew",dwr.util.getValue("company.uuid"), false);
+	return false;
+};
+
+CompanyProxy.addNewAds = function(){
+	// Check fields
+	if(!Main.isValidValue("company.ads.text")){ return false; }
+	
+	Ads = {guuid:null, cuuid:null, text:null, price:null};
+	
+	Ads.guuid = dwr.util.getValue("company.group");
+	Ads.cuuid = dwr.util.getValue("company.uuid");
+	Ads.text  = dwr.util.getValue("company.ads.text");
+	Ads.price = dwr.util.getValue("company.ads.price");
+	
+	alert("Ads.guuid: " + Ads.guuid);
+	alert("Ads.cuuid: " + Ads.cuuid);		
+	alert("Ads.text: " + Ads.text);
+	alert("Ads.price: " + Ads.price);		
+	
+	
+	CompanyProxy.addDBOAds(Ads, function(result){
+		if(Main.isERROR(result)){
+			alert(result);
+		}else{
+			dwr.util.setValue(dwr.util.getValue("company.uuid"), result, {escapeHtml :false});
+		}
+	});	
+	
+	return false;	
 };

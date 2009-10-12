@@ -3,9 +3,10 @@
 	<property name="defaultPackage" value="org.supposition.db"/>
 	<db-entity name="ads">
 		<db-attribute name="cgroup_id" type="INTEGER"/>
-		<db-attribute name="city" type="VARCHAR" isMandatory="true" length="6"/>
+		<db-attribute name="city" type="VARCHAR" isMandatory="true" length="7"/>
 		<db-attribute name="company_id" type="INTEGER"/>
 		<db-attribute name="created" type="TIMESTAMP" isMandatory="true"/>
+		<db-attribute name="cuuid" type="VARCHAR" length="40"/>
 		<db-attribute name="delete_after" type="DATE" isMandatory="true"/>
 		<db-attribute name="group_id" type="INTEGER"/>
 		<db-attribute name="guuid" type="VARCHAR" isMandatory="true" length="40"/>
@@ -69,6 +70,7 @@
 	<obj-entity name="Ads" className="org.supposition.db.Ads" dbEntityName="ads">
 		<obj-attribute name="city" type="java.lang.String" db-attribute-path="city"/>
 		<obj-attribute name="created" type="java.util.Date" db-attribute-path="created"/>
+		<obj-attribute name="cuuid" type="java.lang.String" db-attribute-path="cuuid"/>
 		<obj-attribute name="deleteAfter" type="java.util.Date" db-attribute-path="delete_after"/>
 		<obj-attribute name="guuid" type="java.lang.String" db-attribute-path="guuid"/>
 		<obj-attribute name="price" type="java.lang.String" db-attribute-path="price"/>

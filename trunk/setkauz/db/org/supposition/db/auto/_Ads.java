@@ -9,6 +9,7 @@ public class _Ads extends org.apache.cayenne.CayenneDataObject {
 
     public static final String CITY_PROPERTY = "city";
     public static final String CREATED_PROPERTY = "created";
+    public static final String CUUID_PROPERTY = "cuuid";
     public static final String DELETE_AFTER_PROPERTY = "deleteAfter";
     public static final String GUUID_PROPERTY = "guuid";
     public static final String PRICE_PROPERTY = "price";
@@ -35,6 +36,14 @@ public class _Ads extends org.apache.cayenne.CayenneDataObject {
     }
     public java.util.Date getCreated() {
         return (java.util.Date)readProperty("created");
+    }
+    
+    
+    public void setCuuid(String cuuid) {
+        writeProperty("cuuid", cuuid);
+    }
+    public String getCuuid() {
+        return (String)readProperty("cuuid");
     }
     
     
