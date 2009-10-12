@@ -110,7 +110,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	@Override	
 	public E getDBObjectByUuid(String inUuid){
 		if(inUuid == null){
-			_log.debug(String.format("%s: Could not find object by when UUID = null", getClass().getSimpleName()));
+			_log.debug(String.format("%s: Could not find object,  UUID = null", getClass().getSimpleName()));
 				
 			return null;
 		}
