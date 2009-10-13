@@ -86,7 +86,7 @@ CompanyProxy.remove = function(uuid) {
 };
 
 CompanyProxy.remove = function(uuid) {
-	if(!confirm("Are you sure!? Вы уверены!?")) return false;
+	if(!confirm("Are you sure!? Вы уверены!?")){ return false; }
 	
 	CompanyProxy.removeDBO(uuid, function(result){
 		alert(result);
@@ -147,20 +147,20 @@ CompanyProxy.showDetails = function(uuid){
 };
 
 CompanyProxy.AdsGo2PageForward = function(){
-	if(!CompanyProxy.isCorrectPaginatorValues()) return false; 
+	if(!CompanyProxy.isCorrectPaginatorValues()){ return false; } 
 
 	var Filter = CompanyProxy.getAdsFilter();
-	Filter.page = parseInt(Filter.page) + 1;
+	Filter.page = parseInt(Filter.page, 10) + 1;
 	CompanyProxy.showAdsByFilter(Filter);
 	
 	return false;
 };
 
 CompanyProxy.AdsGo2PagePrevious = function(){
-	if(!CompanyProxy.isCorrectPaginatorValues()) return false; 
+	if(!CompanyProxy.isCorrectPaginatorValues()){ return false; } 
 
 	var Filter = CompanyProxy.getAdsFilter();
-	Filter.page = parseInt(Filter.page) - 1;
+	Filter.page = parseInt(Filter.page, 10) - 1;
 	CompanyProxy.showAdsByFilter(Filter);
 	
 	return false;
@@ -194,7 +194,7 @@ CompanyProxy.isCorrectPaginatorValues = function(){
 };
 
 CompanyProxy.groupShow = function(){
-	if(!CompanyProxy.isCorrectPaginatorValues()) return false; 
+	if(!CompanyProxy.isCorrectPaginatorValues()){ return false; } 
 	
 	CompanyProxy.showAdsByFilter(CompanyProxy.getAdsFilter());
 	return false;
