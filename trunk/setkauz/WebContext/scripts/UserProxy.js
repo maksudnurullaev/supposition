@@ -49,10 +49,10 @@ UserProxy.go2Page = function(inPage) {
 };
 
 // Setup page
-UserProxy.setPageDencity = function() {
-	if (parseInt(dwr.util.getValue("UserProxy.pageDencity"), 10) > 0) {
+UserProxy.setPageDensity = function() {
+	if (parseInt(dwr.util.getValue("UserProxy.pageDensity"), 10) > 0) {
 		UserProxy.setPageSize(parseInt(dwr.util
-				.getValue("UserProxy.pageDencity"), 10), function() {
+				.getValue("UserProxy.pageDensity"), 10), function() {
 			UserProxy.go2Page(1);
 		});
 	}

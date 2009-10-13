@@ -64,10 +64,10 @@ CompanyProxy.go2Page = function(inPage) {
 };
 
 //  Set page size
-CompanyProxy.setPageDencity = function() {
-	if (parseInt(dwr.util.getValue("CompanyProxy.pageDencity"), 10) > 0) {
+CompanyProxy.setPageDensity = function() {
+	if (parseInt(dwr.util.getValue("CompanyProxy.pageDensity"), 10) > 0) {
 		CompanyProxy.setPageSize(parseInt(dwr.util
-				.getValue("CompanyProxy.pageDencity"), 10), function() {
+				.getValue("CompanyProxy.pageDensity"), 10), function() {
 			CompanyProxy.go2Page(1);
 		});
 	}
@@ -146,23 +146,68 @@ CompanyProxy.showDetails = function(uuid){
 	return false;	
 };
 
-CompanyProxy.groupShow = function(){
-	Group = {uuid:null, cuuid:null};
-	
-	Group.uuid = dwr.util.getValue("company.group");	
-	Group.cuuid = dwr.util.getValue("company.uuid");
+CompanyProxy.AdsGo2PageForward = function(){
+	if(!CompanyProxy.isCorrectPaginatorValues()) return false; 
 
-	alert("Group.uuid: " + Group.uuid);
-	alert("Group.cuuid: " + Group.cuuid);
+	var Filter = CompanyProxy.getAdsFilter();
+	Filter.page = parseInt(Filter.page) + 1;
+	CompanyProxy.showAdsByFilter(Filter);
 	
-	CompanyProxy.getGroupItemsAsHTMLTable(Group, function(result){
+	return false;
+};
+
+CompanyProxy.AdsGo2PagePrevious = function(){
+	if(!CompanyProxy.isCorrectPaginatorValues()) return false; 
+
+	var Filter = CompanyProxy.getAdsFilter();
+	Filter.page = parseInt(Filter.page) - 1;
+	CompanyProxy.showAdsByFilter(Filter);
+	
+	return false;
+};
+
+CompanyProxy.getAdsFilter = function(){	
+	Filter = {uuid:null, cuuid:null, page:null, density:null};
+	
+	Filter.uuid = dwr.util.getValue("company.group");	
+	Filter.cuuid = dwr.util.getValue("company.uuid");
+	Filter.page = dwr.util.getValue("company.ads.page.current");
+	Filter.density = dwr.util.getValue("company.ads.page.density");
+
+	alert("Filter.uuid: " + Filter.uuid);
+	alert("Filter.cuuid: " + Filter.cuuid);
+	alert("Filter.page: " + Filter.page);
+	alert("Filter.density: " + Filter.density);
+	
+	return Filter;
+};
+
+CompanyProxy.isCorrectPaginatorValues = function(){
+	if (dwr.util.byId("company.ads.page.current")) {
+		if(!Main.isValidNumber("company.ads.page.current")){ return false; }
+	}
+	if (dwr.util.byId("company.ads.page.density")) {
+		if(!Main.isValidNumber("company.ads.page.density")){ return false; }
+	}
+	
+	return true;
+};
+
+CompanyProxy.groupShow = function(){
+	if(!CompanyProxy.isCorrectPaginatorValues()) return false; 
+	
+	CompanyProxy.showAdsByFilter(CompanyProxy.getAdsFilter());
+	return false;
+};
+
+CompanyProxy.showAdsByFilter = function(Filter){
+	CompanyProxy.getAdsAsHTMLTable(Filter, function(result){
 		if(Main.isERROR(result)){
 			alert(result);
 		}else{
-			dwr.util.setValue(Group.cuuid, result, {escapeHtml :false});
+			dwr.util.setValue(Filter.cuuid, result, {escapeHtml :false});
 		}
-	});	
-	
+	});		
 	return false;
 };
 

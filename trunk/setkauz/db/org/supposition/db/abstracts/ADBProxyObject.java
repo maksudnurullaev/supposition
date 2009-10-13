@@ -12,6 +12,7 @@ import org.apache.cayenne.query.SelectQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.interfaces.IDBProxyCollection;
+import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 import org.supposition.utils.Utils;
@@ -155,7 +156,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	
 	@Override
 	public String getHTMLPaginator(int inPage, int itemsCount) {
-		int pageCount = getPageCount(itemsCount);
+		int pageCount = DBUtils.getPageCount(itemsCount, getPageSize());
 
 		if(pageCount < inPage)
 			inPage = pageCount;
@@ -183,8 +184,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 			}
 		}
 		
-		result += String.format(MessagesManager.getText("template.simple.paginator.total"),
-				getPageCountDef(), pageCount);
+		result += String.format(MessagesManager.getText("template.simple.paginator.total"),pageCount);
 		
 		result += getHTMLRowDensity();
 		
@@ -203,9 +203,9 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	@Override
 	public String getHTMLRowDensity() {
 		return String.format(MessagesManager.getText("template.simple.paginator.density"),
-				getPageDencityDef(),
+				getPageDensityDef(),
 				getPageSize(),
-				getSetPageDencityDef());
+				getSetPageDensityDef());
 	}	
 
 	@Override 
@@ -214,29 +214,12 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	}		
 	
 	@Override
-	public int getPageCount(int itemCount) {
-		int pageSize = getPageSize();
-		
-		if(pageSize >= itemCount) return 1;
-		
-		int lastItems = itemCount % pageSize;
-		int result = 0;
-		
-		if(lastItems == 0)
-			result = itemCount / pageSize;
-		else 
-			result = (itemCount - lastItems) / pageSize +1;
-		
-		return result;		
-	}
-	
-	@Override
 	public String getPageCountDef() {
 		return getClass().getSimpleName() + MessagesManager.getDefault("page.count.def");
 	}	
 	
 	@Override
-	public String getPageDencityDef() {
+	public String getPageDensityDef() {
 		return getClass().getSimpleName() + MessagesManager.getDefault("page.density.def");
 	}	
 	
@@ -280,7 +263,7 @@ public abstract class ADBProxyObject<E extends CayenneDataObject> implements IDB
 	}
 	
 	@Override
-	public String getSetPageDencityDef() {
+	public String getSetPageDensityDef() {
 		return getClass().getSimpleName() + MessagesManager.getDefault("page.density.jsf.def");
 	}
 

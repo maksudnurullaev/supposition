@@ -79,10 +79,10 @@ AdsProxy.go2Page = function(inPage) {
 };
 
 //Set page size
-AdsProxy.setPageDencity = function() {
-	if (parseInt(dwr.util.getValue("AdsProxy.pageDencity"), 10) > 0) {
+AdsProxy.setPageDensity = function() {
+	if (parseInt(dwr.util.getValue("AdsProxy.pageDensity"), 10) > 0) {
 		AdsProxy.setPageSize(parseInt(dwr.util
-				.getValue("AdsProxy.pageDencity"), 10), function() {
+				.getValue("AdsProxy.pageDensity"), 10), function() {
 			AdsProxy.go2Page(1);
 		});
 	}

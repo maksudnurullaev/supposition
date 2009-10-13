@@ -100,6 +100,19 @@ Main.isValidValue = function(objName) {
 	return true;
 };
 
+
+Main.isValidNumber = function(objName){
+	if (dwr.util.byId(objName)) {
+		if (isNaN(dwr.util.getValue(objName))) {
+			Main.highlight(objName);
+			return false;
+		}
+	} else {
+		return false;
+	}
+	return true;	
+};
+
 Main.highlight = function(objName) {
 	dwr.util.byId(objName).style.backgroundColor = "#FAF8CC";
 
