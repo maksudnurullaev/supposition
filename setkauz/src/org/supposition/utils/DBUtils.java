@@ -203,5 +203,76 @@ public final class DBUtils {
 					"errors.invalid.kaptcha"));
 			_log.error(String.format("Invalid kaptcha(%s) should be %s", kaptcha, sessionKaptchaValue));
 		}
-	}		
+	}
+	
+	// ### paginator uils
+	public static int getPageCount(int inItemCount, int inPageSize) {		
+		if(inPageSize >= inItemCount) return 1;
+		
+		int lastItems = inItemCount % inPageSize;
+		int result = 0;
+		
+		if(lastItems == 0)
+			result = inItemCount / inPageSize;
+		else 
+			result = (inItemCount - lastItems) / inPageSize +1;
+		
+		return result;		
+	}
+	
+	public static String getHTMLPaginator(
+			int inPage, 
+			int itemsCount, 
+			String inInputCurrentPageID,   // Company.Ads.CurrentPage
+			String inInputPageDesityID,    // Company.Ads.PageDensity
+			String inJSGo2PageDef,         // CompanyProxy.Ads.go2Page()
+			String inJSGo2PagePreviousDef, // CompanyProxy.Ads.go2PagePrevious()
+			String inJSGo2PageForwardDef,  // CompanyProxy.Ads.go2PageForward()
+			int inPageSize) {
+		
+		int pageCount = DBUtils.getPageCount(itemsCount, inPageSize);
+
+		_log.warn("int inPage = " + inPage); 
+		_log.warn("int itemsCount = " + itemsCount); 
+		_log.warn("int inPageSize = " + inPageSize);	
+		_log.warn("int pageCount = " + pageCount);	
+		
+		if(pageCount < inPage)
+			inPage = pageCount;
+		
+		if(inPage == 0)
+			inPage = 1;
+		
+		// <table class="rowed grey" border="0"><thead><tr><th>Страница 
+		String result = MessagesManager.getText("template.simple.paginator.header");
+		if(pageCount == 1){
+            // <input id="%s" type="text" size="3" value="%s" disabled="disabled" /> 
+            // 1. Current Page
+			result += String.format(MessagesManager.getText("template.simple.paginator.page_current.disabled"), 
+					inInputCurrentPageID, 1);
+		}else{
+			if(inPage != 1) 
+				result += 
+                    // <input type="button" value=" < " onclick="%s" />
+					String.format(MessagesManager.getText("template.simple.paginator.btn_back"), inJSGo2PagePreviousDef);
+                    // <input id="%s" type="text" size="3" value="%s">
+			result += String.format(MessagesManager.getText("template.simple.paginator.page_current"), inInputCurrentPageID, inPage);
+
+			if(inPage != pageCount){
+                    // <input type="button" value=" > " onclick="%s" />
+				result += String.format(MessagesManager.getText("template.simple.paginator.btn_forward"),inJSGo2PageForwardDef);
+			}
+		}
+		// из <strong>%s</strong>
+		result += String.format(MessagesManager.getText("template.simple.paginator.total"), pageCount);
+		// <th>Плотность<input id="%s" type="text" size="3" value="%s" /><input type="button" value="Показать" onclick="%s" /></th>
+		result += String.format(MessagesManager.getText("template.simple.paginator.density"),
+				inInputPageDesityID,
+				inPageSize,
+				inJSGo2PageDef);
+		
+		result += MessagesManager.getText("template.simple.paginator.footer");
+		
+		return result;
+	}	
 }

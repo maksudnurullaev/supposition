@@ -42,9 +42,9 @@ RoleProxy.go2Page = function(inPage){
 	return false;	
 };
 
-RoleProxy.setPageDencity = function(){
-	if(parseInt(dwr.util.getValue("RoleProxy.pageDencity"),10) > 0){
-		RoleProxy.setPageSize(parseInt(dwr.util.getValue("RoleProxy.pageDencity"),10), function(){
+RoleProxy.setPageDensity = function(){
+	if(parseInt(dwr.util.getValue("RoleProxy.pageDensity"),10) > 0){
+		RoleProxy.setPageSize(parseInt(dwr.util.getValue("RoleProxy.pageDensity"),10), function(){
 			RoleProxy.go2Page(1);
 		});
 	}	
