@@ -174,10 +174,10 @@ CompanyProxy.getAdsFilter = function(){
 	Filter.page = dwr.util.getValue("company.ads.page.current");
 	Filter.density = dwr.util.getValue("company.ads.page.density");
 
-	alert("Filter.uuid: " + Filter.uuid);
-	alert("Filter.cuuid: " + Filter.cuuid);
-	alert("Filter.page: " + Filter.page);
-	alert("Filter.density: " + Filter.density);
+//	alert("Filter.uuid: " + Filter.uuid);
+//	alert("Filter.cuuid: " + Filter.cuuid);
+//	alert("Filter.page: " + Filter.page);
+//	alert("Filter.density: " + Filter.density);
 	
 	return Filter;
 };
@@ -230,8 +230,8 @@ CompanyProxy.groupDelete = function(){
 	
 	Group.cuuid = dwr.util.getValue("company.uuid");
 
-	alert("Group.uuid: " + Group.uuid);
-	alert("Group.cuuid: " + Group.cuuid);
+//	alert("Group.uuid: " + Group.uuid);
+//	alert("Group.cuuid: " + Group.cuuid);
 	
 	CompanyProxy.removeDBOGroup(Group, function(result){
 		if(Main.isERROR(result)){
@@ -253,8 +253,8 @@ CompanyProxy.addNewGroup= function(){
 	Group.name = dwr.util.getValue("group.name");
 	Group.cuuid = dwr.util.getValue("company.uuid");
 
-	alert(Group.name);
-	alert(Group.cuuid);	
+//	alert(Group.name);
+//	alert(Group.cuuid);	
 	
 	CompanyProxy.addDBONewGroup(Group, function(result){
 		if(Main.isERROR(result)){
@@ -273,8 +273,8 @@ CompanyProxy.addExistanceGroup = function(){
 	Group.uuid = dwr.util.getValue("company.notjoined.groups");
 	Group.cuuid = dwr.util.getValue("company.uuid");
 
-	alert("Group.uuid: " + Group.uuid);
-	alert("Group.cuuid: " + Group.cuuid);		
+//	alert("Group.uuid: " + Group.uuid);
+//	alert("Group.cuuid: " + Group.cuuid);		
 	
 	CompanyProxy.addDBOGroup(Group, function(result){
 		if(Main.isERROR(result)){
@@ -303,10 +303,10 @@ CompanyProxy.addNewAds = function(){
 	Ads.text  = dwr.util.getValue("company.ads.text");
 	Ads.price = dwr.util.getValue("company.ads.price");
 	
-	alert("Ads.guuid: " + Ads.guuid);
-	alert("Ads.cuuid: " + Ads.cuuid);		
-	alert("Ads.text: " + Ads.text);
-	alert("Ads.price: " + Ads.price);		
+//	alert("Ads.guuid: " + Ads.guuid);
+//	alert("Ads.cuuid: " + Ads.cuuid);		
+//	alert("Ads.text: " + Ads.text);
+//	alert("Ads.price: " + Ads.price);		
 	
 	
 	CompanyProxy.addDBOAds(Ads, function(result){

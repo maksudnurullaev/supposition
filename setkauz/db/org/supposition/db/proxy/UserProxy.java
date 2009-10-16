@@ -207,7 +207,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		List<Role> availableRolesList = subRoles(allRolesList, user.getRoles());
 
 		if (availableRolesList.size() == 0) {
-			result += MessagesManager.getText("text.no.data");
+			result += MessagesManager.getText("errors.data.not.found");
 		} else {
 			for (Object role : availableRolesList) {
 				result += String.format(MessagesManager
@@ -240,7 +240,7 @@ public class UserProxy extends ADBProxyObject<User> {
 		List<?> userRolesList = user.getRoles();
 
 		if (userRolesList.size() == 0) {
-			result += MessagesManager.getText("text.no.data");
+			result += MessagesManager.getText("errors.data.not.found");
 		} else {
 			for (Object role : userRolesList) {
 				result += String.format(MessagesManager

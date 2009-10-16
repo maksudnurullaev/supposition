@@ -154,7 +154,7 @@ public final class DBUtils {
 		
 		if(cgroup_list == null ||
 				cgroup_list.size() == 0){
-			return MessagesManager.getText("text.no.data");
+			return MessagesManager.getText("errors.data.not.found");
 		}
 		
 		return getULsFromCgrouplist(cgroup_list, forAdmin);

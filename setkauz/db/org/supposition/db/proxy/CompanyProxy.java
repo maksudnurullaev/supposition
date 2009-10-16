@@ -114,8 +114,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		
 		commitChanges();		
 		
-		return MessagesManager.getDefault("web.ok.result.prefix") 
-			+ MessagesManager.getText("message.data.saved");			
+		return getAdsAsHTMLTable(inBean.getCuuid(), inBean.getGuuid());			
 	}
 	
 	public String addDBOGroup(GroupBean inBean){
@@ -155,7 +154,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				
 		return getDetails(inBean.getCuuid());
 	}
-	
+
 	public String addDBONew(CompanyBean inBean){
 		_log.debug("addDBORole ->" + Thread.currentThread().getContextClassLoader().getClass().getName());
 		
@@ -191,7 +190,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		
 		return MessagesManager.getDefault("web.ok.result.prefix") 
 			+ MessagesManager.getText("message.data.saved");		
-	}	
+	}
 	
 	public String addDBONewGroup(GroupBean inBean){
 		logGroupBean(inBean);
@@ -274,10 +273,56 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				MessagesManager.getText("text.remove")) + "]";
 		
 		return result;
+	}	
+	
+	public String getAdsAsHTMLTable(GroupBean inFilter){
+		logGroupBean(inFilter);
+		
+		// check incoming beans
+		if(!isCorrectFilter(inFilter)){
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.null.object");
+		}
+		
+		// Get all ads from root group
+		if(isRootGroup(inFilter)){
+			_log.debug("get non-grouped ads");
+			return getAdsAsHTMLTableFromList(inFilter, getCompanyAdsAsList(inFilter.getCuuid()));
+		}
+		
+		Group group = getGroup(inFilter);
+		
+		if(group == null){
+			_log.warn("errors.null.object");
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.null.object");
+		} 
+		
+		// Get all ads from grouped ads
+		_log.debug("get grouped ads");
+		
+		AdsProxy adsProxy = new AdsProxy();
+		adsProxy.addExpression(ExpressionFactory.matchDbExp("guuid", inFilter.getUuid()));
+		adsProxy.addExpression(ExpressionFactory.matchDbExp("cuuid", inFilter.getCuuid()));
+		
+		return getAdsAsHTMLTableFromList(inFilter, adsProxy.getAll());
 	}
 	
+	private String getAdsAsHTMLTable(String cuuid, String guuid) {
+		GroupBean groupBean = new GroupBean();
+		groupBean.setCuuid(cuuid);
+		groupBean.setUuid(guuid);
+		return getAdsAsHTMLTable(groupBean);
+	}
+
 	private String getAdsAsHTMLTableFromList(GroupBean inFilter, List<?> adsList) {
+		
 		logGroupBean(inFilter);
+		// check data
+		if(adsList == null ||
+				adsList.size() == 0){
+			return MessagesManager.getText("errors.data.not.found");			
+		}
 		
 		// Check margin of pages 
 		if(inFilter.getPage() > DBUtils.getPageCount(adsList.size(), inFilter.getDensity()))
@@ -314,7 +359,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			+ MessagesManager.getText("main.company.ads.table.header")
 			+ result
 			+ MessagesManager.getText("main.company.ads.table.footer");
-	}
+	}		
 
 	private void getCgroupUuidAsList(List<String> inList, Cgroup inCgroup) {
 		inList.add(inCgroup.getUuid());
@@ -325,7 +370,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				getCgroupUuidAsList(inList, (Cgroup) cgroup);
 			}
 		}
-	}		
+	}
 
 	@Override
 	public List<String> getColumnNames() {
@@ -334,7 +379,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		String[] result = {"#","Name"};
 		return Arrays.asList(result);
 	}
-
+	
 	private List<?> getCompanyAdsAsList(String inUuid){
 		CompanyProxy companyProxy = new CompanyProxy(getDataContext());
 		
@@ -369,15 +414,20 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				getGroupAsHTMLSelect(company),
 				company.getUuid(), 
 				company.getUuid());
-	}
+	} 
 	
 	private String getDetailsLink(Company item) {
 		return String.format(Utils.LINK_TEMPLATE,
 				item.getUuid(),
 				"CompanyProxy.showDetails(this.id)",
 				item.getName());
-	} 
+	}
 	
+	private Group getGroup(GroupBean inFilter){
+		GroupProxy groupProxy = new GroupProxy(getDataContext());
+		return groupProxy.getDBObjectByUuid(inFilter.getUuid());
+	}	
+
 	public String getGroupAddForm(String inUuid){
 		CompanyProxy companyProxy = new CompanyProxy();
 		
@@ -420,53 +470,6 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		
 		return result 
 			+ resultFooter;
-	}	
-
-	private boolean isCorrectFilter(GroupBean inFilter){
-		if(inFilter == null 
-				|| inFilter.getCuuid() == null
-				|| inFilter.getUuid() == null){
-			_log.warn("errors.null.object");
-			return false;
-		}
-		return true;
-	}
-	
-	private Group getGroup(GroupBean inFilter){
-		GroupProxy groupProxy = new GroupProxy(getDataContext());
-		return groupProxy.getDBObjectByUuid(inFilter.getUuid());
-	}
-	
-	private boolean isRootGroup(GroupBean inFilter){
-		return inFilter.getUuid().equals(Utils.ROOT_ID_DEF);
-	}
-	
-	public String getAdsAsHTMLTable(GroupBean inFilter){
-		logGroupBean(inFilter);
-		
-		// check incoming beans
-		if(!isCorrectFilter(inFilter)){
-			return MessagesManager.getDefault("web.error.result.prefix") 
-				+ MessagesManager.getText("errors.null.object");
-		}
-		
-		// Get all ads from root group
-		if(isRootGroup(inFilter)){
-			_log.debug("get non-grouped ads");
-			return getAdsAsHTMLTableFromList(inFilter, getCompanyAdsAsList(inFilter.getCuuid()));
-		}
-		
-		Group group = getGroup(inFilter);
-		
-		if(group == null){
-			_log.warn("errors.null.object");
-			return MessagesManager.getDefault("web.error.result.prefix") 
-				+ MessagesManager.getText("errors.null.object");
-		} 
-		
-		// Get all ads from grouped ads
-		_log.debug("get grouped ads");
-		return getAdsAsHTMLTableFromList(inFilter, group.getAds());
 	}
 	
 	private String getGroupNotJoinedAsHTMLSelect(Company company) {
@@ -498,7 +501,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return  "<select id=\"company.notjoined.groups\">" 
 			+ result 
 			+ "</select> ";
-	}	
+	}
 	
 	private String getHTMLTable(int inPage, List<Company> inList) {
 		// Define start & end items
@@ -529,7 +532,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			+ MessagesManager.getText("main.company.table.footer")
 			+ "</div>";
 	}
-
+	
 	public String getPageAsHTMLTable(CompanyFilterBean inFilter, int inPage) {
 		_log.debug("-> getPageAsHTMLTable");
 		_log.debug("inFilter.getCity(): " + inFilter.getCity());		
@@ -579,8 +582,8 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		}
 		
 		return getHTMLTable(inPage, objectsList);
-	}
-
+	}	
+	
 	public String getUpdateForm(String inUuid){
 		CompanyProxy companyProxy = new CompanyProxy();
 		
@@ -611,6 +614,16 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return ", " + Utils.getWwwBlankLink(inItem.getWww());
 	}
 
+	private boolean isCorrectFilter(GroupBean inFilter){
+		if(inFilter == null 
+				|| inFilter.getCuuid() == null
+				|| inFilter.getUuid() == null){
+			_log.warn("errors.null.object");
+			return false;
+		}
+		return true;
+	}
+
 	private boolean isGroupExist(Group group, List<?> groupsAllList) {
 		for(Object tempObject:groupsAllList){
 			Group tempGroup = (Group) tempObject;
@@ -625,18 +638,22 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return inCompany.getUser().getUuid().equals(SessionManager.getUserUuid());
 	}
 
-	private void logGroupBean(GroupBean inBean) {
-		_log.debug("inBean.getName():" + inBean.getName());
-		_log.debug("inBean.getUuid():" + inBean.getUuid());
-		_log.debug("inBean.getCuuid():" + inBean.getCuuid());
-		_log.debug("inBean.getPage():" + inBean.getPage());
-		_log.debug("inBean.getDensity():" + inBean.getDensity());
+	private boolean isRootGroup(GroupBean inFilter){
+		return inFilter.getUuid().equals(Utils.ROOT_ID_DEF);
 	}
 
 	private void logAdsBean(AdsBean inBean) {
 		_log.debug("inBean.getText():" + inBean.getText());
 		_log.debug("inBean.getGuuid():" + inBean.getGuuid());
 		_log.debug("inBean.getCuuid():" + inBean.getCuuid());
+	}
+
+	private void logGroupBean(GroupBean inBean) {
+		_log.debug("inBean.getName():" + inBean.getName());
+		_log.debug("inBean.getUuid():" + inBean.getUuid());
+		_log.debug("inBean.getCuuid():" + inBean.getCuuid());
+		_log.debug("inBean.getPage():" + inBean.getPage());
+		_log.debug("inBean.getDensity():" + inBean.getDensity());
 	}	
 	
 	public String removeDBO(String uuid){
