@@ -14,6 +14,62 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public abstract class PropertyLoader {
+	public static String loadFile(String pathToFile, ClassLoader loader) {
+		if (pathToFile == null)
+			return "null input: pathToFile";
+
+		String result = null;
+
+		InputStream in = null;
+
+		try {
+			if (loader == null)
+				loader = ClassLoader.getSystemClassLoader();
+
+			if (LOAD_AS_RESOURCE_BUNDLE) {
+			} else {
+				// Returns null on lookup failures:
+				in = loader.getResourceAsStream(pathToFile);
+				if (in != null) {
+					result = readFromStreamUTF8(in);
+				}
+			}
+		} catch (Exception e) {
+			result = null;
+		} finally {
+			if (in != null)
+				try {
+					in.close();
+				} catch (Throwable ignore) {
+				}
+		}
+
+		if (THROW_ON_LOAD_FAILURE && (result == null)) {
+			return "could not load ["
+					+ pathToFile
+					+ "]"
+					+ " as "
+					+ (LOAD_AS_RESOURCE_BUNDLE ? "a resource bundle"
+							: "a classloader resource");
+		}
+
+		return result;
+	}
+
+	private static String readFromStreamUTF8(InputStream in)
+			throws UnsupportedEncodingException, IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in,
+				"UTF8"));
+
+		String result = "";
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			result += line;
+		}
+		// Save last pair
+		return result;
+	}
+
 	/**
 	 * Looks up a resource named 'name' in the classpath. The resource must map
 	 * to a file with .properties extention. The name is assumed to be absolute
@@ -130,7 +186,7 @@ public abstract class PropertyLoader {
 					curValue = line.substring(found + 1, line.length());
 				}
 			} else {
-					curValue += line.substring(1).trim();
+				curValue += line.substring(1).trim();
 			}
 		}
 		// Save last pair
@@ -141,7 +197,8 @@ public abstract class PropertyLoader {
 			String inValue) {
 		if ((inKey != null) && (inValue != null)) {
 			inProp.setProperty(inKey.trim(), inValue.trim());
-			_log.debug(String.format("KEY(%s) and VALUE(%s) found", inKey.trim(), inValue.trim()));
+			_log.debug(String.format("KEY(%s) and VALUE(%s) found", inKey
+					.trim(), inValue.trim()));
 		}
 	}
 
@@ -155,7 +212,8 @@ public abstract class PropertyLoader {
 				.getContextClassLoader());
 	}
 
-	private static final Log _log = LogFactory.getLog(org.supposition.text.abstracts.PropertyLoader.class);
+	private static final Log _log = LogFactory
+			.getLog(org.supposition.text.abstracts.PropertyLoader.class);
 	private static final boolean THROW_ON_LOAD_FAILURE = true;
 	private static final boolean LOAD_AS_RESOURCE_BUNDLE = false;
 	private static final String SUFFIX = ".properties";
