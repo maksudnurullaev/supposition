@@ -33,7 +33,7 @@ public class Session
     {
         return WebContextFactory.get().forwardToString(pathToHtmlFile);
     }
-    
+        
     public void setLocale(String lang){
 		MessagesManager.changeLocale(lang);
     }

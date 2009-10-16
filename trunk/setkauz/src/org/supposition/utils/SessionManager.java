@@ -28,48 +28,20 @@ public final class SessionManager {
 	private static final String DEFAULT_REGISTERED_POSTFIX = "registered";	
 	private static Log _log = LogFactory.getLog("org.supposition.utils.SessionManager");	
 	
-	public static WebContext getWebContext() {
-		return WebContextFactory.get();
-	}
-
-	public static HttpSession getHttpSession() {
-		return getWebContext().getSession();
-	}
-
-	public static boolean isExist(String inKey) {
-		if (_isWebContext)
-			return getHttpSession().getAttribute(inKey) != null;		
-		return false;
-	}
-
-	/**
-	 * @param inKey
-	 * @return null or Object
-	 */
 	public static Object getFromSession(String inKey) {
 		if (_isWebContext)
 			return getHttpSession().getAttribute(inKey);
 		return _valueHouse.get(inKey);
 	}
 
-	public static void setToSession(String inKey, Object inObject) {
-		if (_isWebContext)
-			getHttpSession().setAttribute(inKey, inObject);
-		else
-			_valueHouse.put(inKey, inObject);
+	public static HttpSession getHttpSession() {
+		return getWebContext().getSession();
 	}
 
 	public static int getSessionIntValue(String inKey) {
 		if (_isWebContext)
 			return Utils.getIntFromStr(getFromSession(inKey).toString());
 		return Utils.getIntFromStr(_valueHouse.get(inKey).toString());
-	}
-
-	public static void removeFromSession(String inKey) {
-		if (_isWebContext)
-			getHttpSession().removeAttribute(inKey);
-		else
-			_valueHouse.remove(inKey);
 	}
 
 	public static String getSessionLocale() {
@@ -79,28 +51,6 @@ public final class SessionManager {
 			}
 		}
 		return MessagesManager.getDefault("default.locale");
-	}
-
-	public static void setSessionLocale(String inLocale) {
-		if (_isWebContext)
-			setToSession(MessagesManager.getDefault("session.locale.def"), inLocale);
-	}
-
-	public static String getUserUuid() {
-		return (String) getFromSession(MessagesManager.getDefault("session.userid.key"));
-	}
-	
-	public static boolean isUserLoggedIn(){
-		return 	isExist(MessagesManager.getDefault("session.userid.key"));
-	}
-
-
-	public static void logoffUser(){
-		getHttpSession().invalidate();
-	}
-	
-	public static void loginUser(User user){
-			setToSession(MessagesManager.getDefault("session.userid.key"), user.getUuid());				
 	}
 
 	public static String getSystemDefaultsAsHTMLMgmTable() {
@@ -126,7 +76,7 @@ public final class SessionManager {
 		result += MessagesManager.getText("main.admin.system.defaults.table.footer");		
 		return result;
 	}
-	
+
 	public static List<String> getUserRoles() {
 		List<String> resultList = new ArrayList<String>();
 		UserProxy users = new UserProxy();
@@ -143,7 +93,15 @@ public final class SessionManager {
 			}			
 		}
 		return resultList;
-	}	
+	}
+
+	public static String getUserUuid() {
+		return (String) getFromSession(MessagesManager.getDefault("session.userid.key"));
+	}
+
+	public static WebContext getWebContext() {
+		return WebContextFactory.get();
+	}
 
 	public static boolean hasRole(String inRole){
 		//Return false if user not registered
@@ -156,9 +114,46 @@ public final class SessionManager {
 		// Return false if nothing found
 		return false;
 	}
+
+	public static boolean isExist(String inKey) {
+		if (_isWebContext)
+			return getHttpSession().getAttribute(inKey) != null;		
+		return false;
+	}
 	
 	public static boolean isMedorator(){
 		return (SessionManager.hasRole(SessionManager.MANAGER_ROLE_DEF) 
 				|| SessionManager.hasRole(SessionManager.ADMIN_ROLE_DEF));
+	}
+
+	public static boolean isUserLoggedIn(){
+		return 	isExist(MessagesManager.getDefault("session.userid.key"));
+	}
+	
+	public static void loginUser(User user){
+			setToSession(MessagesManager.getDefault("session.userid.key"), user.getUuid());				
+	}
+
+	public static void logoffUser(){
+		getHttpSession().invalidate();
+	}
+	
+	public static void removeFromSession(String inKey) {
+		if (_isWebContext)
+			getHttpSession().removeAttribute(inKey);
+		else
+			_valueHouse.remove(inKey);
+	}	
+
+	public static void setSessionLocale(String inLocale) {
+		if (_isWebContext)
+			setToSession(MessagesManager.getDefault("session.locale.def"), inLocale);
+	}
+	
+	public static void setToSession(String inKey, Object inObject) {
+		if (_isWebContext)
+			getHttpSession().setAttribute(inKey, inObject);
+		else
+			_valueHouse.put(inKey, inObject);
 	}
 }
