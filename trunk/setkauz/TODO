@@ -59,3 +59,6 @@
 
 --- Ошибки ---
 *. Идет двойная регистрация первых двух пользователей как администраторов 
+
+--- Команды проекта ---
+svn co http://supposition.googlecode.com/svn/trunk/setkauz/WebContext .
