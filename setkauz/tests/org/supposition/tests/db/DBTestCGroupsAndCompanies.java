@@ -1,5 +1,6 @@
 package org.supposition.tests.db;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
@@ -52,82 +53,66 @@ public class DBTestCGroupsAndCompanies {
 		// Create test groups
 		String group1 = "test_cgroup_element1";
 		String group11 = "test_cgroup_element11";
-		String group12 = "test_cgroup_element12";
-		String group121 = "test_cgroup_element121";
 		
 
 		Cgroup gelement1 = (Cgroup) _context.newObject(Cgroup.class);
 		Cgroup gelement11 = (Cgroup) _context.newObject(Cgroup.class);
-		Cgroup gelement12 = (Cgroup) _context.newObject(Cgroup.class);
-		Cgroup gelement121 = (Cgroup) _context.newObject(Cgroup.class);
 		
 		gelement1.setName(group1);
 		gelement11.setName(group11);
-		gelement12.setName(group12);
-		gelement121.setName(group121);
 				
 		validationResult = gelement1.getValidationResult();		
 		Assert.assertFalse(validationResult.hasFailures());
 		validationResult = gelement11.getValidationResult();
 		Assert.assertFalse(validationResult.hasFailures());
-		validationResult = gelement12.getValidationResult();
-		Assert.assertFalse(validationResult.hasFailures());
-		validationResult = gelement121.getValidationResult();
-		Assert.assertFalse(validationResult.hasFailures());
-
-		_context.commitChanges();
-		
-		gelement1.addToChilds(gelement11);
-		gelement1.addToChilds(gelement12);
-		gelement12.addToChilds(gelement121);		
 		
 		_context.commitChanges();		
 		
 		// Create test companies
 		String ename1 = "test_company_element1";
 		String ename11 = "test_company_element11";
-		String ename12 = "test_company_element12";
-		String ename121 = "test_company_element121";
 		
 		Company celement1 = (Company) _context.newObject(Company.class);
 		Company celement11 = (Company) _context.newObject(Company.class);
-		Company celement12 = (Company) _context.newObject(Company.class);
-		Company celement121 = (Company) _context.newObject(Company.class);
-		
+				
 		celement1.setName(ename1);
 		celement1.setUser(user);
+		celement1.setUuuid(user.getUuid());
+		celement1.setCity("test");
+		celement1.setGuuid(gelement1.getUuid());
+		celement1.setUpdated(new Date());
+		celement1.setCgroup(gelement1);
+		
 		celement11.setName(ename11);
 		celement11.setUser(user);
-		celement12.setName(ename12);
-		celement12.setUser(user);
-		celement121.setName(ename121);
-		celement121.setUser(user);
-				
+		celement11.setUuuid(user.getUuid());
+		celement11.setCity("test");
+		celement11.setGuuid(gelement11.getUuid());
+		celement11.setUpdated(new Date());
+		celement11.setCgroup(gelement1);
+		
 		validationResult = celement1.getValidationResult();		
+		
+		if(validationResult.hasFailures()){
+			for(Object obj:validationResult.getFailures()){
+				System.out.println(obj);
+			}
+		}
+			
 		Assert.assertFalse(validationResult.hasFailures());
 		validationResult = celement11.getValidationResult();
-		Assert.assertFalse(validationResult.hasFailures());
-		validationResult = celement12.getValidationResult();
-		Assert.assertFalse(validationResult.hasFailures());
-		validationResult = celement121.getValidationResult();
 		Assert.assertFalse(validationResult.hasFailures());
 				
 		Assert.assertNotNull(celement1);
 		Assert.assertNotNull(celement11);
-		Assert.assertNotNull(celement12);
-		Assert.assertNotNull(celement121);		
 		
 		Assert.assertNotNull(celement1.getUuid());
 		Assert.assertNotNull(celement11.getUuid());
-		Assert.assertNotNull(celement12.getUuid());
-		Assert.assertNotNull(celement121.getUuid());
 		
 		_context.commitChanges();		
 		
 		gelement1.addToCompanies(celement1);
 		gelement11.addToCompanies(celement11);
-		gelement12.addToCompanies(celement12);
-		gelement121.addToCompanies(celement121);
 		
 		_context.commitChanges();				
 	}

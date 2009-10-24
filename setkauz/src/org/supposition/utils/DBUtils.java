@@ -232,10 +232,10 @@ public final class DBUtils {
 		
 		int pageCount = DBUtils.getPageCount(itemsCount, inPageSize);
 
-		_log.warn("int inPage = " + inPage); 
-		_log.warn("int itemsCount = " + itemsCount); 
-		_log.warn("int inPageSize = " + inPageSize);	
-		_log.warn("int pageCount = " + pageCount);	
+		_log.debug("int inPage = " + inPage); 
+		_log.debug("int itemsCount = " + itemsCount); 
+		_log.debug("int inPageSize = " + inPageSize);	
+		_log.debug("int pageCount = " + pageCount);	
 		
 		if(pageCount < inPage)
 			inPage = pageCount;
