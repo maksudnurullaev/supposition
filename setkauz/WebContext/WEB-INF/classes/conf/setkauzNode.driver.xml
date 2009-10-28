@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <driver project-version="2.0" class="org.postgresql.Driver">
-	<url value="jdbc:postgresql://192.168.34.55:5432/setkauz"/>
+	<url value="jdbc:postgresql://127.0.0.1:5432/setkauz"/>
 	<connectionPool min="1" max="100" />
-	<login userName="setkauz" password="setkauz"/>
+	<login userName="jetty" password="max__1975"/>
 </driver>
