@@ -63,5 +63,7 @@
 --- Команды проекта ---
 svn co http://supposition.googlecode.com/svn/trunk/setkauz/WebContext .
 
+svn co http://supposition.googlecode.com/svn/trunk/setkauz/setkauz.backup .
+
 --- jetty
 java -Xmx64m -jar start.jar
