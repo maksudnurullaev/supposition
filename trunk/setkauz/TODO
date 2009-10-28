@@ -62,3 +62,6 @@
 
 --- Команды проекта ---
 svn co http://supposition.googlecode.com/svn/trunk/setkauz/WebContext .
+
+--- jetty
+java -Xmx64m -jar start.jar
