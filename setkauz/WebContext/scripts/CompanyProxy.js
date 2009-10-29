@@ -138,7 +138,6 @@ CompanyProxy.update = function() {
 	return false;	
 };
 
-
 CompanyProxy.showDetails = function(uuid){
 	CompanyProxy.getDetails(uuid, function(result){
 		dwr.util.setValue(CompanyProxy.mainDivBody, result, {escapeHtml :false});		
@@ -198,6 +197,17 @@ CompanyProxy.groupShow = function(){
 	
 	CompanyProxy.showAdsByFilter(CompanyProxy.getAdsFilter());
 	return false;
+};
+
+CompanyProxy.selectGroup = function(uuid){
+	if(!CompanyProxy.isCorrectPaginatorValues()){ return false; } 
+	
+	var Filter = CompanyProxy.getAdsFilter();
+	Filter.uuid = uuid;
+	
+	CompanyProxy.showAdsByFilter(Filter);
+	
+	return false;	
 };
 
 CompanyProxy.showAdsByFilter = function(Filter){
@@ -318,4 +328,21 @@ CompanyProxy.addNewAds = function(){
 	});	
 	
 	return false;	
+};
+
+CompanyProxy.removeAds = function(uuid){
+	if(!CompanyProxy.isCorrectPaginatorValues()){ return false; } 
+	
+	var Filter = CompanyProxy.getAdsFilter();
+	Filter.auuid = uuid;
+	
+	CompanyProxy.removeAdsAndGetAdsAsHTMLTable(Filter, function(result){
+		if(Main.isERROR(result)){
+			alert(result);
+		}else{
+			dwr.util.setValue(Filter.cuuid, result, {escapeHtml :false});
+		}
+	});		
+	
+	return false;
 };

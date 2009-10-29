@@ -101,9 +101,9 @@ public class CgroupProxy extends ADBProxyObject<Cgroup> {
 		return Arrays.asList(result);
 	}
 
-	public List<Cgroup> getRootElements() {
+	public Cgroup getRootElement() {
 		clearExpressions();
 		addExpression(ExpressionFactory.matchDbExp("pid", null));
-		return getAll();
+		return getAll().get(0);
 	}
 }

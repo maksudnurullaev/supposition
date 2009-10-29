@@ -2,7 +2,8 @@ package org.supposition.db.proxy;
 
 public class GroupBean extends SimpleBean {
 	private String name;
-	private String cuuid;
+	private String cuuid;     // company uuid
+	private String auuid;     // ads uuid
 	private int page = 1;     // default
 	private int density = 15; // default
 		
@@ -33,5 +34,11 @@ public class GroupBean extends SimpleBean {
 	}
 	public int getDensity() {
 		return density;
+	}
+	public void setAuuid(String auuid) {
+		this.auuid = auuid;
+	}
+	public String getAuuid() {
+		return auuid;
 	}
 }

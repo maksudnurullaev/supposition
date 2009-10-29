@@ -108,28 +108,28 @@ public final class DBUtils {
 
 	public static String getGroupsAsHTMLSelect(String inPrefix) {
 		CgroupProxy cgroups = new CgroupProxy();		
-		List<Cgroup> cgroup_list = cgroups.getRootElements();
+		Cgroup cgroup_root = cgroups.getRootElement();
 		
-		if(cgroup_list == null ||
-				cgroup_list.size() == 0){
+		if(cgroup_root == null){
 			_log.debug("errors.data.not.found");
 			return MessagesManager.getText("errors.data.not.found");
 		} 
 		
 		return String.format("<select id='%s.guuid'>%s</select>", 
 				inPrefix,
-				getOptionsFromCgroupList(cgroup_list, 0));
+				getOptionsFromCgroupList(cgroup_root, 0));
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static String getOptionsFromCgroupList(List<Cgroup> cgroup_list, int deep) {
+	private static String getOptionsFromCgroupList(Cgroup cgroup_root, int deep) {
 		String result = "";
 		String format = "<option value='%s'>%s</option>";
-		for(Cgroup cgroup:cgroup_list){
-			result += String.format(format, cgroup.getUuid(), repitter(deep) + cgroup.getName());
-			List<Cgroup> child_list = cgroup.getChilds(); 
-			if(child_list != null && child_list.size() != 0){
-				result += getOptionsFromCgroupList(child_list, deep + 1);
+		
+		result += String.format(format, cgroup_root.getUuid(), repitter(deep) + cgroup_root.getName());
+		List<Cgroup> child_list = cgroup_root.getChilds(); 
+		if(child_list != null && child_list.size() != 0){
+			for(Cgroup cgroup:child_list){
+				result += getOptionsFromCgroupList(cgroup, deep + 1);
 			}
 		}
 		
@@ -150,34 +150,36 @@ public final class DBUtils {
 
 	public static String getGroupsAsHTML(boolean forAdmin) {
 		CgroupProxy cgroups = new CgroupProxy();
-		List<Cgroup> cgroup_list = cgroups.getRootElements();
+		Cgroup cgroup_root = cgroups.getRootElement();
 		
-		if(cgroup_list == null ||
-				cgroup_list.size() == 0){
+		if(cgroup_root == null){
 			return MessagesManager.getText("errors.data.not.found");
 		}
 		
-		return getULsFromCgrouplist(cgroup_list, forAdmin);
+		return getULsFromCgrouplist(cgroup_root, forAdmin);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static String getULsFromCgrouplist(List<Cgroup> cgroup_list, boolean forAdmin) {
+	private static String getULsFromCgrouplist(Cgroup cgroup_root, boolean forAdmin) {
 		String result = "<ul>";
 		String format = "<li>%s</li>";
-		for(Cgroup cgroup:cgroup_list){
-			result += String.format(format, cgroup.getName() 
-						+ (forAdmin?"&nbsp;" + makeDeleteCgroupLink(cgroup):""));
+		
+		result += String.format(format, cgroup_root.getName() 
+					+ (forAdmin?"&nbsp;" + makeDeleteCgroupLink(cgroup_root):""));
 			
-			List<Cgroup> child_list = cgroup.getChilds(); 
-			if(child_list != null && child_list.size() != 0){
-				result += getULsFromCgrouplist(child_list, forAdmin);
-			}			
-		}
+		List<Cgroup> child_list = cgroup_root.getChilds();
+		
+		if(child_list != null && child_list.size() != 0){
+			for(Cgroup cgroup:child_list){
+				result += getULsFromCgrouplist(cgroup, forAdmin);
+			}
+		}			
+		
 		return result + "</ul>";
 	}	
 	
 	private static String makeDeleteCgroupLink(Cgroup inCgroup){
-		return String.format(Utils.LINK_TEMPLATE, 
+		return String.format(Utils.LINK_TEMPLATE_DEFAULT, 
 				inCgroup.getUuid(),
 				"CgroupProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));

@@ -21,6 +21,7 @@ import org.supposition.utils.Utils;
 public class CompanyProxy extends ADBProxyObject<Company> {
 	
 	private static final long serialVersionUID = 1L;
+	private static final String COMPANY_DETAILT_JS_LINK = "CompanyProxy.showDetails(this.id)";
 	
 	public CompanyProxy(){
 		super();
@@ -240,20 +241,20 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 	}	
 	
 	private String getAdditionalGroupLinks(Company company) {
-		String result = String.format(Utils.INPUT_BUTTON_TEMPLATE,
+		String result = String.format(Utils.INPUT_BUTTON_TEMPLATE_DEFAULT,
 				"CompanyProxy.groupShow()",
 				MessagesManager.getText("text.show"));
 		
 		if(isManager(company)){
-			result += String.format(Utils.INPUT_BUTTON_TEMPLATE,
+			result += String.format(Utils.INPUT_BUTTON_TEMPLATE_DEFAULT,
 					"CompanyProxy.groupShowAddForm()",
 					MessagesManager.getText("text.add"));
-			result += String.format(Utils.INPUT_BUTTON_TEMPLATE,
+			result += String.format(Utils.INPUT_BUTTON_TEMPLATE_DEFAULT,
 					"CompanyProxy.groupDelete()",
 					MessagesManager.getText("text.remove"));
 			// Ads records aprt
 			result += " | ";
-			result += String.format(Utils.INPUT_BUTTON_TEMPLATE,
+			result += String.format(Utils.INPUT_BUTTON_TEMPLATE_DEFAULT,
 					"CompanyProxy.showAddAdsForm()",
 					MessagesManager.getText("text.add"));
 		}
@@ -262,12 +263,12 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 	}	
 	
 	private String getAdditionalLinks(Company inCompany) {
-		String result = " [" + String.format(Utils.LINK_TEMPLATE,
+		String result = " [" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
 				inCompany.getUuid(),
 				"CompanyProxy.edit(this.id)",
 				MessagesManager.getText("text.edit")) + "]";
 		
-		result += " [" + String.format(Utils.LINK_TEMPLATE,
+		result += " [" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
 				inCompany.getUuid(),
 				"CompanyProxy.remove(this.id)",
 				MessagesManager.getText("text.remove")) + "]";
@@ -275,8 +276,47 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return result;
 	}	
 	
+	public String removeAdsAndGetAdsAsHTMLTable(GroupBean inFilter){
+		logGroupBean(inFilter);
+		Company company = getDBObjectByUuid(inFilter.getCuuid());
+
+		// check company
+		if(company == null)
+			return MessagesManager.getDefault("web.error.result.prefix") 
+			+ MessagesManager.getText("errors.null.object");
+		
+		// check incoming beans
+		if(!isCorrectFilter(inFilter)){
+			return MessagesManager.getDefault("web.error.result.prefix") 
+				+ MessagesManager.getText("errors.null.object");
+		}
+		
+		// check right
+		if(!isManager(company))
+			return MessagesManager.getDefault("web.error.result.prefix")
+			+ MessagesManager.getText("errors.user.has.not.access");
+		
+		AdsProxy adsProxy = new AdsProxy(getDataContext());
+		Ads ads = adsProxy.getDBObjectByUuid(inFilter.getAuuid());
+		
+		if(ads == null) return MessagesManager.getDefault("web.error.result.prefix")
+		+ MessagesManager.getText("errors.data.not.found");
+		
+		adsProxy.deleteObject(ads);
+		commitChanges();
+		
+		return getAdsAsHTMLTable(inFilter);
+		
+	}
+	
 	public String getAdsAsHTMLTable(GroupBean inFilter){
 		logGroupBean(inFilter);
+		
+		Company company = getDBObjectByUuid(inFilter.getCuuid());
+		
+		if(company == null)
+			return MessagesManager.getDefault("web.error.result.prefix") 
+			+ MessagesManager.getText("errors.null.object");
 		
 		// check incoming beans
 		if(!isCorrectFilter(inFilter)){
@@ -287,7 +327,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		// Get all ads from root group
 		if(isRootGroup(inFilter)){
 			_log.debug("get non-grouped ads");
-			return getAdsAsHTMLTableFromList(inFilter, getCompanyAdsAsList(inFilter.getCuuid()));
+			return getAdsAsHTMLTableFromList(inFilter, getCompanyAdsAsList(inFilter.getCuuid()), isManager(company), false);
 		}
 		
 		Group group = getGroup(inFilter);
@@ -305,7 +345,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		adsProxy.addExpression(ExpressionFactory.matchDbExp("guuid", inFilter.getUuid()));
 		adsProxy.addExpression(ExpressionFactory.matchDbExp("cuuid", inFilter.getCuuid()));
 		
-		return getAdsAsHTMLTableFromList(inFilter, adsProxy.getAll());
+		return getAdsAsHTMLTableFromList(inFilter, adsProxy.getAll(), isManager(company), true);
 	}
 	
 	private String getAdsAsHTMLTable(String cuuid, String guuid) {
@@ -315,7 +355,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return getAdsAsHTMLTable(groupBean);
 	}
 
-	private String getAdsAsHTMLTableFromList(GroupBean inFilter, List<?> adsList) {
+	private String getAdsAsHTMLTableFromList(GroupBean inFilter, List<?> adsList, boolean isMedorator, boolean isGrouped) {
 		
 		logGroupBean(inFilter);
 		// check data
@@ -334,18 +374,19 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		
 		
 		// Formate result
-		String result = "";		
+		String result = "";
+		
 		String format = MessagesManager.getText("main.company.ads.table.tr");
 		
 		_log.debug(String.format("Get ads(count = %s), where startItem(%s) and endItem(%s)", adsList.size(), startItem, endItem));
-		
+				
 		for (int j = startItem; j < endItem; j++) {
 			if (j >= adsList.size()) break;
 			Ads ads = (Ads) adsList.get(j);
 			result = result
 					+ String.format(format, 
 							(++startItem), 
-							ads.getText(),
+							ads.getText() + getAdditionalLinks(ads, isMedorator, isGrouped),
 							ads.getPrice());
 		}
 		
@@ -356,11 +397,36 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				"CompanyProxy.AdsGo2PagePrevious()",
 				"CompanyProxy.AdsGo2PageForward()",
 				inFilter.getDensity())
-			+ MessagesManager.getText("main.company.ads.table.header")
+			+ MessagesManager.getText("main.company.ads.table.header.table")
+			+ MessagesManager.getText("main.company.ads.table.header.thead")
+			+ (isGrouped?String.format("<tr><th colspan=3><strong>%s</strong></th></tr>", ((Ads)adsList.get(0)).getGroup().getName()):"")
+			+ MessagesManager.getText("main.company.ads.table.header.thead.tr")
+			+ MessagesManager.getText("main.company.ads.table.header._theadTbody")
 			+ result
 			+ MessagesManager.getText("main.company.ads.table.footer");
 	}		
 
+	private String getAdditionalLinks(Ads ads, boolean isMedorator, boolean isGrouped) {
+		String result = "";
+
+		// Group link
+		if(!isGrouped){
+			if(ads.getGroup() != null)
+				result += " [" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
+						ads.getGroup().getUuid(),
+						"CompanyProxy.selectGroup(this.id)",
+						ads.getGroup().getName()) + "]";
+		}		
+		// Remove link
+		if(isMedorator)
+			result += " [" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
+					ads.getUuid(),
+					"CompanyProxy.removeAds(this.id)",
+					MessagesManager.getText("text.remove")) + "]";
+
+		return "<sup>" + result + "</sup>";
+	}	
+	
 	private void getCgroupUuidAsList(List<String> inList, Cgroup inCgroup) {
 		inList.add(inCgroup.getUuid());
 		
@@ -408,19 +474,40 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		}		
 		
 		return String.format(format, 
-				company.getName(),
+				company.getName() + Utils.getWwwBlankLink(company.getWww()),
 				company.getAdditionals(),				
-				Utils.getWwwBlankLink(company.getWww()),
 				getGroupAsHTMLSelect(company),
 				company.getUuid(), 
-				company.getUuid());
+				company.getUuid(), 
+				getAllAdsOfCompany(company));
 	} 
 	
-	private String getDetailsLink(Company item) {
-		return String.format(Utils.LINK_TEMPLATE,
-				item.getUuid(),
-				"CompanyProxy.showDetails(this.id)",
-				item.getName());
+	private String getAllAdsOfCompany(Company company) {
+		GroupBean filterBean = new GroupBean();
+		filterBean.setUuid("root");
+		filterBean.setCuuid(company.getUuid());
+		filterBean.setPage(1);
+		filterBean.setDensity(15);
+		
+		return getAdsAsHTMLTable(filterBean);
+	}
+
+	private String getCompanyHeader(Company inCompany) {
+		// Name
+		String result = String.format(Utils.LINK_TEMPLATE_DEFAULT,
+				inCompany.getUuid(),
+				COMPANY_DETAILT_JS_LINK,
+				inCompany.getName());
+		
+		// Www
+		if(Utils.isValidLink(inCompany.getWww()))
+			result += Utils.getWwwBlankLink(inCompany.getWww());
+		
+		// Manager's links
+		if(isManager(inCompany))
+			result += getAdditionalLinks(inCompany);
+		
+		return result;
 	}
 	
 	private Group getGroup(GroupBean inFilter){
@@ -519,9 +606,8 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			result = result
 					+ String.format(format,
 							(++startItem),
-							getDetailsLink(company) +  (isManager(company)?getAdditionalLinks(company):""),
-							company.getAdditionals() + getURLAsLink(company)
-							);
+							getCompanyHeader(company),
+							company.getAdditionals());
 		}
 		
 		return "<div id=\"main.company.div.header\">" 
@@ -604,14 +690,6 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				company.getAdditionals(),
 				company.getWww(),
 				company.getUuid());
-	}
-
-	private String getURLAsLink(Company inItem) {
-		if(inItem.getWww().isEmpty() || 
-				inItem.getWww().equals("http://"))
-			return "";
-		
-		return ", " + Utils.getWwwBlankLink(inItem.getWww());
 	}
 
 	private boolean isCorrectFilter(GroupBean inFilter){
@@ -699,8 +777,16 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			return MessagesManager.getDefault("web.error.result.prefix") 
 				+ MessagesManager.getText("errors.null.object");
 		}
-				
-		_log.debug(String.format("XXXXXXXXXXX:Group(%s) removed from company(%s)", group.getUuid(), company.getUuid()));
+							
+		if(group.getAds() != null && 
+				group.getAds().size() != 0)
+			return MessagesManager.getDefault("web.error.result.prefix")
+				+ MessagesManager.getText("errors.nonempty.list");				
+		
+		_log.debug(String.format("Group(%s) removed from company(%s)", 
+				group.getUuid(), 
+				company.getUuid()));
+		
 		company.removeFromGroups(group);
 		
 		try {

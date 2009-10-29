@@ -1,9 +1,7 @@
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.cayenne.query.Ordering;
-import org.supposition.db.Ads;
-import org.supposition.db.proxy.AdsProxy;
+import org.supposition.db.Cgroup;
+import org.supposition.db.proxy.CgroupProxy;
+import org.supposition.db.proxy.CompanyFilterBean;
+import org.supposition.db.proxy.CompanyProxy;
 
 public class Class4Test {
 
@@ -11,25 +9,18 @@ public class Class4Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		AdsProxy adsProxy = new AdsProxy();
+		CompanyProxy cProxy = new CompanyProxy();
+		CompanyFilterBean inFilter = new CompanyFilterBean();
+		CgroupProxy cgroupProxy = new CgroupProxy();
 		
-		List<Ads> adsList = adsProxy.getAll();
-		List<Ads> sortedAdsList = new ArrayList<Ads>();
-		for(Ads ads:adsList){
-			System.out.println(ads.getCreated());
-			sortedAdsList.add(ads);
-		}
+		Cgroup cgroup_root = cgroupProxy.getRootElement();
 		
-		adsList = null;
+		if(cgroup_root == null)	System.out.println("errors.data.not.found");
 		
-		Ordering ordering  = new Ordering("created", false);
-		ordering.orderList(sortedAdsList);
+		inFilter.setCity("11115"); // Tashkent
+		inFilter.setGuuid(cgroup_root.getUuid());
+		inFilter.setOwner(false);
 		
-		System.out.println("adsProxy.getPageSize = " + adsProxy.getPageSize());
-		
-		for(Ads ads:sortedAdsList){
-			System.out.println(ads.getCreated());
-		}		
-		
+		System.out.println(cProxy.getPageAsHTMLTable(inFilter, 1));		
 	  }
 }

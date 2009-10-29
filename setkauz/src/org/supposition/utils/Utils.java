@@ -12,6 +12,10 @@ import org.apache.commons.logging.LogFactory;
 
 
 import org.supposition.db.Ads;
+import org.supposition.db.Cgroup;
+import org.supposition.db.proxy.CgroupProxy;
+import org.supposition.db.proxy.CompanyFilterBean;
+import org.supposition.db.proxy.CompanyProxy;
 /**
  * 
  * @author M.Nurullayev
@@ -21,15 +25,19 @@ public final class Utils {
 	public static Log _log = LogFactory.getLog("org.supposition.utils.Utils");
 
 	public static final String ROOT_ID_DEF = "root";
-	public static final String INPUT_BUTTON_TEMPLATE = "<input type=\"button\" onclick=\"%s\"  value=\"%s\"/>";
-	public static final String LINK_TEMPLATE = "<a href=\"#\" id=\"%s\" onclick=\"javascript:void(%s)\">%s</a>";
+	public static final String INPUT_BUTTON_TEMPLATE_DEFAULT = "<input type=\"button\" onclick=\"%s\"  value=\"%s\"/>";
+	public static final String LINK_TEMPLATE_DEFAULT = "<a href=\"#\" id=\"%s\" onclick=\"javascript:void(%s)\">%s</a>";
 	
 	public static String getWwwBlankLink(String inLink){
+		return String.format(" [<a href=\"%s\" target=\"_blank\">www</a>]", inLink);
+	}
+	
+	public static boolean isValidLink(String inLink){
 		if(inLink == null 
 				|| inLink.isEmpty() 
 				|| inLink.equals("http://"))
-			return "";		
-		return String.format("<a href=\"%s\" target=\"_blank\">www</a>", inLink);
+			return false;
+		return true;
 	}
 	
 	
@@ -150,6 +158,26 @@ public final class Utils {
 		result += MessagesManager.getText("html.select.cities.body");
 		result += MessagesManager.getText("html.select.cities.footer");
 		return result;
+	}
+
+	public static String getHTMLDefaultCompanies() {
+		CompanyProxy cProxy = new CompanyProxy();
+		CompanyFilterBean inFilter = new CompanyFilterBean();
+		CgroupProxy cgroupProxy = new CgroupProxy();
+		
+		Cgroup cgroup_root = cgroupProxy.getRootElement();
+		
+		if(cgroup_root == null)	return MessagesManager.getText("errors.data.not.found");
+		
+		inFilter.setCity("11115"); // Tashkent
+		inFilter.setGuuid(cgroup_root.getUuid());
+		inFilter.setOwner(false);
+		
+		String result = cProxy.getPageAsHTMLTable(inFilter, 1);
+		
+		if(result == null)	return MessagesManager.getText("errors.data.not.found");
+		
+		return result; 
 	}
 
 
