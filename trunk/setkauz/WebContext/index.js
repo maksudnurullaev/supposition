@@ -22,9 +22,9 @@ index.initPage = function(){
 	if( "undefined" == typeof AdsProxy) 	  { alert("JS: Failed to Load [ AdsProxy ]");	    return false; }
 
 	// #### DEBUG TIME ####
-	dwr.engine.setErrorHandler(index.myErrorHandler);
-	dwr.engine.setWarningHandler(index.myErrorHandler);
-	dwr.engine.setTextHtmlHandler(index.myErrorHandler);
+	// dwr.engine.setErrorHandler(index.myErrorHandler);
+	// dwr.engine.setWarningHandler(index.myErrorHandler);
+	// dwr.engine.setTextHtmlHandler(index.myErrorHandler);
 
 	// This turns off the starting message
 	document.getElementById("start").style.display = "none";
