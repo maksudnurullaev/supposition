@@ -6,7 +6,116 @@ SET client_encoding = 'UTF8';
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS 'Standard public schema';
+
+
 SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: ads; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE ads (
+    cgroup_id integer,
+    city character varying(7) NOT NULL,
+    company_id integer,
+    created timestamp with time zone NOT NULL,
+    cuuid character varying(40),
+    delete_after date NOT NULL,
+    group_id integer,
+    guuid character varying(40) NOT NULL,
+    id integer NOT NULL,
+    price character varying(32),
+    text character varying(1028) NOT NULL,
+    "type" character varying(10) NOT NULL,
+    user_id integer,
+    uuid character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.ads OWNER TO jetty;
+
+--
+-- Name: cgroups; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE cgroups (
+    id integer NOT NULL,
+    name character varying(60) NOT NULL,
+    pid integer,
+    uuid character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.cgroups OWNER TO jetty;
+
+--
+-- Name: companies; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE companies (
+    additionals character varying(1024),
+    cgroup_id integer NOT NULL,
+    city character varying(6) NOT NULL,
+    guuid character varying(40) NOT NULL,
+    id integer NOT NULL,
+    name character varying(128) NOT NULL,
+    updated timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    uuid character varying(40) NOT NULL,
+    uuuid character varying(40) NOT NULL,
+    www character varying(64)
+);
+
+
+ALTER TABLE public.companies OWNER TO jetty;
+
+--
+-- Name: companies2groups; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE companies2groups (
+    company_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.companies2groups OWNER TO jetty;
+
+--
+-- Name: groups; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE groups (
+    cgroup_id integer NOT NULL,
+    id integer NOT NULL,
+    name character varying(60) NOT NULL,
+    uuid character varying(60) NOT NULL
+);
+
+
+ALTER TABLE public.groups OWNER TO jetty;
+
+--
+-- Name: pk_ads; Type: SEQUENCE; Schema: public; Owner: jetty
+--
+
+CREATE SEQUENCE pk_ads
+    INCREMENT BY 20
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pk_ads OWNER TO jetty;
 
 --
 -- Name: pk_ads; Type: SEQUENCE SET; Schema: public; Owner: jetty
@@ -16,11 +125,37 @@ SELECT pg_catalog.setval('pk_ads', 220, true);
 
 
 --
+-- Name: pk_cgroups; Type: SEQUENCE; Schema: public; Owner: jetty
+--
+
+CREATE SEQUENCE pk_cgroups
+    INCREMENT BY 20
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pk_cgroups OWNER TO jetty;
+
+--
 -- Name: pk_cgroups; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
 SELECT pg_catalog.setval('pk_cgroups', 220, true);
 
+
+--
+-- Name: pk_companies; Type: SEQUENCE; Schema: public; Owner: jetty
+--
+
+CREATE SEQUENCE pk_companies
+    INCREMENT BY 20
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pk_companies OWNER TO jetty;
 
 --
 -- Name: pk_companies; Type: SEQUENCE SET; Schema: public; Owner: jetty
@@ -30,11 +165,38 @@ SELECT pg_catalog.setval('pk_companies', 200, true);
 
 
 --
+-- Name: pk_companies2groups; Type: SEQUENCE; Schema: public; Owner: jetty
+--
+
+CREATE SEQUENCE pk_companies2groups
+    START WITH 200
+    INCREMENT BY 20
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pk_companies2groups OWNER TO jetty;
+
+--
 -- Name: pk_companies2groups; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
 SELECT pg_catalog.setval('pk_companies2groups', 200, false);
 
+
+--
+-- Name: pk_groups; Type: SEQUENCE; Schema: public; Owner: jetty
+--
+
+CREATE SEQUENCE pk_groups
+    INCREMENT BY 20
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pk_groups OWNER TO jetty;
 
 --
 -- Name: pk_groups; Type: SEQUENCE SET; Schema: public; Owner: jetty
@@ -44,11 +206,38 @@ SELECT pg_catalog.setval('pk_groups', 200, true);
 
 
 --
+-- Name: pk_roles; Type: SEQUENCE; Schema: public; Owner: jetty
+--
+
+CREATE SEQUENCE pk_roles
+    INCREMENT BY 20
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pk_roles OWNER TO jetty;
+
+--
 -- Name: pk_roles; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
 SELECT pg_catalog.setval('pk_roles', 200, true);
 
+
+--
+-- Name: pk_roles2users; Type: SEQUENCE; Schema: public; Owner: jetty
+--
+
+CREATE SEQUENCE pk_roles2users
+    START WITH 200
+    INCREMENT BY 20
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pk_roles2users OWNER TO jetty;
 
 --
 -- Name: pk_roles2users; Type: SEQUENCE SET; Schema: public; Owner: jetty
@@ -58,11 +247,69 @@ SELECT pg_catalog.setval('pk_roles2users', 200, false);
 
 
 --
+-- Name: pk_users; Type: SEQUENCE; Schema: public; Owner: jetty
+--
+
+CREATE SEQUENCE pk_users
+    INCREMENT BY 20
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pk_users OWNER TO jetty;
+
+--
 -- Name: pk_users; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
 SELECT pg_catalog.setval('pk_users', 220, true);
 
+
+--
+-- Name: roles; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE roles (
+    id integer NOT NULL,
+    name character varying(32) NOT NULL,
+    uuid character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.roles OWNER TO jetty;
+
+--
+-- Name: roles2users; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE roles2users (
+    role_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.roles2users OWNER TO jetty;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE users (
+    additionals character varying(256),
+    created character varying(23),
+    id integer NOT NULL,
+    mail character varying(50) NOT NULL,
+    "password" character varying(64),
+    salt character varying(128),
+    status character varying(16),
+    string2verify character varying(64),
+    updated character varying(23),
+    uuid character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO jetty;
 
 --
 -- Data for Name: ads; Type: TABLE DATA; Schema: public; Owner: jetty
@@ -157,6 +404,144 @@ INSERT INTO roles2users VALUES (200, 200);
 
 INSERT INTO users VALUES ('Administrator', '2009-10-28 17:05:22', 200, 'admin@serka.uz', '', 'rGGAJbaA8GGYFFm6FsZCO3Gd/ZvHqWdRlK3jCRa7x1O5mo1THPdYSeA26WxoqMhn', 'SALTED', NULL, '2009-10-28 13:49:35', '906f14fe-1b53-4393-80e9-1f3853d740a3');
 INSERT INTO users VALUES ('Tester', '2009-10-28 14:13:50', 220, 'tester@setka.uz', '', 'MZraUqROAsDd40eoSZvmvY94dXGLARUhuSosg67Y9E0N7Hn1kjbXoasYwQcoPsHf', 'SALTED', NULL, NULL, 'c6ef0c8f-6219-4682-bfe5-6ec034f6bd76');
+
+
+--
+-- Name: ads_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
+--
+
+ALTER TABLE ONLY ads
+    ADD CONSTRAINT ads_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cgroups_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
+--
+
+ALTER TABLE ONLY cgroups
+    ADD CONSTRAINT cgroups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: companies2groups_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
+--
+
+ALTER TABLE ONLY companies2groups
+    ADD CONSTRAINT companies2groups_pkey PRIMARY KEY (company_id, group_id);
+
+
+--
+-- Name: companies_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
+--
+
+ALTER TABLE ONLY companies
+    ADD CONSTRAINT companies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
+--
+
+ALTER TABLE ONLY groups
+    ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: roles2users_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
+--
+
+ALTER TABLE ONLY roles2users
+    ADD CONSTRAINT roles2users_pkey PRIMARY KEY (role_id, user_id);
+
+
+--
+-- Name: roles_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
+--
+
+ALTER TABLE ONLY roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ads_cgroup_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
+--
+
+ALTER TABLE ONLY ads
+    ADD CONSTRAINT ads_cgroup_id_fkey FOREIGN KEY (cgroup_id) REFERENCES cgroups(id);
+
+
+--
+-- Name: ads_company_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
+--
+
+ALTER TABLE ONLY ads
+    ADD CONSTRAINT ads_company_id_fkey FOREIGN KEY (company_id) REFERENCES companies(id);
+
+
+--
+-- Name: ads_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
+--
+
+ALTER TABLE ONLY ads
+    ADD CONSTRAINT ads_group_id_fkey FOREIGN KEY (group_id) REFERENCES groups(id);
+
+
+--
+-- Name: ads_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
+--
+
+ALTER TABLE ONLY ads
+    ADD CONSTRAINT ads_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: cgroups_pid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
+--
+
+ALTER TABLE ONLY cgroups
+    ADD CONSTRAINT cgroups_pid_fkey FOREIGN KEY (pid) REFERENCES cgroups(id);
+
+
+--
+-- Name: companies_cgroup_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
+--
+
+ALTER TABLE ONLY companies
+    ADD CONSTRAINT companies_cgroup_id_fkey FOREIGN KEY (cgroup_id) REFERENCES cgroups(id);
+
+
+--
+-- Name: companies_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
+--
+
+ALTER TABLE ONLY companies
+    ADD CONSTRAINT companies_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
+
+
+--
+-- Name: groups_cgroup_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
+--
+
+ALTER TABLE ONLY groups
+    ADD CONSTRAINT groups_cgroup_id_fkey FOREIGN KEY (cgroup_id) REFERENCES cgroups(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
