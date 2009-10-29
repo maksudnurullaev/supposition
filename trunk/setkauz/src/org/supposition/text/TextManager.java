@@ -133,6 +133,10 @@ public class TextManager extends PropertyLoader {
 			result = result.replaceAll("HTML_SELECT_CITIES4COMPANY", Utils.getHTMLSelectCity4("company"));
 			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_SELECT_CITIES4COMPANY");
 		}
+		if (result.indexOf("HTML_DEFAULT_COMPANIES") != -1) {
+			result = result.replaceAll("HTML_DEFAULT_COMPANIES", Utils.getHTMLDefaultCompanies());
+			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_DEFAULT_COMPANIES");
+		}		
 		if (result.indexOf("GLOBAL_AGREEMENT") != -1) {
 			result = result.replaceAll("GLOBAL_AGREEMENT", 
 					loadFile(MessagesManager.getDefault("default.agreement.path"), 

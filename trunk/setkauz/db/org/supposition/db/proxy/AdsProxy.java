@@ -188,7 +188,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 	private String getAdditionalLinks(Ads ads, boolean isMedorator) {
 		if(!isMedorator) return "";
 		
-		return "&nbsp;" + String.format(Utils.LINK_TEMPLATE,
+		return "&nbsp;" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
 				ads.getUuid(),
 				"AdsProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));
