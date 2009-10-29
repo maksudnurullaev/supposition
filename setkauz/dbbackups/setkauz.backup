@@ -2,23 +2,16 @@
 -- PostgreSQL database dump
 --
 
--- Started on 2009-10-28 17:31:42
-
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 --
--- TOC entry 317 (class 2612 OID 16386)
--- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: postgres
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
-CREATE PROCEDURAL LANGUAGE plpgsql;
+COMMENT ON SCHEMA public IS 'Standard public schema';
 
-
-ALTER PROCEDURAL LANGUAGE plpgsql OWNER TO postgres;
 
 SET search_path = public, pg_catalog;
 
@@ -27,8 +20,6 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- TOC entry 1496 (class 1259 OID 35078)
--- Dependencies: 3
 -- Name: ads; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -44,7 +35,7 @@ CREATE TABLE ads (
     id integer NOT NULL,
     price character varying(32),
     text character varying(1028) NOT NULL,
-    type character varying(10) NOT NULL,
+    "type" character varying(10) NOT NULL,
     user_id integer,
     uuid character varying(40) NOT NULL
 );
@@ -53,8 +44,6 @@ CREATE TABLE ads (
 ALTER TABLE public.ads OWNER TO jetty;
 
 --
--- TOC entry 1492 (class 1259 OID 35055)
--- Dependencies: 3
 -- Name: cgroups; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -69,8 +58,6 @@ CREATE TABLE cgroups (
 ALTER TABLE public.cgroups OWNER TO jetty;
 
 --
--- TOC entry 1495 (class 1259 OID 35070)
--- Dependencies: 3
 -- Name: companies; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -92,8 +79,6 @@ CREATE TABLE companies (
 ALTER TABLE public.companies OWNER TO jetty;
 
 --
--- TOC entry 1493 (class 1259 OID 35060)
--- Dependencies: 3
 -- Name: companies2groups; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -106,8 +91,6 @@ CREATE TABLE companies2groups (
 ALTER TABLE public.companies2groups OWNER TO jetty;
 
 --
--- TOC entry 1494 (class 1259 OID 35065)
--- Dependencies: 3
 -- Name: groups; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -122,89 +105,10 @@ CREATE TABLE groups (
 ALTER TABLE public.groups OWNER TO jetty;
 
 --
--- TOC entry 1490 (class 1259 OID 35042)
--- Dependencies: 3
--- Name: roles; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
---
-
-CREATE TABLE roles (
-    id integer NOT NULL,
-    name character varying(32) NOT NULL,
-    uuid character varying(40) NOT NULL
-);
-
-
-ALTER TABLE public.roles OWNER TO jetty;
-
---
--- TOC entry 1489 (class 1259 OID 35037)
--- Dependencies: 3
--- Name: roles2users; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
---
-
-CREATE TABLE roles2users (
-    role_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
-ALTER TABLE public.roles2users OWNER TO jetty;
-
---
--- TOC entry 1491 (class 1259 OID 35047)
--- Dependencies: 3
--- Name: users; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
---
-
-CREATE TABLE users (
-    additionals character varying(256),
-    created character varying(23),
-    id integer NOT NULL,
-    mail character varying(50) NOT NULL,
-    password character varying(64),
-    salt character varying(128),
-    status character varying(16),
-    string2verify character varying(64),
-    updated character varying(23),
-    uuid character varying(40) NOT NULL
-);
-
-
-ALTER TABLE public.users OWNER TO jetty;
-
---
--- TOC entry 20 (class 1255 OID 17438)
--- Dependencies: 3 317
--- Name: cpid2gid(); Type: FUNCTION; Schema: public; Owner: setkauz
---
-
-CREATE FUNCTION cpid2gid() RETURNS trigger
-    AS $$BEGIN
-        IF (TG_OP = 'UPDATE') THEN
-            NEW.gid = OLD.id;
-            RETURN NEW;
-        ELSIF (TG_OP = 'INSERT') THEN
-            IF(NEW.gid IS NOT NULL) THEN
-                NEW.gid = OLD.id;
-            END IF;
-            RETURN NEW;
-        END IF;
-	RETURN NEW;
-END;
-$$
-    LANGUAGE plpgsql;
-
-
-ALTER FUNCTION public.cpid2gid() OWNER TO setkauz;
-
---
--- TOC entry 1497 (class 1259 OID 35126)
--- Dependencies: 3
 -- Name: pk_ads; Type: SEQUENCE; Schema: public; Owner: jetty
 --
 
 CREATE SEQUENCE pk_ads
-    START WITH 200
     INCREMENT BY 20
     NO MAXVALUE
     NO MINVALUE
@@ -214,17 +118,13 @@ CREATE SEQUENCE pk_ads
 ALTER TABLE public.pk_ads OWNER TO jetty;
 
 --
--- TOC entry 1808 (class 0 OID 0)
--- Dependencies: 1497
 -- Name: pk_ads; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
-SELECT pg_catalog.setval('pk_ads', 200, false);
+SELECT pg_catalog.setval('pk_ads', 220, true);
 
 
 --
--- TOC entry 1498 (class 1259 OID 35128)
--- Dependencies: 3
 -- Name: pk_cgroups; Type: SEQUENCE; Schema: public; Owner: jetty
 --
 
@@ -238,22 +138,17 @@ CREATE SEQUENCE pk_cgroups
 ALTER TABLE public.pk_cgroups OWNER TO jetty;
 
 --
--- TOC entry 1809 (class 0 OID 0)
--- Dependencies: 1498
 -- Name: pk_cgroups; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
-SELECT pg_catalog.setval('pk_cgroups', 200, true);
+SELECT pg_catalog.setval('pk_cgroups', 220, true);
 
 
 --
--- TOC entry 1499 (class 1259 OID 35130)
--- Dependencies: 3
 -- Name: pk_companies; Type: SEQUENCE; Schema: public; Owner: jetty
 --
 
 CREATE SEQUENCE pk_companies
-    START WITH 200
     INCREMENT BY 20
     NO MAXVALUE
     NO MINVALUE
@@ -263,17 +158,13 @@ CREATE SEQUENCE pk_companies
 ALTER TABLE public.pk_companies OWNER TO jetty;
 
 --
--- TOC entry 1810 (class 0 OID 0)
--- Dependencies: 1499
 -- Name: pk_companies; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
-SELECT pg_catalog.setval('pk_companies', 200, false);
+SELECT pg_catalog.setval('pk_companies', 200, true);
 
 
 --
--- TOC entry 1500 (class 1259 OID 35132)
--- Dependencies: 3
 -- Name: pk_companies2groups; Type: SEQUENCE; Schema: public; Owner: jetty
 --
 
@@ -288,8 +179,6 @@ CREATE SEQUENCE pk_companies2groups
 ALTER TABLE public.pk_companies2groups OWNER TO jetty;
 
 --
--- TOC entry 1811 (class 0 OID 0)
--- Dependencies: 1500
 -- Name: pk_companies2groups; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
@@ -297,13 +186,10 @@ SELECT pg_catalog.setval('pk_companies2groups', 200, false);
 
 
 --
--- TOC entry 1501 (class 1259 OID 35134)
--- Dependencies: 3
 -- Name: pk_groups; Type: SEQUENCE; Schema: public; Owner: jetty
 --
 
 CREATE SEQUENCE pk_groups
-    START WITH 200
     INCREMENT BY 20
     NO MAXVALUE
     NO MINVALUE
@@ -313,17 +199,13 @@ CREATE SEQUENCE pk_groups
 ALTER TABLE public.pk_groups OWNER TO jetty;
 
 --
--- TOC entry 1812 (class 0 OID 0)
--- Dependencies: 1501
 -- Name: pk_groups; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
-SELECT pg_catalog.setval('pk_groups', 200, false);
+SELECT pg_catalog.setval('pk_groups', 200, true);
 
 
 --
--- TOC entry 1502 (class 1259 OID 35136)
--- Dependencies: 3
 -- Name: pk_roles; Type: SEQUENCE; Schema: public; Owner: jetty
 --
 
@@ -337,8 +219,6 @@ CREATE SEQUENCE pk_roles
 ALTER TABLE public.pk_roles OWNER TO jetty;
 
 --
--- TOC entry 1813 (class 0 OID 0)
--- Dependencies: 1502
 -- Name: pk_roles; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
@@ -346,8 +226,6 @@ SELECT pg_catalog.setval('pk_roles', 200, true);
 
 
 --
--- TOC entry 1503 (class 1259 OID 35138)
--- Dependencies: 3
 -- Name: pk_roles2users; Type: SEQUENCE; Schema: public; Owner: jetty
 --
 
@@ -362,8 +240,6 @@ CREATE SEQUENCE pk_roles2users
 ALTER TABLE public.pk_roles2users OWNER TO jetty;
 
 --
--- TOC entry 1814 (class 0 OID 0)
--- Dependencies: 1503
 -- Name: pk_roles2users; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
@@ -371,8 +247,6 @@ SELECT pg_catalog.setval('pk_roles2users', 200, false);
 
 
 --
--- TOC entry 1504 (class 1259 OID 35140)
--- Dependencies: 3
 -- Name: pk_users; Type: SEQUENCE; Schema: public; Owner: jetty
 --
 
@@ -386,68 +260,135 @@ CREATE SEQUENCE pk_users
 ALTER TABLE public.pk_users OWNER TO jetty;
 
 --
--- TOC entry 1815 (class 0 OID 0)
--- Dependencies: 1504
 -- Name: pk_users; Type: SEQUENCE SET; Schema: public; Owner: jetty
 --
 
-SELECT pg_catalog.setval('pk_users', 200, true);
+SELECT pg_catalog.setval('pk_users', 220, true);
 
 
 --
--- TOC entry 1802 (class 0 OID 35078)
--- Dependencies: 1496
+-- Name: roles; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE roles (
+    id integer NOT NULL,
+    name character varying(32) NOT NULL,
+    uuid character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.roles OWNER TO jetty;
+
+--
+-- Name: roles2users; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE roles2users (
+    role_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.roles2users OWNER TO jetty;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: jetty; Tablespace: 
+--
+
+CREATE TABLE users (
+    additionals character varying(256),
+    created character varying(23),
+    id integer NOT NULL,
+    mail character varying(50) NOT NULL,
+    "password" character varying(64),
+    salt character varying(128),
+    status character varying(16),
+    string2verify character varying(64),
+    updated character varying(23),
+    uuid character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO jetty;
+
+--
 -- Data for Name: ads; Type: TABLE DATA; Schema: public; Owner: jetty
 --
 
-COPY ads (cgroup_id, city, company_id, created, cuuid, delete_after, group_id, guuid, id, price, text, type, user_id, uuid) FROM stdin;
+COPY ads (cgroup_id, city, company_id, created, cuuid, delete_after, group_id, guuid, id, price, text, "type", user_id, uuid) FROM stdin;
+\N	company	200	2009-10-28 08:57:38.398-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	200	1e9a6a30-7a61-4118-ac2d-726d4fb3b0be	201	от 200 000 сум	Установка, монтаж и наладка серверного оборудования для широкого спектора операционных систем (Unix, BSD, Windows)	company	200	fc530970-9730-4794-a620-424ae6a2b3bd
+\N	company	200	2009-10-28 08:57:59.849-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	200	1e9a6a30-7a61-4118-ac2d-726d4fb3b0be	202	под дог.	Постгарантированное обслуживание и ремонт серверного оборудования организаций	company	200	c1c40f4b-b261-4807-9c96-3f7403964aa4
+\N	company	200	2009-10-28 08:58:33.526-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	200	1e9a6a30-7a61-4118-ac2d-726d4fb3b0be	203	от 500 000 сум	Установка и обслуживание серверных систем виртуализации VMware, Xen, KVM	company	200	8ee831de-229d-4a6e-9135-a0c8b498d584
+\N	company	200	2009-10-28 08:59:08.581-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	200	1e9a6a30-7a61-4118-ac2d-726d4fb3b0be	204	по дог.	Установка и обслуживание почтовых серверов на базе Unix, BSD, Windows решений	company	200	2b2b1bba-2463-48b5-a7f0-5f45e827c7e8
+\N	company	200	2009-10-28 08:59:41.119-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	200	1e9a6a30-7a61-4118-ac2d-726d4fb3b0be	205	от 300 000 сум	Установка и обслуживание межсетевых экранов (firewall) на базе Unix, BSD, Windows решений	company	200	fc4ede77-1d04-4105-b300-034169d630ed
+\N	company	200	2009-10-28 09:00:27.196-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	201	672af52b-46c4-4363-9389-6d661e2e4fe3	206	по дог.	Обслуживание и ремонт	company	200	96788d85-d181-4769-8143-f770ec9e24f8
+\N	company	200	2009-10-28 09:02:16.577-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	202	9cbc9a28-442a-4764-aa02-285643dba56b	207	по дог.	Проектирование систем автоматизации.	company	200	9d993d2f-9ed1-4f66-9f6a-46c25963e90c
+\N	company	200	2009-10-28 09:02:55.631-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	202	9cbc9a28-442a-4764-aa02-285643dba56b	208	по дог.	Установка и обучение SWIFT (Society for Worldwide Interbank Financial Telecommunications) для банков и других финансовых институтов.	company	200	6c240e0f-330d-4bd5-8965-884a16f06be7
+\N	company	200	2009-10-28 09:03:28.238-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	202	9cbc9a28-442a-4764-aa02-285643dba56b	209	по дог.	Установка и обслуживание межсетевых экранов (firewall) на базе Unix, BSD, Windows решений.	company	200	b261924d-7b71-4426-ae91-7d437bdf013d
+\N	company	200	2009-10-28 09:03:52.531-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	202	9cbc9a28-442a-4764-aa02-285643dba56b	210	от 200 000 сум	Проектирование комплексных веб-сайтов и порталов.	company	200	bc8a252a-eab8-4fe1-be3d-68efbcd8d8de
+\N	company	200	2009-10-28 09:22:02.621-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	211	10,000.00 сум	HPLJ 101Х	company	200	c1b4a20f-62a3-47b9-b7e1-519e6ccaa884
+\N	company	200	2009-10-28 09:22:18.266-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	212	11,000.00 сум	HPLJ 1000/1100/1200/1220	company	200	4dc9485f-42b8-4570-9128-66c682850749
+\N	company	200	2009-10-28 09:22:33.188-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	213	20,000.00 сум	HPLJ 21ХХ	company	200	7bb1ff33-b08e-455d-b465-dd5e9e0ea750
+\N	company	200	2009-10-28 09:24:28.333-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	214	45,000.00 сум	HPLJ 2420	company	200	2a0b5cdf-d9dd-45f8-9790-beb4741a8c61
+\N	company	200	2009-10-28 09:24:44.381-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	215	16,000.00 сум	HPLJ 1005	company	200	cc1b4b5a-df23-477a-bd75-d19acb05a519
+\N	company	200	2009-10-28 09:24:57.329-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	216	17,850.00 сум	CANON NP 1215/6317/6318/6216	company	200	2fc5b4e8-dee7-4cb2-a088-0b7cc538ceb0
+\N	company	200	2009-10-28 09:25:12.535-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	217	40,000.00 сум	CANON 7161/7163/7164/7214	company	200	40d51bc9-16d6-484e-b516-8e09c4cb7d07
+\N	company	200	2009-10-28 09:25:26.471-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	218	17,850.00 сум	CANON NP 1215/6317/6318/6216	company	200	72e3ea9d-17f3-4e93-8058-0c6a83c4f120
+\N	company	200	2009-10-28 09:25:41.906-05	b076d8de-8212-4190-8eb3-9e3e787b64b6	2009-10-28	203	143f177b-f9b6-4870-b888-6e6326149e9f	219	18,000.00 сум	Sharp Z-50/Panasonic KX-P 7100	company	200	8ab50295-2c8f-4737-9d8a-15101f860fb7
+220	11115	\N	2009-10-28 09:37:36.239-05	\N	2009-11-04	\N	da05026a-bf12-48aa-9ccd-4ee9e4e1cc54	221		Продается своя элитная квартира в банковских домах. Отличное расположение,рядом Госпитальный рынок, школа,дет.сад, тихий район, 5 минут до метро(ойбек).3-х переделанная в 4-х комнатную.1-й этаж,Евроремонт,общая площадь 210м2, сауна, бассейн,2 ванных комнаты,душевая кабина,отдельный вход,огороженная территория,крытая парковка.\nПрямая продажа!\n\nТелефон: 1030197	seller	200	40754386-6754-4cb9-b9cb-5943459f1479
+222	11115	\N	2009-10-28 09:40:33.707-05	\N	2009-11-04	\N	0c5956a3-25c7-4edf-9433-a3f4970ea379	223		Предлагаю работу для программиста со знанием языка программрования Erlang. Оплата сдельная, в зависимости от квалификации. Звонить по телефону +998662606040 (Максуд)	seller	200	80817d75-fc82-46c2-9608-a52878afa8bf
+223	11115	\N	2009-10-28 09:44:43.006-05	\N	2009-11-04	\N	4554d693-ef5d-4297-8d52-c8726cf77bc6	224		Симпатичная, стройная блондинка,25/168/45, познакомится с порядочным состоятельным мужчиной. Без жилищных и финансовых проблем, для серьезных отношений! Не серьезных просьба не звонить!\nтел 3266826 Алёна	woman	200	087c3ab1-df5d-422e-b5e9-3dbe232f29f1
+223	11115	\N	2009-10-28 09:46:08.128-05	\N	2009-11-04	\N	4554d693-ef5d-4297-8d52-c8726cf77bc6	226		ЗДРАСТВУЙТЕ МЕНЯ ЗОВУТ ТИМУР МНЕ 24 ГОДА! РАБОТАЮ! ПРЕВЛИКАТЕЛЕН ВЫСОКИЙ СПОРТИВНОГО ТЕЛОСЛОЖЕНИЯ! ИЩУ ДЕВУШКУ РУССКУЮ ТАТАРКУ СЕМПАТИЧНУЮ ВОЗРАСТ 18-25 ДЛЯ СЕРЕЗНЫХ ОТНОШЕНИЙ НЕ СЕРЕЗНЫХ ПРОШУ НЕ БЕСПОКОИТЬ!\n\nТелефон: 3102263	man	200	a26edfd9-5a09-419b-9052-cea23b60dcd0
 \.
 
 
 --
--- TOC entry 1798 (class 0 OID 35055)
--- Dependencies: 1492
 -- Data for Name: cgroups; Type: TABLE DATA; Schema: public; Owner: jetty
 --
 
 COPY cgroups (id, name, pid, uuid) FROM stdin;
 200	Без группировки	\N	b885f6f5-8cd5-401b-b414-90d49a031d99
+220	Недвижимость	200	da05026a-bf12-48aa-9ccd-4ee9e4e1cc54
+221	Работа	200	e42aed01-0c6e-4997-a674-91c811214ef7
+222	Информационные технологии	200	0c5956a3-25c7-4edf-9433-a3f4970ea379
+223	Знакомства	200	4554d693-ef5d-4297-8d52-c8726cf77bc6
 \.
 
 
 --
--- TOC entry 1801 (class 0 OID 35070)
--- Dependencies: 1495
 -- Data for Name: companies; Type: TABLE DATA; Schema: public; Owner: jetty
 --
 
 COPY companies (additionals, cgroup_id, city, guuid, id, name, updated, user_id, uuid, uuuid, www) FROM stdin;
+ООО "Max Micro System" предлагает широкий спектор услуг в Области "Инофрмационных технологий". Адрес: г.Ташкент, ул. Сайрам 5/15, телефон/факс 268-42-32. 	200	11115	b885f6f5-8cd5-401b-b414-90d49a031d99	200	Max Micro Systems	2009-10-28 09:27:18.032-05	200	b076d8de-8212-4190-8eb3-9e3e787b64b6	906f14fe-1b53-4393-80e9-1f3853d740a3	http://www.setka.uz
 \.
 
 
 --
--- TOC entry 1799 (class 0 OID 35060)
--- Dependencies: 1493
 -- Data for Name: companies2groups; Type: TABLE DATA; Schema: public; Owner: jetty
 --
 
 COPY companies2groups (company_id, group_id) FROM stdin;
+200	200
+200	201
+200	202
+200	203
 \.
 
 
 --
--- TOC entry 1800 (class 0 OID 35065)
--- Dependencies: 1494
 -- Data for Name: groups; Type: TABLE DATA; Schema: public; Owner: jetty
 --
 
 COPY groups (cgroup_id, id, name, uuid) FROM stdin;
+222	200	Серверное оборудование	1e9a6a30-7a61-4118-ac2d-726d4fb3b0be
+222	201	Банковкие терминалы	672af52b-46c4-4363-9389-6d661e2e4fe3
+222	202	Программное обеспечение	9cbc9a28-442a-4764-aa02-285643dba56b
+200	203	Заправка принтеров	143f177b-f9b6-4870-b888-6e6326149e9f
 \.
 
 
 --
--- TOC entry 1796 (class 0 OID 35042)
--- Dependencies: 1490
 -- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: jetty
 --
 
@@ -457,8 +398,6 @@ COPY roles (id, name, uuid) FROM stdin;
 
 
 --
--- TOC entry 1795 (class 0 OID 35037)
--- Dependencies: 1489
 -- Data for Name: roles2users; Type: TABLE DATA; Schema: public; Owner: jetty
 --
 
@@ -468,19 +407,16 @@ COPY roles2users (role_id, user_id) FROM stdin;
 
 
 --
--- TOC entry 1797 (class 0 OID 35047)
--- Dependencies: 1491
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: jetty
 --
 
-COPY users (additionals, created, id, mail, password, salt, status, string2verify, updated, uuid) FROM stdin;
-Administrator	2009-10-28 17:05:22	200	admin@serka.uz		rGGAJbaA8GGYFFm6FsZCO3Gd/ZvHqWdRlK3jCRa7x1O5mo1THPdYSeA26WxoqMhn	SALTED	\N	\N	906f14fe-1b53-4393-80e9-1f3853d740a3
+COPY users (additionals, created, id, mail, "password", salt, status, string2verify, updated, uuid) FROM stdin;
+Administrator	2009-10-28 17:05:22	200	admin@serka.uz		rGGAJbaA8GGYFFm6FsZCO3Gd/ZvHqWdRlK3jCRa7x1O5mo1THPdYSeA26WxoqMhn	SALTED	\N	2009-10-28 13:49:35	906f14fe-1b53-4393-80e9-1f3853d740a3
+Tester	2009-10-28 14:13:50	220	tester@setka.uz		MZraUqROAsDd40eoSZvmvY94dXGLARUhuSosg67Y9E0N7Hn1kjbXoasYwQcoPsHf	SALTED	\N	\N	c6ef0c8f-6219-4682-bfe5-6ec034f6bd76
 \.
 
 
 --
--- TOC entry 1786 (class 2606 OID 35085)
--- Dependencies: 1496 1496
 -- Name: ads_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -489,8 +425,6 @@ ALTER TABLE ONLY ads
 
 
 --
--- TOC entry 1778 (class 2606 OID 35059)
--- Dependencies: 1492 1492
 -- Name: cgroups_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -499,8 +433,6 @@ ALTER TABLE ONLY cgroups
 
 
 --
--- TOC entry 1780 (class 2606 OID 35064)
--- Dependencies: 1493 1493 1493
 -- Name: companies2groups_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -509,8 +441,6 @@ ALTER TABLE ONLY companies2groups
 
 
 --
--- TOC entry 1784 (class 2606 OID 35077)
--- Dependencies: 1495 1495
 -- Name: companies_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -519,8 +449,6 @@ ALTER TABLE ONLY companies
 
 
 --
--- TOC entry 1782 (class 2606 OID 35069)
--- Dependencies: 1494 1494
 -- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -529,8 +457,6 @@ ALTER TABLE ONLY groups
 
 
 --
--- TOC entry 1772 (class 2606 OID 35041)
--- Dependencies: 1489 1489 1489
 -- Name: roles2users_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -539,8 +465,6 @@ ALTER TABLE ONLY roles2users
 
 
 --
--- TOC entry 1774 (class 2606 OID 35046)
--- Dependencies: 1490 1490
 -- Name: roles_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -549,8 +473,6 @@ ALTER TABLE ONLY roles
 
 
 --
--- TOC entry 1776 (class 2606 OID 35054)
--- Dependencies: 1491 1491
 -- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: jetty; Tablespace: 
 --
 
@@ -559,8 +481,6 @@ ALTER TABLE ONLY users
 
 
 --
--- TOC entry 1791 (class 2606 OID 35106)
--- Dependencies: 1777 1492 1496
 -- Name: ads_cgroup_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
 --
 
@@ -569,8 +489,6 @@ ALTER TABLE ONLY ads
 
 
 --
--- TOC entry 1792 (class 2606 OID 35111)
--- Dependencies: 1783 1495 1496
 -- Name: ads_company_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
 --
 
@@ -579,8 +497,6 @@ ALTER TABLE ONLY ads
 
 
 --
--- TOC entry 1793 (class 2606 OID 35116)
--- Dependencies: 1781 1494 1496
 -- Name: ads_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
 --
 
@@ -589,8 +505,6 @@ ALTER TABLE ONLY ads
 
 
 --
--- TOC entry 1794 (class 2606 OID 35121)
--- Dependencies: 1775 1491 1496
 -- Name: ads_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
 --
 
@@ -599,8 +513,6 @@ ALTER TABLE ONLY ads
 
 
 --
--- TOC entry 1787 (class 2606 OID 35086)
--- Dependencies: 1777 1492 1492
 -- Name: cgroups_pid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
 --
 
@@ -609,8 +521,6 @@ ALTER TABLE ONLY cgroups
 
 
 --
--- TOC entry 1789 (class 2606 OID 35096)
--- Dependencies: 1777 1492 1495
 -- Name: companies_cgroup_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
 --
 
@@ -619,8 +529,6 @@ ALTER TABLE ONLY companies
 
 
 --
--- TOC entry 1790 (class 2606 OID 35101)
--- Dependencies: 1495 1775 1491
 -- Name: companies_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
 --
 
@@ -629,8 +537,6 @@ ALTER TABLE ONLY companies
 
 
 --
--- TOC entry 1788 (class 2606 OID 35091)
--- Dependencies: 1777 1492 1494
 -- Name: groups_cgroup_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: jetty
 --
 
@@ -639,8 +545,6 @@ ALTER TABLE ONLY groups
 
 
 --
--- TOC entry 1807 (class 0 OID 0)
--- Dependencies: 3
 -- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -649,8 +553,6 @@ REVOKE ALL ON SCHEMA public FROM postgres;
 GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
-
--- Completed on 2009-10-28 17:31:42
 
 --
 -- PostgreSQL database dump complete
