@@ -1,17 +1,17 @@
 Namespace("index");
 
-Load ("dwr/engine.js");  
-Load ("dwr/util.js");
-Load ("dwr/interface/Session.js");
-Load ("dwr/interface/LocalUserProxy.js");
-Load ("dwr/interface/AdsProxy.js");
-
-//Load ("scripts/Gup.js");
-Load ("tabs/tabs.js");
-Load ("scripts/Stack.js");
-Load ("scripts/Main.js");
-Load ("scripts/LocalUserProxy.js");
-Load ("scripts/AdsProxy.js");
+//Load ("dwr/engine.js");  
+//Load ("dwr/util.js");
+//Load ("dwr/interface/Session.js");
+//Load ("dwr/interface/LocalUserProxy.js");
+//Load ("dwr/interface/AdsProxy.js");
+//
+////Load ("scripts/Gup.js");
+//Load ("tabs/tabs.js");
+//Load ("scripts/Stack.js");
+//Load ("scripts/Main.js");
+//Load ("scripts/LocalUserProxy.js");
+//Load ("scripts/AdsProxy.js");
 
 index.initPage = function(){
 //	if( "undefined" == typeof Namespace)      { alert("JS: Failed to Load [ Namespace ]");      return false; }	
