@@ -14,17 +14,12 @@ Load ("scripts/LocalUserProxy.js");
 Load ("scripts/AdsProxy.js");
 
 index.initPage = function(){
-	if( "undefined" == typeof Namespace)      { alert("JS: Failed to Load [ Namespace ]");      return false; }	
-	if( "undefined" == typeof dwr)            { alert("JS: Failed to Load [ dwr ]");            return false; }
-	if( "undefined" == typeof Tabs)           { alert("JS: Failed to Load [ Tabs ]");           return false; }
-	if( "undefined" == typeof LocalUserProxy) { alert("JS: Failed to Load [ LocalUserProxy ]"); return false; }
-	if( "undefined" == typeof Main) 		  { alert("JS: Failed to Load [ Main ]");			return false; }
-	if( "undefined" == typeof AdsProxy) 	  { alert("JS: Failed to Load [ AdsProxy ]");	    return false; }
-
-	// #### DEBUG TIME ####
-	// dwr.engine.setErrorHandler(index.myErrorHandler);
-	// dwr.engine.setWarningHandler(index.myErrorHandler);
-	// dwr.engine.setTextHtmlHandler(index.myErrorHandler);
+//	if( "undefined" == typeof Namespace)      { alert("JS: Failed to Load [ Namespace ]");      return false; }	
+//	if( "undefined" == typeof dwr)            { alert("JS: Failed to Load [ dwr ]");            return false; }
+//	if( "undefined" == typeof Tabs)           { alert("JS: Failed to Load [ Tabs ]");           return false; }
+//	if( "undefined" == typeof LocalUserProxy) { alert("JS: Failed to Load [ LocalUserProxy ]"); return false; }
+//	if( "undefined" == typeof Main) 		  { alert("JS: Failed to Load [ Main ]");			return false; }
+//	if( "undefined" == typeof AdsProxy) 	  { alert("JS: Failed to Load [ AdsProxy ]");	    return false; }
 
 	// This turns off the starting message
 	document.getElementById("start").style.display = "none";
