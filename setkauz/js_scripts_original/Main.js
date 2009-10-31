@@ -138,6 +138,10 @@ Main.updateSessionTable = function() {
 };
 
 Main.reloadAll = function(){
+	// Clearup Title
+	dwr.util.setValue("title", "");
+	// Clearup mainBody
+	dwr.util.setValue("mainBody", "");
 	// Clear stack
 	Tabs.clearStack();
 	// Reload page
