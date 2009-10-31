@@ -6,7 +6,6 @@ Tabs.tablinks_id_prefix = 'tablinks.';
 Tabs.div_stack = null;
 Tabs.div_stack_id = 'stack';
 
-
 Tabs.last_nav_path = "";
 
 Tabs.onClik = function(elem) {
