@@ -140,10 +140,10 @@ Main.updateSessionTable = function() {
 Main.reloadAll = function(){
 	// Clearup Title
 	dwr.util.setValue("title", "");
-	// Clearup mainBody
-	dwr.util.setValue("mainBody", "");
-	// Clear stack
-	Tabs.clearStack();
+	// Clearup mainBody2
+	dwr.util.setValue("mainBody2", "");	
+	// Clearup tabList
+	dwr.util.setValue("tabList", "");
 	// Reload page
 	Main.loadPageContext(); 	
 }
