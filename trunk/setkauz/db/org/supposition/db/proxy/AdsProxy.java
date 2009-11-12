@@ -105,7 +105,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 			
 				
 		// Set cgroup filter
-		if(!inFilter.getGuuid().equals(Utils.ROOT_ID_DEF)){
+		if(!inFilter.getGuuid().equals(MessagesManager.getDefault("root.id.def"))){
 			CgroupProxy cgroupProxy = new CgroupProxy();
 			Cgroup cgroup = cgroupProxy.getDBObjectByUuid(inFilter.getGuuid());
 			
@@ -117,7 +117,7 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		}	
 		
 		// Set city filter
-		if(!inFilter.getCity().equals(Utils.ROOT_ID_DEF)){
+		if(!inFilter.getCity().equals(MessagesManager.getDefault("root.id.def"))){
 			String cityFilter = inFilter.getCity();
 			if(cityFilter.indexOf("#") != -1){
 				_log.debug("# symbol found!");
@@ -156,39 +156,41 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 
 	private String getHTMLTable(int inPage, List<Ads> adsList) {
 		// Define start & end items
-		int startItem = (inPage - 1) * getPageSize();
-		int endItem = inPage * getPageSize();
+		int currentItemIndex = (inPage - 1) * getPageSize();
+		int endItemIndex = inPage * getPageSize();
 		int allItemCount = adsList.size();
 		
 		// Formate result
 		String result = "";		
-		String format = MessagesManager.getText("main.ads.table.tr");
+		String format = MessagesManager.getText("main.ads");
 		
 		// Define medorator role
 		boolean isMedorator = (SessionManager.hasRole(SessionManager.MANAGER_ROLE_DEF) 
 				||	SessionManager.hasRole(SessionManager.ADMIN_ROLE_DEF));
 		
-		for (int j = startItem; j < endItem; j++) {
-			if (j >= adsList.size()) break;
-			Ads ads = adsList.get(j);
+		for (;; currentItemIndex++) {
+			if (currentItemIndex == adsList.size()) break;
+			if (currentItemIndex == endItemIndex) break;
+			Ads ads = adsList.get(currentItemIndex);
 			result = result
 					+ String.format(format, 
-							(++startItem), 
+							(currentItemIndex+1), 
 							"<u>" + MessagesManager.getText(ads.getType()) + "</u> - " + ads.getText() + getAdditionalLinks(ads, isMedorator),
 							Utils.GetFormatedDate("yyyy.MM.dd", ads.getDeleteAfter()),
 							Utils.GetFormatedDate("yyyy.MM.dd HH:mm:ss.SSS", ads.getCreated()));
+			// Final <hr />
+			if	((currentItemIndex+1) != endItemIndex 
+					&& (currentItemIndex+1) < adsList.size())
+				result += "<hr />";
 		}
 		
-		return getHTMLPaginator(inPage, allItemCount)
-			+ MessagesManager.getText("main.ads.table.header")
-			+ result
-			+ MessagesManager.getText("main.ads.table.footer");
+		return getHTMLPaginator(inPage, allItemCount) + result;
 	}
 
 	private String getAdditionalLinks(Ads ads, boolean isMedorator) {
 		if(!isMedorator) return "";
 		
-		return "&nbsp;" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
+		return "&nbsp;" + String.format(MessagesManager.getDefault("template.link"),
 				ads.getUuid(),
 				"AdsProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));

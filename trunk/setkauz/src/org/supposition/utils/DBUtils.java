@@ -179,7 +179,7 @@ public final class DBUtils {
 	}	
 	
 	private static String makeDeleteCgroupLink(Cgroup inCgroup){
-		return String.format(Utils.LINK_TEMPLATE_DEFAULT, 
+		return String.format(MessagesManager.getDefault("template.link"), 
 				inCgroup.getUuid(),
 				"CgroupProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));
@@ -245,29 +245,21 @@ public final class DBUtils {
 		if(inPage == 0)
 			inPage = 1;
 		
-		// <table class="rowed grey" border="0"><thead><tr><th>Страница 
 		String result = MessagesManager.getText("template.simple.paginator.header");
 		if(pageCount == 1){
-            // <input id="%s" type="text" size="3" value="%s" disabled="disabled" /> 
-            // 1. Current Page
 			result += String.format(MessagesManager.getText("template.simple.paginator.page_current.disabled"), 
 					inInputCurrentPageID, 1);
 		}else{
 			if(inPage != 1) 
 				result += 
-                    // <input type="button" value=" < " onclick="%s" />
 					String.format(MessagesManager.getText("template.simple.paginator.btn_back"), inJSGo2PagePreviousDef);
-                    // <input id="%s" type="text" size="3" value="%s">
 			result += String.format(MessagesManager.getText("template.simple.paginator.page_current"), inInputCurrentPageID, inPage);
 
 			if(inPage != pageCount){
-                    // <input type="button" value=" > " onclick="%s" />
 				result += String.format(MessagesManager.getText("template.simple.paginator.btn_forward"),inJSGo2PageForwardDef);
 			}
 		}
-		// из <strong>%s</strong>
 		result += String.format(MessagesManager.getText("template.simple.paginator.total"), pageCount);
-		// <th>Плотность<input id="%s" type="text" size="3" value="%s" /><input type="button" value="Показать" onclick="%s" /></th>
 		result += String.format(MessagesManager.getText("template.simple.paginator.density"),
 				inInputPageDesityID,
 				inPageSize,

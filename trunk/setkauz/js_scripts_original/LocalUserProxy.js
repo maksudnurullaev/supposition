@@ -65,8 +65,7 @@ LocalUserProxy.addNewUser = function() {
 	LocalUserProxy.addDBOUser(User, function(result) {
 		alert(result);
 		if (Main.isOK(result)) {
-			dwr.util.setValue("mainBody2", "");
-			Main.reloadAll();
+			Main.loadInitialPageContext();
 		}
 
 	});
@@ -91,8 +90,7 @@ LocalUserProxy.enterUser = function() {
 	LocalUserProxy.enterDBOUser(User, function(result) {
 		alert(result);
 		if (Main.isOK(result)) {
-			dwr.util.setValue("mainBody2", "");
-			Main.reloadAll();
+			Main.loadInitialPageContext();
 		}
 	});
 	
@@ -145,7 +143,7 @@ LocalUserProxy.userLogoff = function(){
 	Session.logOff(function(result){
 		alert(result);
 		if(Main.isOK(result)) { 
-			Main.reloadAll();
+			Main.loadInitialPageContext();
 		}
 	});
 	

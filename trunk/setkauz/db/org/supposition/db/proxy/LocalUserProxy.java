@@ -1,5 +1,7 @@
 package org.supposition.db.proxy;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.db.User;
@@ -47,20 +49,50 @@ public class LocalUserProxy {
 		return _userProxy.enterDBOUser(userBean);
 	}
 
-	public String getUserCabinet() {
+	public Map<String, String> getUserCabinet(String inTypeOfInformation) {
+		
+		Map<String, String> result = MessagesManager.getText2(inTypeOfInformation);
+
 		// Check for errors
-		if (!SessionManager.isUserLoggedIn())
-			return MessagesManager.getText("errors.user.not.loggedin");
+		if (!SessionManager.isUserLoggedIn()){
+			result.put("text",MessagesManager.getText("errors.user.not.loggedin"));
+			return result;
+		}
 
+		// Test user session
 		User user = (new UserProxy()).getDBObjectByUuid(SessionManager.getUserUuid());
-		if (user == null)
-			return MessagesManager.getText("errors.user.not.found");
-
-		// Return actual result
-		String format = MessagesManager.getText("main.registered.cabinetForm");
-
-		return String.format(format, user.getMail(), user.getAdditionals(),
-				user.getUuid());
+		if (user == null){
+			result.put("text", MessagesManager.getText("errors.user.not.found"));
+			return result;
+		}
+		
+		// Test incoming type of info code
+		if (inTypeOfInformation == null){
+			result.put("text", MessagesManager.getText("errors.unmatched.data.objects"));
+			return result;
+		}
+				
+		_log.debug("getUserCabinet -> inTypeOfInformation -> " + inTypeOfInformation);
+		
+		
+		if(inTypeOfInformation.equals("personal.data")){
+			String format = result.get("text");
+			
+			if(format == null || format.isEmpty()){
+				result.put("text", MessagesManager.getText("errors.empty.value"));
+				return result;
+			}
+			
+			result.put("text", 
+					String.format(format, 
+							user.getMail(), 
+							user.getAdditionals(),
+							user.getUuid()));
+			
+			return result;
+		}
+		
+		return result;
 	}
 
 }

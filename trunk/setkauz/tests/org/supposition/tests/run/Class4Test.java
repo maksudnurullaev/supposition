@@ -1,3 +1,4 @@
+package org.supposition.tests.run;
 import org.supposition.db.Cgroup;
 import org.supposition.db.proxy.CgroupProxy;
 import org.supposition.db.proxy.CompanyFilterBean;

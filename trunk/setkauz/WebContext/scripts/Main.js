@@ -1,1 +1,135 @@
-eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('M("2");2.y=7(){8.9.f("i").j.n="z";8.9.f("A").j.n="z";4 5};2.B=7(){2.y();8.9.f("i").j.n="N";4 5};2.f=7(a){o b=O;e(g.C){b=g.C[a]}k e(g.D){b=g.D[a]}k e(g.E){b=g.E(a)}4 b};2.F=7(){P.Q();2.p(\'q\',\'q\',5);2.p(\'i\',\'i\',5);2.B();4 5};2.p=7(b,c,d){G.R(b,7(a){e(a.t){t(a.t)}e(a.H){8.9.h(c,a.H,{u:d})}});4 5};2.S=7(a){8.9.h("T",a,{u:5});4 5};2.U=7(a){e(a.v(0,3)=="V:"){4 m}4 5};2.W=7(a){e(a.v(0,6)=="X:"){4 m}4 5};2.I=7(s){o l=0;o r=s.w-1;J(l<s.w&&s[l]==\' \'){l++}J(r>l&&s[r]==\' \'){r-=1}4 s.v(l,r+1)};2.Y=7(a){e(8.9.f(a)){e(2.I(8.9.K(a)).w===0){2.x(a);4 5}}k{4 5}4 m};2.Z=7(a){e(8.9.f(a)){e(10(8.9.K(a))){2.x(a);4 5}}k{4 5}4 m};2.x=7(a){8.9.f(a).j.11="#12";4 5};2.13=7(){e(8.9.f("L")){8.9.f("L").14=("15.16?"+17.18()*19)}4 5};2.1a=7(){G.1b(7(a){8.9.h("1c.1d.1e.1f",a,{u:5})});4 5};2.1g=7(){8.9.h("q","");8.9.h("A","");8.9.h("i","");2.F()}',62,79,'||Main||return|false||function|dwr|util|||||if|byId|document|setValue|tabList|style|else||true|display|var|getTextFromServerToDiv|title|||eval|escapeHtml|substring|length|highlight|hideAll|none|mainBody2|showMainTabList|layers|all|getElementById|loadPageContext|Session|text|trim|while|getValue|kaptcha_img|Namespace|block|null|Tabs|clearStack|getTextByKey2|loadFooter|footer|isOK|OK|isERROR|ERROR|isValidValue|isValidNumber|isNaN|backgroundColor|FAF8CC|reloadKaptcha|src|kaptcha|jpg|Math|random|100|updateSessionTable|getSessionAsHTMLTable|main|admin|session|table|reloadAll'.split('|'),0,{}))
+Namespace("Main");
+
+Main.hideAll = function() {
+	dwr.util.byId("tabList").style.display = "none";
+	dwr.util.byId("mainBody2").style.display = "none";
+
+	return false;
+};
+
+Main.showMainTabList = function() {
+	Main.hideAll();
+	dwr.util.byId("tabList").style.display = "block";
+
+	return false;
+};
+
+Main.byId = function(id) {
+	var object = null;
+	if (document.layers) {
+		object = document.layers[id];
+	} else if (document.all) {
+		object = document.all[id];
+	} else if (document.getElementById) {
+		object = document.getElementById(id);
+	}
+	return object;
+};
+
+Main.loadInitialPageContext = function() {
+	Stack.clear();
+	Main.getTextFromServerToDiv('INITIAL_NAV_AND_CONTEXT','NavAndContext', false);
+	return false;
+};
+
+Main.getTextFromServerToDiv = function(key, divId, nonFormat) {
+	Session.getTextByKey2(key, function(result) {
+		// Eval Part
+		if(result.eval){
+			eval(result.eval);
+		}
+		
+		// Text Part
+		if(result.text){
+			dwr.util.setValue(divId, result.text, {escapeHtml :nonFormat});
+		}
+	});
+
+	return false;
+};
+
+Main.loadFooter = function(data) {
+	dwr.util.setValue("footer", data, {
+		escapeHtml :false
+	});
+
+	return false;
+};
+
+Main.isOK = function(result) {
+	if (result.substring(0, 3) == "OK:") {
+		return true;
+	}
+
+	return false;
+};
+
+Main.isERROR = function(result) {
+	if (result.substring(0, 6) == "ERROR:") {
+		return true;
+	}
+
+	return false;
+};
+
+
+Main.trim = function(s) {
+	var l = 0;
+	var r = s.length - 1;
+	while (l < s.length && s[l] == ' ') {
+		l++;
+	}
+	while (r > l && s[r] == ' ') {
+		r -= 1;
+	}
+	return s.substring(l, r + 1);
+};
+
+Main.isValidValue = function(objName) {
+	if (dwr.util.byId(objName)) {
+		if (Main.trim(dwr.util.getValue(objName)).length === 0) {
+			Main.highlight(objName);
+			return false;
+		}
+	} else {
+		return false;
+	}
+	return true;
+};
+
+
+Main.isValidNumber = function(objName){
+	if (dwr.util.byId(objName)) {
+		if (isNaN(dwr.util.getValue(objName))) {
+			Main.highlight(objName);
+			return false;
+		}
+	} else {
+		return false;
+	}
+	return true;	
+};
+
+Main.highlight = function(objName) {
+	dwr.util.byId(objName).style.backgroundColor = "#FAF8CC";
+
+	return false;
+};
+
+// #### Kaptcha
+Main.reloadKaptcha = function() {
+	if (dwr.util.byId("kaptcha_img")) {
+		dwr.util.byId("kaptcha_img").src = ("kaptcha.jpg?" + Math.random() * 100);
+	}
+
+	return false;
+};
+
+Main.updateSessionTable = function() {
+	Session.getSessionAsHTMLTable( function(result) {
+		dwr.util.setValue("main.admin.session.table", result, {
+			escapeHtml :false
+		});
+	});
+	return false;
+};
