@@ -108,6 +108,10 @@ public final class MessagesManager {
 	public static String okPrefix(){
 		return  getDefault("web.ok.result.prefix");
 	}
+
+	public static String getWeather(String urlCode) {
+		return _textManager.getWeatherByCityCode(urlCode);
+	}
 	
 
 

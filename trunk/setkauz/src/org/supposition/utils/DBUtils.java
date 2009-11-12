@@ -195,6 +195,13 @@ public final class DBUtils {
 		now.add(Calendar.WEEK_OF_YEAR, weeks);
 		return now.getTime();		
 	}
+
+	public static Date dateAfterInHours(int hours){
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.HOUR, hours);
+		return now.getTime();		
+	}
+	
 	
 	public static void checkKaptcha(String kaptcha, ValidationResult validationResult, CayenneDataObject inDataObject) {
 		String sessionKaptchaValue = (String) SessionManager

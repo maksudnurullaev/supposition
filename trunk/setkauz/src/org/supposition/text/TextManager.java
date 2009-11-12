@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dwr.threads.WeatherService;
 import org.supposition.text.abstracts.PropertyLoader;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
@@ -16,11 +17,15 @@ import org.supposition.utils.Utils;
 public class TextManager extends PropertyLoader {
 	private static final String DEFAULTS_KEY = "defaults";
 	private static final String DEFAULTS_FILE_NAME = "defaults.properties";
-
+	private static final String WEATHER_DEFAULT_URL = "http://informer.gismeteo.ru/xml/38457_1.xml"; // Tashkent
+	//38457
 	private static Log _log = LogFactory.getLog(PropertyLoader.class);
 
-	private Map<String, Properties> _propertiesMap = new HashMap<String, Properties>();
+	private static final Map<String, Properties> _propertiesMap = new HashMap<String, Properties>();
 
+	private static final Map<String, Map<String,String>> _weatherMap = new HashMap<String, Map<String,String>>();
+	
+	
 	private String _currentBasename = null;
 	public TextManager() {
 		super();
@@ -129,6 +134,10 @@ public class TextManager extends PropertyLoader {
 			result = result.replaceAll("HTML_SELECT_CITIES4ADS", Utils.getHTMLSelectCity4("ads"));
 			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_SELECT_CITIES4ADS");
 		}	
+		if (result.indexOf("HTML_SELECT_WEATHER_CITIES") != -1) {
+			result = result.replaceAll("HTML_SELECT_WEATHER_CITIES", MessagesManager.getText("html.select.weather.cities"));
+			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_SELECT_WEATHER_CITIES");
+		}			
 		if (result.indexOf("HTML_SELECT_CITIES4COMPANY") != -1) {
 			result = result.replaceAll("HTML_SELECT_CITIES4COMPANY", Utils.getHTMLSelectCity4("company"));
 			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_SELECT_CITIES4COMPANY");
@@ -199,6 +208,100 @@ public class TextManager extends PropertyLoader {
 	
 	public Properties getDefaults() {
 		return _propertiesMap.get(DEFAULTS_KEY);
+	}
+
+	public String getWeatherByCityCode(String urlCode) {
+		if (!_weatherMap.containsKey(urlCode)){
+			_log.debug("Could not found weather data for " + urlCode);
+			tryToLoadWeatherForCity(urlCode);	
+		}else{
+			_log.debug("Weather data for " + urlCode + " already exist");
+		}
+		
+		if(_weatherMap.containsKey(urlCode)){
+			_log.debug("Found weather data for " + urlCode);			
+			if(_weatherMap.get(urlCode).containsKey("error")){
+				_log.debug("Weather data has ERROR");
+				return MessagesManager.getText("errors.service.inaccessible"); // Service inaccassible message for users
+			}else if(_weatherMap.get(urlCode).containsKey("xml")){
+				_log.debug("Weather data has XML");
+				return _weatherMap.get(urlCode).get("xml");
+			}else{
+				_log.debug("Weather data has UNKNOWN data");
+				return MessagesManager.getText("errors.service.inaccessible");
+			}
+		}
+		
+		return MessagesManager.getText("errors.unmatched.data.objects");
+	}
+
+	private void tryToLoadWeatherForCity(String urlCode) {
+		Map<String, String> weatherData = new HashMap<String, String>();
+		// Initial thread variables
+		WeatherService weatherService = new WeatherService();
+		weatherService.setWeatherServiceURL(urlCode);
+		
+		Thread weatherServiceThread = new Thread(weatherService);
+		
+		weatherServiceThread.start();
+		
+		_log.debug("Waiting for weatherServiceThread to finish");
+		int count = 0;
+		int maxCount = 3;
+		while(weatherServiceThread.isAlive()){
+			_log.debug("Still waiting...");
+			
+			// Debug thread state
+			debugThreadState(weatherServiceThread);
+
+			try {
+				_log.debug("Waiting for thread at more 1 second");
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				weatherData.put("error", e.getMessage());
+			}
+			
+			if(!weatherServiceThread.isAlive()){
+				_log.debug("weatherServiceThread Finished & Dead!");				
+				break;
+			}
+			
+			if(++count <  maxCount){
+				_log.warn("Thread waiting counter = " + count + " from MAX = " + maxCount);
+				continue;
+			}else{
+				_log.warn("Thread waiting time is OUT!");
+				weatherServiceThread.interrupt();				
+			}
+		}
+		
+		weatherData = weatherService.getWeatherData();
+		
+		// Debug thread state
+		debugThreadState(weatherServiceThread);
+		
+		_log.debug("weatherServiceThread finished...");
+		
+		// Finish
+		_weatherMap.put(urlCode, weatherData);
+	}
+
+	private void debugThreadState(Thread inThread) {
+		if(inThread.getState() == Thread.State.BLOCKED){
+			_log.debug("Thread.State = BLOCKED");
+		}else if(inThread.getState() == Thread.State.NEW){
+			_log.debug("Thread.State = NEW");
+		}else if(inThread.getState() == Thread.State.RUNNABLE){
+			_log.debug("Thread.State = RUNNABLE");
+		} else if(inThread.getState() == Thread.State.TERMINATED){
+			_log.debug("Thread.State = TERMINATED");
+		} else if(inThread.getState() == Thread.State.TIMED_WAITING){
+			_log.debug("Thread.State = TIMED_WAITING");
+		} else if(inThread.getState() == Thread.State.WAITING){
+			_log.debug("Thread.State = WAITING");
+		} else{
+			_log.debug("Thread.State = UNKNOWN");
+		} 	
 	}
 
 }
