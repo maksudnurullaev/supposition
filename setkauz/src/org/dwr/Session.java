@@ -77,4 +77,8 @@ public class Session
 		return MessagesManager.getDefault("web.ok.result.prefix")
 			+ MessagesManager.getText("message.bye");
 	}
+	
+	public String getWeatherAsHTML(String cityCode){
+		return MessagesManager.getWeather(cityCode);
+	}
 }
