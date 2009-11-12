@@ -74,7 +74,7 @@ public final class MessagesManager {
 		
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("eval", null);
-		result.put("text", null);
+		result.put("text", String.format("Could not find any text by key = %s", inKey));
 		
 		// Get Eval part
 		if(_textManager.hasKey(inKey + ".eval", getLocale())){

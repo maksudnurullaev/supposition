@@ -48,13 +48,7 @@ public class Session
     
     public Map<String, String> getTextByKey2(String inKey){
     	return MessagesManager.getText2(inKey);
-    } 
-    
-	public Map<String, String> getDivByKey4Tabs(String inKey){
-		Map<String, String> result = MessagesManager.getText2(inKey);		
-		result.put("text", String.format("<div id=\"ID.%s\">%s</div>", inKey, result.get("text")));
-		return result;
-	}    
+    }   
     
     public String getSessionID(){
     	return WebContextFactory.get().getScriptSession().getId();

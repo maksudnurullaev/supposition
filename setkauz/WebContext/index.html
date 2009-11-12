@@ -1,14 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Setka.uz</title>
-<!-- Default CSS -->
-<link rel="stylesheet" type="text/css" href="generic.css" />
-<link rel="stylesheet" type="text/css" href="tabs.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 <!-- Default scripts -->
 <script type="text/javascript" src="scripts/com.iskitz.ajile.js"></script>
-<script type="text/javascript" src="index.js"></script>
+
 <!-- Other scripts -->
 <script type="text/javascript" src="dwr/engine.js"></script>
 <script type="text/javascript" src="dwr/util.js"></script>
@@ -20,32 +17,57 @@
 <script type="text/javascript" src="scripts/Main.js"></script>
 <script type="text/javascript" src="scripts/LocalUserProxy.js"></script>
 <script type="text/javascript" src="scripts/AdsProxy.js"></script>
+<title>Setka.Uz</title>
+<!-- Default CSS -->
+<link rel="stylesheet" type="text/css" href="css/generic.css" media="all"  />
+<!-- WIN IE Style Sheets -->
+<!--[if IE]>
+  <![if gte IE 5.5]>
+   <![if gte IE 7]><link rel="stylesheet" 
+	type="text/css" media="screen,projection" 
+	href="assets/ie.css" />
+	<![endif]>
+   <![if lt IE 7]><link rel="stylesheet" 
+	type="text/css" media="screen,projection" 
+	href="assets/ie.css" />
+	<![endif]>
+  <![endif]>
+  <![if lt IE 5.5]>
+   <link rel="stylesheet"
+	type="text/css" media="screen,projection" 
+	href="assets/ie.css" />
+    <![endif]>
+<![endif]-->
 </head>
+<body onload="javascipt:void(dwr.util.useLoadingMessage());javascipt:void(Main.loadInitialPageContext());">
+	<div id="wrap">
+		<div id="header">
+			<div id="logo"></div>
+			<div id="title">Setka.Uz</div>
+			<div id="tagline">Реклама — величайшее искусство XX века. <strong>Маршалл Маклюэн</strong></div>
+			<form class="search" method="post" action="#">
+		    	<p>
+		      		<input disabled="disabled" class="textbox" type="text" name="search_query" value="Поиск" onfocus="if (this.value == 'Поиск') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Поиск';}" />
+		      		<input disabled="disabled" class="button" type="submit" name="Submit" value="" />
+		    	</p>
+			</form>
+		</div>
+	
+		<div id="NavAndContext">
+	  		<div id="wait">Подождите, идет загрузка...</div>
+		</div>
+	    
+		<div id="line"></div>
+		<div class="clearfix"></div>
+		<!-- End content-wrap -->
+		
+		<div id="content-bottom">
+			<div id="footer"> &copy; 2009 <strong>Max Micro Systems</strong></div>
+		</div>
+	</div>
+<!-- End Wrap -->
+<!-- Initial Invisibale DIV for HTML Elements stack -->
 
-<!-- Default initial procedure " -->
-<body onload="javascipt:void(dwr.util.useLoadingMessage());javascipt:void(index.initPage());">
-
-<div style="float: right;"><img src="logo.png"/></div>
-<!-- Default title -->
-<div id="title"></div>
- 
-<!-- Main Tab List -->
-<div id="mainBody">
-	<div id="tabList"></div>
-	<div id="mainBody2" style="display: none;"></div>
-</div>
-
-<!-- Main Tab List -->
 <div id="stack" style="border: 1px solid red; display: none;"></div>
-<!-- ### Initial DIVS ### -->
-
-<div id="start">
-<p><strong>Загрузка данных, подождите ...</strong></p>
-</div>
-
-<div id="error" style="display: none;">
-<p><strong>Ошибка: Не возможно загрузить страницу, обратитесь к администратору системы...</strong></p>
-</div>
-
 </body>
 </html>

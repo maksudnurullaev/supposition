@@ -24,14 +24,6 @@ import org.supposition.db.proxy.CompanyProxy;
 public final class Utils {
 	public static Log _log = LogFactory.getLog("org.supposition.utils.Utils");
 
-	public static final String ROOT_ID_DEF = "root";
-	public static final String INPUT_BUTTON_TEMPLATE_DEFAULT = "<input type=\"button\" onclick=\"%s\"  value=\"%s\"/>";
-	public static final String LINK_TEMPLATE_DEFAULT = "<a href=\"#\" id=\"%s\" onclick=\"javascript:void(%s)\">%s</a>";
-	
-	public static String getWwwBlankLink(String inLink){
-		return String.format(" [<a href=\"%s\" target=\"_blank\">www</a>]", inLink);
-	}
-	
 	public static boolean isValidLink(String inLink){
 		if(inLink == null 
 				|| inLink.isEmpty() 
@@ -39,7 +31,6 @@ public final class Utils {
 			return false;
 		return true;
 	}
-	
 	
 	public static final Pattern _pattern_to_cheack_email = 
 		Pattern.compile(MessagesManager.getDefault("regex.pattern.to.cheack.email"));
@@ -150,8 +141,6 @@ public final class Utils {
     		return getUniqueDateTime(e2.getCreated()).compareTo(getUniqueDateTime(e1.getCreated()));
     	}
 };
-
-
 
 	public static String getHTMLSelectCity4(String inPrefix) {
 		String result = String.format(MessagesManager.getText("html.select.cities.header"), inPrefix);

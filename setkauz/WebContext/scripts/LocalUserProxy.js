@@ -1,1 +1,120 @@
-eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('z("5");5.A=6(){d(!0.9("f")){7 2}g b={t:1,f:1,u:1};3.4.k(b);5.B(b,6(a){h(a)});7 2};5.C=6(){d(!0.9("i")||!0.9("j")){7 2}g c={t:1,i:1,j:1};3.4.k(c);5.D(c,6(a){h(a);d(0.l(a)){g b={i:1,j:1};3.4.E(b)}});7 2};5.F=6(){d(!0.9("f")||!0.9("i")||!0.9("j")||!0.9("m")){7 2}g b={f:1,u:1,i:1,j:1,m:1};3.4.k(b);5.G(b,6(a){h(a);d(0.l(a)){3.4.e("8","");0.n()}});7 2};5.H=6(){d(!0.9("f")||!0.9("v")||!0.9("m")){7 2}g b={f:1,v:1,m:1};3.4.k(b);5.I(b,6(a){h(a);d(0.l(a)){3.4.e("8","");0.n()}});7 2};5.J=6(){3.4.e("8","");0.o();0.w("x.y.K","8",2);3.4.p("8").q.r="s";7 2};5.L=6(){3.4.e("8","");0.o();5.M(6(a){3.4.e("8",a,{N:2})});3.4.p("8").q.r="s";7 2};5.O=6(){3.4.e("8","");0.o();0.w("x.y.P","8",2);3.4.p("8").q.r="s";7 2};5.Q=6(){3.4.e("8","");R.S(6(a){h(a);d(0.l(a)){0.n()}});7 2};',55,55,'Main|null|false|dwr|util|LocalUserProxy|function|return|mainBody2|isValidValue||||if|setValue|mail|var|alert|newpassword|newpassword2|getValues|isOK|kaptcha|reloadAll|hideAll|byId|style|display|block|uuid|additionals|password|getTextFromServerToDiv|main|nonregistered|Namespace|updateUserData|updateDBOUser|updateUserPassword|updateDBOUserPassword|setValues|addNewUser|addDBOUser|enterUser|enterDBOUser|showMainRegisterForm|formNew|showPersonalCabinet|getUserCabinet|escapeHtml|showMainEnterForm|formEnter|userLogoff|Session|logOff'.split('|'),0,{}))
+Namespace("LocalUserProxy");
+
+LocalUserProxy.updateUserData = function(){
+	// Check fields
+	if( !Main.isValidValue("mail")) { return false; }
+	
+	var User = {
+			uuid :null,
+			mail :null,
+			additionals :null
+		};	
+	
+	dwr.util.getValues(User);
+
+	LocalUserProxy.updateDBOUser(User, function(result) {
+		alert(result);
+	});
+
+	return false;	
+};
+
+LocalUserProxy.updateUserPassword = function(){
+	// Check fields
+	if( !Main.isValidValue("newpassword") ||
+		!Main.isValidValue("newpassword2")) { return false; }
+	
+	var User = {
+			uuid :null,
+			newpassword :null,
+			newpassword2 :null
+		};	
+	
+	dwr.util.getValues(User);
+
+	LocalUserProxy.updateDBOUserPassword(User, function(result) {
+		alert(result);
+		if(Main.isOK(result)){
+			var User = {
+				newpassword :null,
+				newpassword2 :null
+			};
+			dwr.util.setValues(User);
+		}
+	});
+	return false;
+};
+
+LocalUserProxy.addNewUser = function() {	
+	// Check fields
+	if( !Main.isValidValue("mail") ||
+		!Main.isValidValue("newpassword") ||
+		!Main.isValidValue("newpassword2") ||
+		!Main.isValidValue("kaptcha")) { return false; }
+
+	var User = {
+		mail :null,
+		additionals :null,
+		newpassword :null,
+		newpassword2 :null,
+		kaptcha : null
+	};
+	
+	dwr.util.getValues(User);
+
+	LocalUserProxy.addDBOUser(User, function(result) {
+		alert(result);
+		if (Main.isOK(result)) {
+			Main.loadInitialPageContext();
+		}
+
+	});
+
+	return false;
+};
+
+LocalUserProxy.enterUser = function() {
+	// Check fields
+	if( !Main.isValidValue("mail") ||
+		!Main.isValidValue("password") ||
+		!Main.isValidValue("kaptcha")) { return false; }
+
+	var User = {
+		mail :null,
+		password :null,
+		kaptcha : null		
+	};
+
+	dwr.util.getValues(User);
+	
+	LocalUserProxy.enterDBOUser(User, function(result) {
+		alert(result);
+		if (Main.isOK(result)) {
+			Main.loadInitialPageContext();
+		}
+	});
+	
+	return false;
+};
+
+LocalUserProxy.userLogoff = function(){	
+	Session.logOff(function(result){
+		alert(result);
+		if(Main.isOK(result)) { 
+			Main.loadInitialPageContext();
+		}
+	});
+	
+	return false;
+};
+
+LocalUserProxy.getCabinetContext = function(){
+	// Get form
+	LocalUserProxy.getUserCabinet(dwr.util.byId('cabinet.select.actions').value, function(result){
+		// Eval Part
+		if(result.eval){
+			eval(result.eval);
+		}
+		dwr.util.byId('personal.cabinet.div').innerHTML = result.text;
+	});	
+};

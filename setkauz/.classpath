@@ -3,7 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="db"/>
-	<classpathentry excluding="src/|conf/|doc/|logs/|WebContext/|tests/|db/|dbbackups/|js_scripts_original/" kind="src" path=""/>
+	<classpathentry excluding="src/|conf/|doc/|logs/|WebContext/|tests/|db/|dbbackups/|js_scripts_original/|html_templates/Xenlog/|html_templates/" kind="src" path=""/>
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>

@@ -21,7 +21,10 @@ import org.supposition.utils.Utils;
 public class CompanyProxy extends ADBProxyObject<Company> {
 	
 	private static final long serialVersionUID = 1L;
-	private static final String COMPANY_DETAILT_JS_LINK = "CompanyProxy.showDetails(this.id)";
+	private static final String COMPANY_SHOW_DETAILS_JS = "CompanyProxy.showDetails('%s')";
+	private static final String COMPANIES_SET_DENSITY_JS = "CompanyProxy.setPageDensity()";
+	private static final String COMPANY_EDIT_JS = "CompanyProxy.edit('%s')";
+	private static final String COMPANY_REMOVE_JS = "CompanyProxy.remove('%s')";
 	
 	public CompanyProxy(){
 		super();
@@ -57,7 +60,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		// 2. Group
 		GroupProxy groupProxy = null;
 		Group group = null;
-		if(!inBean.getGuuid().equals(Utils.ROOT_ID_DEF)){
+		if(!inBean.getGuuid().equals(MessagesManager.getDefault("root.id.def"))){
 			groupProxy = new GroupProxy(getDataContext());
 			
 			group = groupProxy.getDBObjectByUuid(inBean.getGuuid());
@@ -241,41 +244,27 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 	}	
 	
 	private String getAdditionalGroupLinks(Company company) {
-		String result = String.format(Utils.INPUT_BUTTON_TEMPLATE_DEFAULT,
+		String result = String.format(MessagesManager.getDefault("template.button"),
 				"CompanyProxy.groupShow()",
 				MessagesManager.getText("text.show"));
 		
 		if(isManager(company)){
-			result += String.format(Utils.INPUT_BUTTON_TEMPLATE_DEFAULT,
+			result += String.format(MessagesManager.getDefault("template.button"),
 					"CompanyProxy.groupShowAddForm()",
 					MessagesManager.getText("text.add"));
-			result += String.format(Utils.INPUT_BUTTON_TEMPLATE_DEFAULT,
+			result += String.format(MessagesManager.getDefault("template.button"),
 					"CompanyProxy.groupDelete()",
 					MessagesManager.getText("text.remove"));
 			// Ads records aprt
 			result += " | ";
-			result += String.format(Utils.INPUT_BUTTON_TEMPLATE_DEFAULT,
+			result += String.format(MessagesManager.getDefault("template.button"),
 					"CompanyProxy.showAddAdsForm()",
 					MessagesManager.getText("text.add"));
 		}
 		
 		return result; 
 	}	
-	
-	private String getAdditionalLinks(Company inCompany) {
-		String result = " [" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
-				inCompany.getUuid(),
-				"CompanyProxy.edit(this.id)",
-				MessagesManager.getText("text.edit")) + "]";
 		
-		result += " [" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
-				inCompany.getUuid(),
-				"CompanyProxy.remove(this.id)",
-				MessagesManager.getText("text.remove")) + "]";
-		
-		return result;
-	}	
-	
 	public String removeAdsAndGetAdsAsHTMLTable(GroupBean inFilter){
 		logGroupBean(inFilter);
 		Company company = getDBObjectByUuid(inFilter.getCuuid());
@@ -369,25 +358,33 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			inFilter.setPage(1);
 		
 		// Define start & end items
-		int startItem = (inFilter.getPage() - 1) * inFilter.getDensity();
-		int endItem = inFilter.getPage() * inFilter.getDensity();
+		int currentItemIndex = (inFilter.getPage() - 1) * inFilter.getDensity();
+		int endItemIndex = inFilter.getPage() * inFilter.getDensity();
 		
 		
 		// Formate result
 		String result = "";
 		
-		String format = MessagesManager.getText("main.company.ads.table.tr");
+		String format = MessagesManager.getText("main.company.ads");
 		
-		_log.debug(String.format("Get ads(count = %s), where startItem(%s) and endItem(%s)", adsList.size(), startItem, endItem));
+		_log.debug(String.format("Get ads(count = %s), where startItem(%s) and endItem(%s)", adsList.size(), currentItemIndex, endItemIndex));
 				
-		for (int j = startItem; j < endItem; j++) {
-			if (j >= adsList.size()) break;
-			Ads ads = (Ads) adsList.get(j);
+		for (;;currentItemIndex++) {
+			if (currentItemIndex == adsList.size()) break;
+			if (currentItemIndex == endItemIndex) break;
+			Ads ads = (Ads) adsList.get(currentItemIndex);
 			result = result
 					+ String.format(format, 
-							(++startItem), 
-							ads.getText() + getAdditionalLinks(ads, isMedorator, isGrouped),
-							ads.getPrice());
+							(currentItemIndex+1), 
+							ads.getText(),
+							ads.getPrice(),
+							(!isGrouped?getGroupLink(ads, isMedorator, isGrouped):""),
+							(isMedorator?getManageLinks(ads):"")
+							);
+			// Final <hr />
+			if	((currentItemIndex+1) != endItemIndex 
+					&& (currentItemIndex+1) < adsList.size())
+				result += "<hr />";
 		}
 		
 		return DBUtils.getHTMLPaginator(inFilter.getPage(), adsList.size(), 
@@ -397,35 +394,31 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				"CompanyProxy.AdsGo2PagePrevious()",
 				"CompanyProxy.AdsGo2PageForward()",
 				inFilter.getDensity())
-			+ MessagesManager.getText("main.company.ads.table.header.table")
-			+ MessagesManager.getText("main.company.ads.table.header.thead")
-			+ (isGrouped?String.format("<tr><th colspan=3><strong>%s</strong></th></tr>", ((Ads)adsList.get(0)).getGroup().getName()):"")
-			+ MessagesManager.getText("main.company.ads.table.header.thead.tr")
-			+ MessagesManager.getText("main.company.ads.table.header._theadTbody")
-			+ result
-			+ MessagesManager.getText("main.company.ads.table.footer");
+			+ (isGrouped?
+					String.format("<div class=\"selector\"><strong>%s</strong></div><hr />",((Ads)adsList.get(0)).getGroup().getName())
+					:
+					"")
+			+ result;
 	}		
 
-	private String getAdditionalLinks(Ads ads, boolean isMedorator, boolean isGrouped) {
+	private String getGroupLink(Ads ads, boolean isMedorator, boolean isGrouped) {
 		String result = "";
-
-		// Group link
-		if(!isGrouped){
-			if(ads.getGroup() != null)
-				result += " [" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
-						ads.getGroup().getUuid(),
-						"CompanyProxy.selectGroup(this.id)",
-						ads.getGroup().getName()) + "]";
+		if(ads.getGroup() != null){
+			result += " | " + MessagesManager.getText("text.group") + ": " 
+							+ String.format(MessagesManager.getDefault("template.link"),
+					ads.getGroup().getUuid(),
+					"CompanyProxy.selectGroup(this.id)",
+					ads.getGroup().getName());
 		}		
-		// Remove link
-		if(isMedorator)
-			result += " [" + String.format(Utils.LINK_TEMPLATE_DEFAULT,
-					ads.getUuid(),
-					"CompanyProxy.removeAds(this.id)",
-					MessagesManager.getText("text.remove")) + "]";
-
-		return "<sup>" + result + "</sup>";
+		return result;
 	}	
+	
+	private String getManageLinks(Ads ads){
+		return " | " + String.format(MessagesManager.getDefault("template.link"),
+				ads.getUuid(),
+				"CompanyProxy.removeAds(this.id)",
+				MessagesManager.getText("text.remove"));
+	}
 	
 	private void getCgroupUuidAsList(List<String> inList, Cgroup inCgroup) {
 		inList.add(inCgroup.getUuid());
@@ -474,7 +467,18 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		}		
 		
 		return String.format(format, 
-				company.getName() + Utils.getWwwBlankLink(company.getWww()),
+				company.getName()
+					// WWW Link
+					+ (Utils.isValidLink(company.getWww())? 
+							" "	+ String.format(MessagesManager.getDefault("template.link._blank"), company.getWww())
+							:
+							""
+					   )
+					// "Back to list" button
+					+ " " + String.format(MessagesManager.getDefault("template.button"),
+							COMPANIES_SET_DENSITY_JS,
+							MessagesManager.getText("text.go.to.list")
+							),
 				company.getAdditionals(),				
 				getGroupAsHTMLSelect(company),
 				company.getUuid(), 
@@ -492,20 +496,31 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return getAdsAsHTMLTable(filterBean);
 	}
 
-	private String getCompanyHeader(Company inCompany) {
-		// Name
-		String result = String.format(Utils.LINK_TEMPLATE_DEFAULT,
-				inCompany.getUuid(),
-				COMPANY_DETAILT_JS_LINK,
-				inCompany.getName());
+	private String getAdditionalButtonsAndLinks(Company inCompany) {
+		String result = "";
 		
-		// Www
+		// Www link
 		if(Utils.isValidLink(inCompany.getWww()))
-			result += Utils.getWwwBlankLink(inCompany.getWww());
+			result += " "  + String.format(MessagesManager.getDefault("template.link._blank"), inCompany.getWww());
+
+		// Show button
+		result += " " + String.format(MessagesManager.getDefault("template.button"),
+				String.format(COMPANY_SHOW_DETAILS_JS, 
+				inCompany.getUuid()),
+				MessagesManager.getText("text.show"));		
 		
 		// Manager's links
-		if(isManager(inCompany))
-			result += getAdditionalLinks(inCompany);
+		if(isManager(inCompany)){
+			result += " " + String.format(MessagesManager.getDefault("template.button"),
+					String.format(COMPANY_EDIT_JS,
+					inCompany.getUuid()),
+					MessagesManager.getText("text.edit"));
+			
+			result += " " + String.format(MessagesManager.getDefault("template.button"),
+					String.format(COMPANY_REMOVE_JS,
+					inCompany.getUuid()),
+					MessagesManager.getText("text.remove"));			
+		}
 		
 		return result;
 	}
@@ -538,7 +553,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		
 		// Add Default common item
 		result += String.format(resultOption, 
-				Utils.ROOT_ID_DEF,
+				MessagesManager.getDefault("root.id.def"),
 				MessagesManager.getText("text.root.group"));
 		
 		String resultFooter = "</select> " 
@@ -592,31 +607,33 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 	
 	private String getHTMLTable(int inPage, List<Company> inList) {
 		// Define start & end items
-		int startItem = (inPage - 1) * getPageSize();
-		int endItem = inPage * getPageSize();
+		int currentItemIndex = (inPage - 1) * getPageSize();
+		int endItemIndex = inPage * getPageSize();
 		int allItemCount = inList.size();
 		
 		// Formate result
 		String result = "";		
-		String format = MessagesManager.getText("main.company.table.tr");
+		String format = MessagesManager.getText("company.title.div");
 		
-		for (int j = startItem; j < endItem; j++) {
-			if (j >= inList.size()) break;
-			Company company = inList.get(j);
+		for (;; currentItemIndex++) {
+			if (currentItemIndex == inList.size()) break;
+			if (currentItemIndex == endItemIndex) break;
+			Company company = inList.get(currentItemIndex);
 			result = result
 					+ String.format(format,
-							(++startItem),
-							getCompanyHeader(company),
+							(currentItemIndex+1),
+							company.getName(),
+							getAdditionalButtonsAndLinks(company),
 							company.getAdditionals());
+			// Final <hr />
+			if	((currentItemIndex+1) != endItemIndex 
+					&& (currentItemIndex+1) < inList.size())
+				result += "<hr />";			
 		}
 		
-		return "<div id=\"main.company.div.header\">" 
-			+ getHTMLPaginator(inPage, allItemCount)
-			+ "</div><div id=\"main.company.div.body\">"
-			+ MessagesManager.getText("main.company.table.header")
-			+ result
-			+ MessagesManager.getText("main.company.table.footer")
-			+ "</div>";
+		return String.format(MessagesManager.getText("companies.paginator.with.list.div"),
+				getHTMLPaginator(inPage, allItemCount),
+				result);
 	}
 	
 	public String getPageAsHTMLTable(CompanyFilterBean inFilter, int inPage) {
@@ -630,7 +647,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			return MessagesManager.getText("errors.unmatched.data.objects");		
 		
 		// Set cgroup filter
-		if(!inFilter.getGuuid().equals(Utils.ROOT_ID_DEF)){
+		if(!inFilter.getGuuid().equals(MessagesManager.getDefault("root.id.def"))){
 			CgroupProxy cgroupProxy = new CgroupProxy();
 			Cgroup cgroup = cgroupProxy.getDBObjectByUuid(inFilter.getGuuid());
 			
@@ -642,7 +659,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		}	
 		
 		// Set city filter
-		if(!inFilter.getCity().equals(Utils.ROOT_ID_DEF)){
+		if(!inFilter.getCity().equals(MessagesManager.getDefault("root.id.def"))){
 			String cityFilter = inFilter.getCity();
 			if(cityFilter.indexOf("#") != -1 &&
 					cityFilter.indexOf("#") == (cityFilter.length() - 1)){
@@ -717,7 +734,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 	}
 
 	private boolean isRootGroup(GroupBean inFilter){
-		return inFilter.getUuid().equals(Utils.ROOT_ID_DEF);
+		return inFilter.getUuid().equals(MessagesManager.getDefault("root.id.def"));
 	}
 
 	private void logAdsBean(AdsBean inBean) {

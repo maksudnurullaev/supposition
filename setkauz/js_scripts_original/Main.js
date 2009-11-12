@@ -26,7 +26,7 @@ Main.byId = function(id) {
 	return object;
 };
 
-Main.loadPageContext = function() {
+Main.loadInitialPageContext = function() {
 	Tabs.clearStack();
 	Main.getTextFromServerToDiv('title','title', false);
 	Main.getTextFromServerToDiv('tabList','tabList', false);
@@ -145,5 +145,5 @@ Main.reloadAll = function(){
 	// Clearup tabList
 	dwr.util.setValue("tabList", "");
 	// Reload page
-	Main.loadPageContext(); 	
+	Main.loadInitialPageContext(); 	
 }

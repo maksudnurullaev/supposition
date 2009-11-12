@@ -137,6 +137,14 @@ public class TextManager extends PropertyLoader {
 			result = result.replaceAll("HTML_DEFAULT_COMPANIES", Utils.getHTMLDefaultCompanies());
 			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_DEFAULT_COMPANIES");
 		}		
+		if (result.indexOf("INITIAL_NAV") != -1) {
+			result = result.replaceAll("INITIAL_NAV", MessagesManager.getText("INITIAL_NAV"));
+			_log.debug("replaceFinalTokensInText --> FOUND --> INITIAL_NAV");
+		}		
+		if (result.indexOf("INITIAL_CONTEXT") != -1) {
+			result = result.replaceAll("INITIAL_CONTEXT", MessagesManager.getText("INITIAL_CONTEXT"));
+			_log.debug("replaceFinalTokensInText --> FOUND --> INITIAL_CONTEXT");
+		}		
 		if (result.indexOf("GLOBAL_AGREEMENT") != -1) {
 			result = result.replaceAll("GLOBAL_AGREEMENT", 
 					loadFile(MessagesManager.getDefault("default.agreement.path"), 

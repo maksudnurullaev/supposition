@@ -1,1 +1,29 @@
-eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('f("3");3.g=4(a,b){3.9(a);3.c(b);5 6};3.9=4(a){0.1.2(a).7.8="d";0.1.2("h").e(0.1.2(a));5 6};3.c=4(a){0.1.2("i").e(0.1.2(a));j(0.1.2(a).7.8=="d"){0.1.2(a).7.8="k"}5 6};',21,21,'dwr|util|byId|Stack|function|return|false|style|display|setToStack|||showInMainBody|none|appendChild|Namespace|hideShow|stack|mainBody|if|block'.split('|'),0,{}))
+Namespace ("Stack");  
+
+Stack.hideShow =  function (hideElemId, showElemId){
+	Stack.setToStack(hideElemId);
+	Stack.showInMainBody(showElemId);
+	
+	return false;
+};
+
+Stack.setToStack = function (elemId){
+	dwr.util.byId(elemId).style.display = "none";
+	dwr.util.byId("stack").appendChild(dwr.util.byId(elemId));
+	
+	return false;
+};
+
+Stack.showInMainBody = function (elemId){
+	dwr.util.byId("mainBody").appendChild(dwr.util.byId(elemId));
+	if(dwr.util.byId(elemId).style.display == "none"){
+		dwr.util.byId(elemId).style.display = "block";
+	}
+	
+	return false;
+};
+
+Stack.clear = function(){
+	// Clear stack element
+	dwr.util.setValue(Tabs.stackId, "");
+};
