@@ -8,7 +8,9 @@ Tabs.onClik = function(elem) {
 	return Tabs.onClickCommon(Tabs.mainMenu, Tabs.mainContext, elem);
 };
 
-//######################
+Tabs.showAgreement = function() {
+	return Tabs.onClickCommon(Tabs.mainMenu, Tabs.mainContext, dwr.util.byId("agreement"));
+};
 
 Tabs.isValidMenu = function(selectedMenuElement){
 	// Check ID

@@ -250,10 +250,12 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 				MessagesManager.getText("text.show"));
 		
 		if(isManager(company)){
+			result += " | ";
 			result += String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
 					"", // ID
 					"CompanyProxy.groupShowAddForm()", // onClick
 					MessagesManager.getText("text.add")); // Value
+			result += " | ";
 			result += String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
 					"", // ID
 					"CompanyProxy.groupDelete()", // onClick
@@ -473,11 +475,11 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return String.format(format, 
 				company.getName()
 					// WWW Link
-//					+ (Utils.isValidLink(company.getWww())? 
-//							" "	+ String.format(MessagesManager.getDefault("template.link._blank"), company.getWww())
-//							:
-//							""
-//					   )
+					+ (Utils.isValidLink(company.getWww())? 
+							" "	+ String.format(MessagesManager.getDefault("template.link._blank"), company.getWww())
+							:
+							""
+					   )
 					// "Back to list" button
 					+ " " + String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
 							"",
@@ -510,7 +512,8 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			result += " "  + String.format(MessagesManager.getDefault("template.link._blank"), inCompany.getWww());
 
 		// Show button
-		result += " " + String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+		result += " | ";
+		result +=  String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
 				"", // ID
 				String.format(COMPANY_SHOW_DETAILS_JS, inCompany.getUuid()), // onLick
 				MessagesManager.getText("text.show") // Value
@@ -518,13 +521,15 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		
 		// Manager's links
 		if(isManager(inCompany)){
-			result += " " + String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+			result += " | ";
+			result += String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
 					"", // ID
 					String.format(COMPANY_EDIT_JS,inCompany.getUuid()), // onClick
 					MessagesManager.getText("text.edit") // Value
 					);
-			
-			result += " " + String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+
+			result += " | ";			
+			result += String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
 					"", // ID
 					String.format(COMPANY_REMOVE_JS,inCompany.getUuid()), // onClick					
 					MessagesManager.getText("text.remove") // Value

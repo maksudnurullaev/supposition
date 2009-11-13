@@ -17,7 +17,6 @@ import org.supposition.utils.Utils;
 public class TextManager extends PropertyLoader {
 	private static final String DEFAULTS_KEY = "defaults";
 	private static final String DEFAULTS_FILE_NAME = "defaults.properties";
-	private static final String WEATHER_DEFAULT_URL = "http://informer.gismeteo.ru/xml/38457_1.xml"; // Tashkent
 	private static Log _log = LogFactory.getLog(TextManager.class);
 
 	private static final Map<String, Properties> _propertiesMap = new HashMap<String, Properties>();
@@ -136,7 +135,11 @@ public class TextManager extends PropertyLoader {
 		if (result.indexOf("HTML_SELECT_WEATHER_CITIES") != -1) {
 			result = result.replaceAll("HTML_SELECT_WEATHER_CITIES", MessagesManager.getText("html.select.weather.cities"));
 			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_SELECT_WEATHER_CITIES");
-		}			
+		}
+		if (result.indexOf("HTML_DEFAULT_WEATHER") != -1) {
+			result = result.replaceAll("HTML_DEFAULT_WEATHER", MessagesManager.getWeather(WeatherService.WEATHER_DEFAULT_URL));
+			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_DEFAULT_WEATHER");
+		}		
 		if (result.indexOf("HTML_SELECT_CITIES4COMPANY") != -1) {
 			result = result.replaceAll("HTML_SELECT_CITIES4COMPANY", Utils.getHTMLSelectCity4("company"));
 			_log.debug("replaceFinalTokensInText --> FOUND --> HTML_SELECT_CITIES4COMPANY");
@@ -206,7 +209,8 @@ public class TextManager extends PropertyLoader {
 
 	
 	public Properties getDefaults() {
-		return _propertiesMap.get(DEFAULTS_KEY);
+		//TODO Shuld be inplimented later return _propertiesMap.get(DEFAULTS_KEY);
+		return null;		
 	}
 
 	public String getWeatherByCityCode(String urlCode) {
