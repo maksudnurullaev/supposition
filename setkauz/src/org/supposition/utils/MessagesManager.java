@@ -113,6 +113,7 @@ public final class MessagesManager {
 		String result = _textManager.getWeatherByCityCode(urlCode);
 		String[] replaceStrings={"text.Forecast.for",
 								 "text.at",
+								 "text.temperature.measure",
 								 "text.temperature",
 								 "text.pressure.measure",
 								 "text.pressure",
@@ -139,6 +140,4 @@ public final class MessagesManager {
 		return result + MessagesManager.getText("text.link.to.weather.service");
 	}
 	
-
-
 }

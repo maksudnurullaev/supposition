@@ -99,7 +99,7 @@ public class ParseXMLString {
 				// 2. Get temperature
 				if(nodeList.getLength() == 1){
 					tempElement = (Element) nodeList.item(0);
-					tempString += String.format("<u>text.temperature %s(&#8451;)</u>",
+					tempString += String.format("<u>text.temperature %s text.temperature.measure</u>",
 							String.format("%s/%s", 
 									tempElement.getAttribute(TEMPERATURE_min),
 									tempElement.getAttribute(TEMPERATURE_max)));

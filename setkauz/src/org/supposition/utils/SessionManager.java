@@ -57,6 +57,10 @@ public final class SessionManager {
 	public static String getSystemDefaultsAsHTMLMgmTable() {
 		Properties defaults = MessagesManager.getDefaults();
 		
+		if(defaults == null){
+			return MessagesManager.getText("errors.data.not.found");
+		}
+		
 		// Table + Header
 		String result = MessagesManager.getText("main.admin.system.defaults.table.header");
 		result +=  MessagesManager.getText("main.admin.system.defaults.table.th");

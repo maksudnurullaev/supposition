@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dwr.xml.ParseXMLString;
 import org.supposition.utils.DBUtils;
-import org.supposition.utils.MessagesManager;
 import org.supposition.utils.Utils;
 
 public class WeatherService implements Runnable {
@@ -24,6 +23,8 @@ public class WeatherService implements Runnable {
 	public static final String key4ParsedHtml = "HTML";
 	public static final String key4ExpiredTime = "expiredTime";
 	public static final String key4ExpiredTimeFormat = "yyyyMMddHHmm";
+	
+	public static final String WEATHER_DEFAULT_URL = "http://informer.gismeteo.ru/xml/38457_1.xml"; // Tashkent
 	
 	/**
 	 * @return the weatherData
