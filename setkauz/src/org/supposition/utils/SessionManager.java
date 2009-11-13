@@ -46,6 +46,7 @@ public final class SessionManager {
 
 	public static String getSessionLocale() {
 		if(_isWebContext){
+			_log.debug("It's web session");
 			if(SessionManager.isExist(MessagesManager.getDefault("session.locale.def"))){
 				return (String) SessionManager.getFromSession(MessagesManager.getDefault("session.locale.def"));
 			}

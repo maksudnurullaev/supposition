@@ -11,14 +11,19 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.supposition.text.abstracts.PropertyLoader;
+import org.dwr.xml.ParseXMLString;
 import org.supposition.utils.DBUtils;
+import org.supposition.utils.MessagesManager;
 import org.supposition.utils.Utils;
 
 public class WeatherService implements Runnable {
-	private static Log _log = LogFactory.getLog(PropertyLoader.class);
+	private static Log _log = LogFactory.getLog(WeatherService.class);
 	private String weatherServiceURL = null;
 	private Map<String, String> weatherData = new HashMap<String, String>();
+	
+	public static final String key4ParsedHtml = "HTML";
+	public static final String key4ExpiredTime = "expiredTime";
+	public static final String key4ExpiredTimeFormat = "yyyyMMddHHmm";
 	
 	/**
 	 * @return the weatherData
@@ -30,7 +35,7 @@ public class WeatherService implements Runnable {
 	@Override
 	public void run() {
 		if(getWeatherServiceURL() == null){
-			weatherData.put("error", "url is null");
+			weatherData.put(key4ParsedHtml, "url is null");
 			return;
 		}
 		
@@ -40,7 +45,7 @@ public class WeatherService implements Runnable {
 		try {
 			URL weatherURL = new URL(getWeatherServiceURL());
 			
-			_log.debug("try to open connectio with " + getWeatherServiceURL());
+			_log.debug("try to open connectio with: " + getWeatherServiceURL());
 			weatherServiceConnection = weatherURL.openConnection();
 			
 			_log.debug("try to open BufferedReader(in)");
@@ -57,16 +62,30 @@ public class WeatherService implements Runnable {
             in.close(); 
 			
 			_log.debug("set to xml key result:" + result);            
-            weatherData.put("xml", result);
-            weatherData.put("nextUpdate", Utils.GetFormatedDate("yyyyMMddHHmm",DBUtils.dateAfterInHours(1)));
+			setWeatherData(parseXml(result));
+            setWeatherDataExpireTime(3);
             _log.debug("set next update time:" + weatherData.get("nextUpdate"));
 			
 			
 		} catch (MalformedURLException e) {
-			weatherData.put("error", e.getMessage());
+			setWeatherErrorData(e.getMessage());
 		} catch (IOException e) {
-			weatherData.put("error", e.getMessage());
+			setWeatherErrorData(e.getMessage());
 		}		
+	}
+
+	private String parseXml(String inXMLString) {
+		
+		ParseXMLString parser = new ParseXMLString();
+		return parser.parse(inXMLString);
+	}
+
+	private void setWeatherDataExpireTime(int inHours) {
+		 weatherData.put(key4ExpiredTime, getExpireTime(inHours));		
+	}
+
+	public static String getExpireTime(int inHours) {
+		return Utils.GetFormatedDate(key4ExpiredTimeFormat,DBUtils.dateAfterInHours(inHours));
 	}
 
 	public void setWeatherServiceURL(String weatherServiceURL) {
@@ -78,5 +97,16 @@ public class WeatherService implements Runnable {
 		return weatherServiceURL;
 	}
 	
+	private void setWeatherData(String inData){
+		weatherData.put(key4ParsedHtml, inData);
+	}
+	
+	private void setWeatherErrorData(String inData){
+		weatherData.put(key4ParsedHtml, formateErrorData(inData));
+	}
+
+	public static String formateErrorData(String inData) {
+		return String.format("<div class=\"error\">%s</div>", inData);
+	}
 
 }

@@ -18,8 +18,7 @@ public class TextManager extends PropertyLoader {
 	private static final String DEFAULTS_KEY = "defaults";
 	private static final String DEFAULTS_FILE_NAME = "defaults.properties";
 	private static final String WEATHER_DEFAULT_URL = "http://informer.gismeteo.ru/xml/38457_1.xml"; // Tashkent
-	//38457
-	private static Log _log = LogFactory.getLog(PropertyLoader.class);
+	private static Log _log = LogFactory.getLog(TextManager.class);
 
 	private static final Map<String, Properties> _propertiesMap = new HashMap<String, Properties>();
 
@@ -216,27 +215,27 @@ public class TextManager extends PropertyLoader {
 			tryToLoadWeatherForCity(urlCode);	
 		}else{
 			_log.debug("Weather data for " + urlCode + " already exist");
+			//TODO Check for update time
 		}
 		
 		if(_weatherMap.containsKey(urlCode)){
 			_log.debug("Found weather data for " + urlCode);			
-			if(_weatherMap.get(urlCode).containsKey("error")){
-				_log.debug("Weather data has ERROR");
-				return MessagesManager.getText("errors.service.inaccessible"); // Service inaccassible message for users
-			}else if(_weatherMap.get(urlCode).containsKey("xml")){
-				_log.debug("Weather data has XML");
-				return _weatherMap.get(urlCode).get("xml");
+			if(_weatherMap.get(urlCode).containsKey(WeatherService.key4ParsedHtml)){
+				_log.debug("Weather data has key:" + WeatherService.key4ParsedHtml);
+				return _weatherMap.get(urlCode).get(WeatherService.key4ParsedHtml);
 			}else{
-				_log.debug("Weather data has UNKNOWN data");
-				return MessagesManager.getText("errors.service.inaccessible");
+				_log.warn("Weather data has UNKNOWN data");
+				return WeatherService.formateErrorData(MessagesManager.getText("errors.service.inaccessible"));
 			}
 		}
 		
-		return MessagesManager.getText("errors.unmatched.data.objects");
+		_log.warn("errors.unmatched.data.objects");
+		return WeatherService.formateErrorData(MessagesManager.getText("errors.unmatched.data.objects"));
 	}
 
 	private void tryToLoadWeatherForCity(String urlCode) {
 		Map<String, String> weatherData = new HashMap<String, String>();
+		
 		// Initial thread variables
 		WeatherService weatherService = new WeatherService();
 		weatherService.setWeatherServiceURL(urlCode);
@@ -258,7 +257,7 @@ public class TextManager extends PropertyLoader {
 				_log.debug("Waiting for thread at more 1 second");
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				weatherData.put("error", e.getMessage());
+				weatherData.put(WeatherService.key4ParsedHtml, WeatherService.formateErrorData(e.getMessage()));
 			}
 			
 			if(!weatherServiceThread.isAlive()){
@@ -267,10 +266,10 @@ public class TextManager extends PropertyLoader {
 			}
 			
 			if(++count <  maxCount){
-				_log.warn("Thread waiting counter = " + count + " from MAX = " + maxCount);
+				_log.warn("Thread waiting time is OUT!");
 				continue;
 			}else{
-				_log.warn("Thread waiting time is OUT!");
+				_log.warn("Thread waiting counter reached MAX COUNT = " + maxCount);
 				weatherServiceThread.interrupt();				
 			}
 		}

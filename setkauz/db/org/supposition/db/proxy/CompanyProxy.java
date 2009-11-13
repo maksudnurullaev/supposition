@@ -244,22 +244,26 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 	}	
 	
 	private String getAdditionalGroupLinks(Company company) {
-		String result = String.format(MessagesManager.getDefault("template.button"),
+		String result = String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+				"", // ID
 				"CompanyProxy.groupShow()",
 				MessagesManager.getText("text.show"));
 		
 		if(isManager(company)){
-			result += String.format(MessagesManager.getDefault("template.button"),
-					"CompanyProxy.groupShowAddForm()",
-					MessagesManager.getText("text.add"));
-			result += String.format(MessagesManager.getDefault("template.button"),
-					"CompanyProxy.groupDelete()",
-					MessagesManager.getText("text.remove"));
+			result += String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+					"", // ID
+					"CompanyProxy.groupShowAddForm()", // onClick
+					MessagesManager.getText("text.add")); // Value
+			result += String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+					"", // ID
+					"CompanyProxy.groupDelete()", // onClick
+					MessagesManager.getText("text.remove")); // Value
 			// Ads records aprt
 			result += " | ";
-			result += String.format(MessagesManager.getDefault("template.button"),
-					"CompanyProxy.showAddAdsForm()",
-					MessagesManager.getText("text.add"));
+			result += String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+					"", // ID
+					"CompanyProxy.showAddAdsForm()", // onClick
+					MessagesManager.getText("text.add")); // Value
 		}
 		
 		return result; 
@@ -469,16 +473,18 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 		return String.format(format, 
 				company.getName()
 					// WWW Link
-					+ (Utils.isValidLink(company.getWww())? 
-							" "	+ String.format(MessagesManager.getDefault("template.link._blank"), company.getWww())
-							:
-							""
-					   )
+//					+ (Utils.isValidLink(company.getWww())? 
+//							" "	+ String.format(MessagesManager.getDefault("template.link._blank"), company.getWww())
+//							:
+//							""
+//					   )
 					// "Back to list" button
-					+ " " + String.format(MessagesManager.getDefault("template.button"),
+					+ " " + String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+							"",
 							COMPANIES_SET_DENSITY_JS,
 							MessagesManager.getText("text.go.to.list")
-							),
+							)
+							,
 				company.getAdditionals(),				
 				getGroupAsHTMLSelect(company),
 				company.getUuid(), 
@@ -504,22 +510,25 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 			result += " "  + String.format(MessagesManager.getDefault("template.link._blank"), inCompany.getWww());
 
 		// Show button
-		result += " " + String.format(MessagesManager.getDefault("template.button"),
-				String.format(COMPANY_SHOW_DETAILS_JS, 
-				inCompany.getUuid()),
-				MessagesManager.getText("text.show"));		
+		result += " " + String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+				"", // ID
+				String.format(COMPANY_SHOW_DETAILS_JS, inCompany.getUuid()), // onLick
+				MessagesManager.getText("text.show") // Value
+				);		
 		
 		// Manager's links
 		if(isManager(inCompany)){
-			result += " " + String.format(MessagesManager.getDefault("template.button"),
-					String.format(COMPANY_EDIT_JS,
-					inCompany.getUuid()),
-					MessagesManager.getText("text.edit"));
+			result += " " + String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+					"", // ID
+					String.format(COMPANY_EDIT_JS,inCompany.getUuid()), // onClick
+					MessagesManager.getText("text.edit") // Value
+					);
 			
-			result += " " + String.format(MessagesManager.getDefault("template.button"),
-					String.format(COMPANY_REMOVE_JS,
-					inCompany.getUuid()),
-					MessagesManager.getText("text.remove"));			
+			result += " " + String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
+					"", // ID
+					String.format(COMPANY_REMOVE_JS,inCompany.getUuid()), // onClick					
+					MessagesManager.getText("text.remove") // Value
+					);			
 		}
 		
 		return result;
