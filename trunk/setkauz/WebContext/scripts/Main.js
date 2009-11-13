@@ -135,11 +135,9 @@ Main.updateSessionTable = function() {
 };
 
 Main.updateWeather = function(){
-	alert(dwr.util.byId("weather.cities").value);
-	
 	Session.getWeatherAsHTML(dwr.util.byId("weather.cities").value, function(result){
 		dwr.util.setValue("weather.context", result, {
-			escapeHtml :true
+			escapeHtml :false
 		});		
 	});
 };

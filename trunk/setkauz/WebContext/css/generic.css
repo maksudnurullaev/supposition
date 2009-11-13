@@ -602,3 +602,11 @@ table.plain th {
 	font-size:11px;
 	line-height:120%;
 }
+
+.weather{
+	padding-top: 10px;
+	padding-left: 10px;
+	padding-bottom: 3px;
+	font-size:12px;
+	line-height:120%;
+}

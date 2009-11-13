@@ -110,7 +110,33 @@ public final class MessagesManager {
 	}
 
 	public static String getWeather(String urlCode) {
-		return _textManager.getWeatherByCityCode(urlCode);
+		String result = _textManager.getWeatherByCityCode(urlCode);
+		String[] replaceStrings={"text.Forecast.for",
+								 "text.at",
+								 "text.temperature",
+								 "text.pressure.measure",
+								 "text.pressure",
+								 "text.relwet",
+								 "text.cloudiness.0",
+								 "text.cloudiness.1",
+								 "text.cloudiness.2",
+								 "text.cloudiness.3",
+								 "text.precipitation.4",
+								 "text.precipitation.5",
+								 "text.precipitation.6",
+								 "text.precipitation.7",
+								 "text.precipitation.8",
+								 "text.tod.0",								 
+								 "text.tod.1",								 
+								 "text.tod.2",								 
+								 "text.tod.3"								 
+								 };
+		
+		for (String rString : replaceStrings) {
+			result = result.replaceAll(rString, MessagesManager.getText(rString));
+		}
+		
+		return result + MessagesManager.getText("text.link.to.weather.service");
 	}
 	
 
