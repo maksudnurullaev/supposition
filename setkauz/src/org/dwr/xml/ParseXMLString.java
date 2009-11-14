@@ -119,7 +119,7 @@ public class ParseXMLString {
 				nodeList = element.getElementsByTagName(RELWET);
 				if(nodeList.getLength() == 1){
 					tempElement = (Element) nodeList.item(0);
-					tempString += String.format(", text.relwet %s%%",
+					tempString += String.format(", text.relwet %s(%%)",
 							String.format("%s/%s", 
 									tempElement.getAttribute(RELWET_min),
 									tempElement.getAttribute(RELWET_max)));
