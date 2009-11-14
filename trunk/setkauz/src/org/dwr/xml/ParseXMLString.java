@@ -157,9 +157,9 @@ public class ParseXMLString {
 		String dayDefenition = "text.today";
 		
 		if(passedDateyyyyMMdd.compareTo(currentDateyyyyMMdd) > 0){
-			dayDefenition = "text.yesterday";
-		}else if (passedDateyyyyMMdd.compareTo(currentDateyyyyMMdd) < 0){
 			dayDefenition = "text.tomorrow";
+		}else if (passedDateyyyyMMdd.compareTo(currentDateyyyyMMdd) < 0){
+			dayDefenition = "text.yesterday";
 		}
 		
 		return String.format("%s (%s.%s.%s)", dayDefenition, inDay, inMonth, inYear);
