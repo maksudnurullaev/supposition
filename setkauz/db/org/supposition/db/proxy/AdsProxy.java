@@ -1,6 +1,7 @@
 package org.supposition.db.proxy;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
@@ -194,5 +195,10 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 				ads.getUuid(),
 				"AdsProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));
+	}
+	
+	private void cleanUpAds(){
+		addExpression(ExpressionFactory.lessExp("delete_after", (new Date())));		
+		deleteObjects(getAll());
 	}
 }

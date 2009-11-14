@@ -1,5 +1,5 @@
 Namespace("Gup");
-
+//Updated
 Gup.testURL = function(name, url) {
 	if (!url) { url = window.location.href; }
 	name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");	

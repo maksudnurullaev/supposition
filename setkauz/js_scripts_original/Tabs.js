@@ -1,109 +1,79 @@
 Namespace("Tabs");
-
-Tabs.id_div_suffix = '.div';
-Tabs.div_id_prefix = 'ID.';
-Tabs.tablinks_id_prefix = 'tablinks.';
-Tabs.div_stack = null;
-Tabs.div_stack_id = 'stack';
-
-Tabs.last_nav_path = "";
+// Updated
+Tabs.mainContext = "context";
+Tabs.mainMenu = "menu";
+Tabs.stackId = "stack";
 
 Tabs.onClik = function(elem) {
-	// * Init Stack
-	if(!Tabs.initStack()) return;	
-	// Check ID Format 
-	if(!Tabs.checkTabLink(elem)) return;
-	// * Do nothing if it's old pathTab
-	if(Tabs.last_nav_path == elem.id) return;
-	// * Don nothing if is already selected tab
-	if(elem.parentNode.className == 'Selected')return;
-	
-	// * Init values
-	var indexOfLastDot  = elem.id.lastIndexOf('.');
-	var uniqueID        = elem.id.slice(0, indexOfLastDot);
-	var activeRootDivID = uniqueID + Tabs.id_div_suffix;
-	var activeLinksID   = Tabs.tablinks_id_prefix + uniqueID;
-	var activeDivID     = elem.id + Tabs.id_div_suffix;	
-	
-	// Init other divs
-	var activeRootDiv = document.getElementById(activeRootDivID);
-	if(!activeRootDiv){
-		alert('ERROR: Could not find parent div by id:' + activeRootDivID);
-		return;
-	}
+	return Tabs.onClickCommon(Tabs.mainMenu, Tabs.mainContext, elem);
+};
 
-	// * Save current inactuve div in stack
-	var parentCurrentDivs = activeRootDiv.getElementsByTagName("DIV");
-	for (var i = 0; i < parentCurrentDivs.length; i++) {
-		Tabs.div_stack.appendChild(parentCurrentDivs[i])
-	}	
-	
-	// * Get active Div from stack or server
-	var oldStackedDiv = dwr.util.byId(Tabs.div_id_prefix + activeDivID)
-	if(!oldStackedDiv){// ...from server
-		Session.getDivByKey4Tabs(activeDivID, function(result) {
-			// Eval Part
-			if(result.eval){
-				eval(result.eval);
-			}
-			// Text Part
-			if(result.text){
-				dwr.util.setValue(activeRootDivID, result.text,  {escapeHtml :false});
-			}						
-		});
-	}else { // ...from local stack
-		activeRootDiv.appendChild(oldStackedDiv);
-	}
-	
-	// * Re-Arrange Tabs Activities
-	Tabs.ReArrangeTabs(activeLinksID, elem.id);
-	
-	// * Finish & Save last tab path
-	Tabs.last_nav_path = elem.id;
-	
-	return false;
-}
+Tabs.showAgreement = function() {
+	return Tabs.onClickCommon(Tabs.mainMenu, Tabs.mainContext, dwr.util.byId("agreement"));
+};
 
-Tabs.checkTabLink = function(elem){
-	if((!elem.id) || (elem.id.lastIndexOf('.') == -1)){
-		alert("Tab does not have neccessary ID or incorrect fotmat: " + elem.innerHTML);
+Tabs.isValidMenu = function(selectedMenuElement){
+	// Check ID
+	if(!selectedMenuElement.id){
+		alert("ERROR: Navigator does not have neccessary ID property!");
 		return false;
 	}	
+	
+	// Check "selected" state
+	if(selectedMenuElement.parentNode.id == "selected"){ return false; }
+	
 	return true;
-}
+};
 
-Tabs.ReArrangeTabs = function(activeLinksID, navPath){
-	// * Check all
-	var activeLinks = document.getElementById(activeLinksID);
-	if(!activeLinks){
-		alert('ERROR: Could not find Tab Links (' + activeLinksID +')!');
-		return;
-	}
-	// * Finish
-	var lis = activeLinks.getElementsByTagName('A');
-	for (var i = 0; i < lis.length; i++){
-		lis[i].parentNode.className = (navPath.indexOf(lis[i].id) != -1)?"Selected":"";
-	}
-}
+Tabs.clearSelection = function(rootUlId){
+	var childLiNodes = dwr.util.byId(rootUlId).getElementsByTagName('li');
+	for (var i = 0; i < childLiNodes.length; i++){
+		childLiNodes[i].id = null;
+	}	
+};
 
-Tabs.initStack = function(){
-	if(!Tabs.div_stack){
-		Tabs.div_stack = document.getElementById(Tabs.div_stack_id);
-		if(!Tabs.div_stack){
-			alert('ERROR: Could not find invisible div stack elements!');
-			return false;
+Tabs.clearDivFromDiv = function(contextDivId){
+	var childDivNodes = dwr.util.byId(contextDivId).getElementsByTagName('div');
+	for (var i = 0; i < childDivNodes.length; i++){
+		if(childDivNodes[i].id){
+			dwr.util.byId("stack").appendChild(childDivNodes[i]);
 		}
 	}
-	return true;
-}
+	
+	return false;
+};
 
-Tabs.clearStack = function(){
-	if(Tabs.initStack()){
-		// Clear stack element
-		dwr.util.setValue(Tabs.div_stack_id, "");
-		// Clear last navigation path
-		Tabs.last_nav_path = ""; 
-		// Clear stack
-		dwr.util.setValue("stack", "", {escapeHtml :false});
+Tabs.onClickCommon = function(rootUlId, contextDivId, selectedMenuElement){
+	if(!Tabs.isValidMenu(selectedMenuElement)){ return false; }
+	
+	// Clear "selected" state for each element
+	Tabs.clearSelection(rootUlId);	
+	
+	// Move child elements to stack & clear context
+	Tabs.clearDivFromDiv(contextDivId);
+	
+	// Generate Div ID
+	var resultDivId = selectedMenuElement.id + ".context";
+	
+	// Try to get element from local stack...
+	var stackedDiv = dwr.util.byId(resultDivId);
+	
+	if(!stackedDiv){ // ... or from server
+		Session.getTextByKey2(resultDivId, function(result) {
+			// Eval Part
+			if(result.eval){ eval(result.eval);	}
+			// Text Part
+			if(result.text){ dwr.util.byId(contextDivId).innerHTML = result.text; }						
+		});
+	}else {
+		// Clear ALL
+		dwr.util.byId(contextDivId).innerHTML = "";
+		// Append Child
+		dwr.util.byId(contextDivId).appendChild(stackedDiv);
 	}
-}
+	
+	// Set Selected
+	selectedMenuElement.parentNode.id = "selected";
+	
+	return false;
+};

@@ -95,6 +95,14 @@ public final class MessagesManager {
 		return _textManager.hasDefaultKey(inKey);
 	}
 	
+	public static boolean setDefaultByKey(String inKey, String inValue) {
+		checkInitTextManager();
+		
+		_textManager.setDefaultByKey(inKey, inValue);
+		
+		return hasDefaultByKey(inKey);
+	}	
+	
 	// *** MESSAGE SENDER part ****
 	public static boolean hasMessageByKey(String inKey) {
 		checkInitTextManager();
@@ -130,7 +138,10 @@ public final class MessagesManager {
 								 "text.tod.0",								 
 								 "text.tod.1",								 
 								 "text.tod.2",								 
-								 "text.tod.3"								 
+								 "text.tod.3",
+								 "text.today",
+								 "text.tomorrow",
+								 "text.yesterday",
 								 };
 		
 		for (String rString : replaceStrings) {

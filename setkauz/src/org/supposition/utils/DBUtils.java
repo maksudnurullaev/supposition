@@ -196,13 +196,12 @@ public final class DBUtils {
 		return now.getTime();		
 	}
 
-	public static Date dateAfterInHours(int hours){
+	public static Date dateAfterIn(int inType, int inValue){
 		Calendar now = Calendar.getInstance();
-		now.add(Calendar.HOUR, hours);
+		now.add(inType, inValue);
 		return now.getTime();		
 	}
-	
-	
+		
 	public static void checkKaptcha(String kaptcha, ValidationResult validationResult, CayenneDataObject inDataObject) {
 		String sessionKaptchaValue = (String) SessionManager
 				.getFromSession(com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY);

@@ -1,5 +1,11 @@
 package org.supposition.tests.run;
+import java.util.Date;
+
+import org.apache.cayenne.exp.Expression;
+import org.apache.cayenne.exp.ExpressionFactory;
+import org.supposition.db.Ads;
 import org.supposition.db.Cgroup;
+import org.supposition.db.proxy.AdsProxy;
 import org.supposition.db.proxy.CgroupProxy;
 import org.supposition.db.proxy.CompanyFilterBean;
 import org.supposition.db.proxy.CompanyProxy;
@@ -10,18 +16,16 @@ public class Class4Test {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		CompanyProxy cProxy = new CompanyProxy();
-		CompanyFilterBean inFilter = new CompanyFilterBean();
-		CgroupProxy cgroupProxy = new CgroupProxy();
+		AdsProxy adsProxy = new AdsProxy();
+//		adsProxy.addExpression(ExpressionFactory.lessExp("deleteAfter", (new Date())));
+//		adsProxy.addExpression(ExpressionFactory.matchExp("companyId", null));
 		
-		Cgroup cgroup_root = cgroupProxy.getRootElement();
+		adsProxy.addExpression(Expression.fromString("company_id != null"));
 		
-		if(cgroup_root == null)	System.out.println("errors.data.not.found");
+		for (Ads ad : adsProxy.getAll()) {
+			System.out.println(ad);
+			
+		}
 		
-		inFilter.setCity("11115"); // Tashkent
-		inFilter.setGuuid(cgroup_root.getUuid());
-		inFilter.setOwner(false);
-		
-		System.out.println(cProxy.getPageAsHTMLTable(inFilter, 1));		
 	  }
 }

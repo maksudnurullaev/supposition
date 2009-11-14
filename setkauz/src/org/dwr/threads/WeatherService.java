@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ public class WeatherService implements Runnable {
 	private static Log _log = LogFactory.getLog(WeatherService.class);
 	private String weatherServiceURL = null;
 	private Map<String, String> weatherData = new HashMap<String, String>();
+	public static final int defaultExpiredTimeValue = 60; // Minute
+	public static final int errorExpiredTimeValue = 3;    // Minute
 	
 	public static final String key4ParsedHtml = "HTML";
 	public static final String key4ExpiredTime = "expiredTime";
@@ -64,14 +67,16 @@ public class WeatherService implements Runnable {
 			
 			_log.debug("set to xml key result:" + result);            
 			setWeatherData(parseXml(result));
-            setWeatherDataExpireTime(3);
-            _log.debug("set next update time:" + weatherData.get("nextUpdate"));
-			
+            setWeatherDataExpireTime(defaultExpiredTimeValue );			
 			
 		} catch (MalformedURLException e) {
-			setWeatherErrorData(e.getMessage());
+			setWeatherData(e.getMessage());
+			setWeatherDataExpireTime(errorExpiredTimeValue);
+			_log.error(e.getMessage());
 		} catch (IOException e) {
-			setWeatherErrorData(e.getMessage());
+			setWeatherData(e.getMessage());
+			setWeatherDataExpireTime(errorExpiredTimeValue);
+			_log.error(e.getMessage());
 		}		
 	}
 
@@ -81,12 +86,14 @@ public class WeatherService implements Runnable {
 		return parser.parse(inXMLString);
 	}
 
-	private void setWeatherDataExpireTime(int inHours) {
-		 weatherData.put(key4ExpiredTime, getExpireTime(inHours));		
+	private void setWeatherDataExpireTime(int inMinute) {
+		 weatherData.put(key4ExpiredTime, getExpireTime(inMinute));
+		 _log.debug("For weather URL: " + getWeatherServiceURL());
+		 _log.debug("Expired time set to: " + weatherData.get(key4ExpiredTime));
 	}
 
-	public static String getExpireTime(int inHours) {
-		return Utils.GetFormatedDate(key4ExpiredTimeFormat,DBUtils.dateAfterInHours(inHours));
+	public static String getExpireTime(int inMinute) {
+		return Utils.GetFormatedDate(key4ExpiredTimeFormat,DBUtils.dateAfterIn(Calendar.MINUTE, inMinute));
 	}
 
 	public void setWeatherServiceURL(String weatherServiceURL) {
@@ -100,10 +107,6 @@ public class WeatherService implements Runnable {
 	
 	private void setWeatherData(String inData){
 		weatherData.put(key4ParsedHtml, inData);
-	}
-	
-	private void setWeatherErrorData(String inData){
-		weatherData.put(key4ParsedHtml, formateErrorData(inData));
 	}
 
 	public static String formateErrorData(String inData) {
