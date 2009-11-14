@@ -103,8 +103,8 @@ public class ParseXMLString {
 					tempElement = (Element) nodeList.item(0);
 					tempString += String.format("text.temperature <u>%s text.temperature.measure</u>",
 							String.format("%s/%s", 
-									tempElement.getAttribute(TEMPERATURE_min),
-									tempElement.getAttribute(TEMPERATURE_max)));
+									normalize(tempElement.getAttribute(TEMPERATURE_min)),
+									normalize(tempElement.getAttribute(TEMPERATURE_max))));
 				}
 				// 3. Get pressure				
 				nodeList = element.getElementsByTagName(PRESSURE);
@@ -148,6 +148,12 @@ public class ParseXMLString {
 		
 		return result;
 
+	}
+
+	private String normalize(String inTemperature) {
+		if(Integer.parseInt(inTemperature) > 0)
+			return "+" + inTemperature;
+		return inTemperature;
 	}
 
 	private String formateDateText(String inDay, String inMonth,
