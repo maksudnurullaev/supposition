@@ -1,5 +1,5 @@
 Namespace("LocalUserProxy");
-
+//Updated
 LocalUserProxy.updateUserData = function(){
 	// Check fields
 	if( !Main.isValidValue("mail")) { return false; }
@@ -97,49 +97,7 @@ LocalUserProxy.enterUser = function() {
 	return false;
 };
 
-LocalUserProxy.showMainRegisterForm = function(){
-	// Cleanup mainBody2 context
-	dwr.util.setValue("mainBody2", "");
-	
-	// Get&show form
-	Main.hideAll();
-	Main.getTextFromServerToDiv("main.nonregistered.formNew", "mainBody2", false);
-	dwr.util.byId("mainBody2").style.display = "block";
-	
-	return false;
-};
-
-LocalUserProxy.showPersonalCabinet = function(){
-	// Cleanup mainBody2 context
-	dwr.util.setValue("mainBody2", "");
-	
-	// Get&show form
-	Main.hideAll();
-	LocalUserProxy.getUserCabinet(function(result){
-		dwr.util.setValue("mainBody2", result, {escapeHtml :false});
-	});
-	dwr.util.byId("mainBody2").style.display = "block";
-	
-	return false;	
-};
-
-LocalUserProxy.showMainEnterForm = function(){
-	// Cleanup mainBody2 context
-	dwr.util.setValue("mainBody2", "");
-	
-	// Get&show form
-	Main.hideAll();
-	Main.getTextFromServerToDiv("main.nonregistered.formEnter", "mainBody2", false);
-	dwr.util.byId("mainBody2").style.display = "block";
-	
-	return false;
-};
-
-LocalUserProxy.userLogoff = function(){
-	// Cleanup mainBody2 context
-	dwr.util.setValue("mainBody2", "");
-	
-	// Get&show form
+LocalUserProxy.userLogoff = function(){	
 	Session.logOff(function(result){
 		alert(result);
 		if(Main.isOK(result)) { 
@@ -148,4 +106,15 @@ LocalUserProxy.userLogoff = function(){
 	});
 	
 	return false;
+};
+
+LocalUserProxy.getCabinetContext = function(){
+	// Get form
+	LocalUserProxy.getUserCabinet(dwr.util.byId('cabinet.select.actions').value, function(result){
+		// Eval Part
+		if(result.eval){
+			eval(result.eval);
+		}
+		dwr.util.byId('personal.cabinet.div').innerHTML = result.text;
+	});	
 };

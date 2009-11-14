@@ -1,5 +1,5 @@
 Namespace ("Stack");  
-
+//Updated
 Stack.hideShow =  function (hideElemId, showElemId){
 	Stack.setToStack(hideElemId);
 	Stack.showInMainBody(showElemId);
@@ -21,4 +21,9 @@ Stack.showInMainBody = function (elemId){
 	}
 	
 	return false;
+};
+
+Stack.clear = function(){
+	// Clear stack element
+	dwr.util.setValue(Tabs.stackId, "");
 };

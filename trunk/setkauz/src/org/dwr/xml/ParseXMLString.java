@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dwr.threads.WeatherService;
+import org.supposition.utils.Utils;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -88,10 +89,11 @@ public class ParseXMLString {
 				tempString =  "<div class=\"weather\">";
 				// 1. Get date
 				tempString += String.format("<strong>text.Forecast.for %s:</strong><br />", 
-						String.format("%s.%s.%s text.at %s:00 (text.tod.%s)",
-							element.getAttribute(FORECAST_day),
-							element.getAttribute(FORECAST_month),
-							element.getAttribute(FORECAST_year),
+						String.format("%s text.at %s:00 (text.tod.%s)",
+							formateDateText(
+									element.getAttribute(FORECAST_day),
+									element.getAttribute(FORECAST_month),
+									element.getAttribute(FORECAST_year)),
 							element.getAttribute(FORECAST_hour),
 							element.getAttribute(FORECAST_tod))
 							);
@@ -99,7 +101,7 @@ public class ParseXMLString {
 				// 2. Get temperature
 				if(nodeList.getLength() == 1){
 					tempElement = (Element) nodeList.item(0);
-					tempString += String.format("<u>text.temperature %s text.temperature.measure</u>",
+					tempString += String.format("text.temperature <u>%s text.temperature.measure</u>",
 							String.format("%s/%s", 
 									tempElement.getAttribute(TEMPERATURE_min),
 									tempElement.getAttribute(TEMPERATURE_max)));
@@ -146,6 +148,21 @@ public class ParseXMLString {
 		
 		return result;
 
+	}
+
+	private String formateDateText(String inDay, String inMonth,
+			String inYear) {
+		String currentDateyyyyMMdd = Utils.GetCurrentDateTime("yyyyMMdd");
+		String passedDateyyyyMMdd = String.format("%s%s%s", inYear, inMonth, inDay);
+		String dayDefenition = "text.today";
+		
+		if(passedDateyyyyMMdd.compareTo(currentDateyyyyMMdd) > 0){
+			dayDefenition = "text.yesterday";
+		}else if (passedDateyyyyMMdd.compareTo(currentDateyyyyMMdd) < 0){
+			dayDefenition = "text.tomorrow";
+		}
+		
+		return String.format("%s (%s.%s.%s)", dayDefenition, inDay, inMonth, inYear);
 	}
 
 	public static String getCharacterDataFromElement(Element e) {

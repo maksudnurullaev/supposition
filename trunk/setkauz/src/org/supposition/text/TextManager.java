@@ -58,6 +58,13 @@ public class TextManager extends PropertyLoader {
 		return result;
 	}
 
+	public void setDefaultByKey(String inKey, String inValue) {
+		_log.debug("setDefaultByKey for inKey:" + inKey + " value:" + inValue);
+		
+		_propertiesMap.get(DEFAULTS_KEY).put(inKey, inValue);
+		
+	}	
+	
 	public String getTextByKey(String inKey, String inLocale) {
 		_log.debug("getTextByKey for key " + inKey);
 		if (!hasKey(inKey, inLocale)){
@@ -206,7 +213,6 @@ public class TextManager extends PropertyLoader {
 	private synchronized void tryToLoadDefaultsFile() {
 		_propertiesMap.put(DEFAULTS_KEY, loadProperties(DEFAULTS_FILE_NAME));
 	}
-
 	
 	public Properties getDefaults() {
 		//TODO Shuld be inplimented later return _propertiesMap.get(DEFAULTS_KEY);
@@ -214,12 +220,35 @@ public class TextManager extends PropertyLoader {
 	}
 
 	public String getWeatherByCityCode(String urlCode) {
-		if (!_weatherMap.containsKey(urlCode)){
+		if (!_weatherMap.containsKey(urlCode) 
+				|| !_weatherMap.get(urlCode).containsKey(WeatherService.key4ParsedHtml)){
 			_log.debug("Could not found weather data for " + urlCode);
+			_log.debug("Try to reload weather data");
 			tryToLoadWeatherForCity(urlCode);	
 		}else{
 			_log.debug("Weather data for " + urlCode + " already exist");
-			//TODO Check for update time
+			
+			// Check expared time key existance
+			if(!_weatherMap.get(urlCode).containsKey(WeatherService.key4ExpiredTime)){
+				_log.debug("Could not found key4ExpiredTime for " + urlCode);
+				_log.debug("Try to reload weather data");
+				tryToLoadWeatherForCity(urlCode);				
+			}else{
+				if(_weatherMap.get(urlCode).get(WeatherService.key4ExpiredTime).compareTo(
+						Utils.GetCurrentDateTime(WeatherService.key4ExpiredTimeFormat)) > 0){
+					_log.debug(String.format("%s > %s",
+							_weatherMap.get(urlCode).get(WeatherService.key4ExpiredTime),
+							Utils.GetCurrentDateTime(WeatherService.key4ExpiredTimeFormat)));
+					_log.debug("Weather infomation still actual for " + urlCode);
+				}else{
+					_log.debug(String.format("%s <= %s",
+							_weatherMap.get(urlCode).get(WeatherService.key4ExpiredTime),
+							Utils.GetCurrentDateTime(WeatherService.key4ExpiredTimeFormat)));
+					_log.debug("Weather infomation not actual for " + urlCode);
+					_log.debug("Try to reload weather data");
+					tryToLoadWeatherForCity(urlCode);					
+				}
+			}
 		}
 		
 		if(_weatherMap.containsKey(urlCode)){
@@ -262,6 +291,7 @@ public class TextManager extends PropertyLoader {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				weatherData.put(WeatherService.key4ParsedHtml, WeatherService.formateErrorData(e.getMessage()));
+				weatherData.put(WeatherService.key4ExpiredTime, WeatherService.getExpireTime(5));
 			}
 			
 			if(!weatherServiceThread.isAlive()){
@@ -273,7 +303,8 @@ public class TextManager extends PropertyLoader {
 				_log.warn("Thread waiting time is OUT!");
 				continue;
 			}else{
-				_log.warn("Thread waiting counter reached MAX COUNT = " + maxCount);
+				weatherData.put(WeatherService.key4ParsedHtml, MessagesManager.getText("errors.service.inaccessible"));
+				weatherData.put(WeatherService.key4ExpiredTime, WeatherService.getExpireTime(5));
 				weatherServiceThread.interrupt();				
 			}
 		}
@@ -306,5 +337,7 @@ public class TextManager extends PropertyLoader {
 			_log.debug("Thread.State = UNKNOWN");
 		} 	
 	}
+
+
 
 }

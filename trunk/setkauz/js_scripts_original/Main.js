@@ -1,5 +1,5 @@
 Namespace("Main");
-
+//Updated
 Main.hideAll = function() {
 	dwr.util.byId("tabList").style.display = "none";
 	dwr.util.byId("mainBody2").style.display = "none";
@@ -27,11 +27,8 @@ Main.byId = function(id) {
 };
 
 Main.loadInitialPageContext = function() {
-	Tabs.clearStack();
-	Main.getTextFromServerToDiv('title','title', false);
-	Main.getTextFromServerToDiv('tabList','tabList', false);
-	Main.showMainTabList();
-
+	Stack.clear();
+	Main.getTextFromServerToDiv('INITIAL_NAV_AND_CONTEXT','NavAndContext', false);
 	return false;
 };
 
@@ -137,13 +134,10 @@ Main.updateSessionTable = function() {
 	return false;
 };
 
-Main.reloadAll = function(){
-	// Clearup Title
-	dwr.util.setValue("title", "");
-	// Clearup mainBody2
-	dwr.util.setValue("mainBody2", "");	
-	// Clearup tabList
-	dwr.util.setValue("tabList", "");
-	// Reload page
-	Main.loadInitialPageContext(); 	
-}
+Main.updateWeather = function(){
+	Session.getWeatherAsHTML(dwr.util.byId("weather.cities").value, function(result){
+		dwr.util.setValue("weather.context", result, {
+			escapeHtml :false
+		});		
+	});
+};
