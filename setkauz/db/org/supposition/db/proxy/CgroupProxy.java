@@ -104,6 +104,24 @@ public class CgroupProxy extends ADBProxyObject<Cgroup> {
 	public Cgroup getRootElement() {
 		clearExpressions();
 		addExpression(ExpressionFactory.matchDbExp("pid", null));
-		return getAll().get(0);
+		
+		List<Cgroup> result =  getAll();
+		
+		if(result == null ||
+				result.size() == 0){
+			_log.debug("Cgroup not initilazed, initiate Root CGroup...");
+			
+			CgroupBean cgroupBean = new CgroupBean();
+			
+			cgroupBean.setName(MessagesManager.getText("text.root.group"));
+			cgroupBean.setGuuid(MessagesManager.getDefault("root.id.def"));
+			
+			addDBONew(cgroupBean);
+					
+			
+			return getAll().get(0);
+		}
+		
+		return result.get(0);
 	}
 }
