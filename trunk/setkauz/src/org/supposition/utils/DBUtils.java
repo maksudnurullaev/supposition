@@ -153,7 +153,7 @@ public final class DBUtils {
 		Cgroup cgroup_root = cgroups.getRootElement();
 		
 		if(cgroup_root == null){
-			return MessagesManager.getText("errors.data.not.found");
+			return MessagesManager.getText("errors.unmatched.data.objects");
 		}
 		
 		return getULsFromCgrouplist(cgroup_root, forAdmin);

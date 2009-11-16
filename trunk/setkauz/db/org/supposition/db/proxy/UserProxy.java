@@ -206,27 +206,17 @@ public class UserProxy extends ADBProxyObject<User> {
 		List<Role> allRolesList = roleProxy.getAll();
 		List<Role> availableRolesList = subRoles(allRolesList, user.getRoles());
 
-		if (availableRolesList.size() == 0) {
-			result += MessagesManager.getText("errors.data.not.found");
-		} else {
-			for (Object role : availableRolesList) {
-				result += String.format(MessagesManager
-						.getText("template.input.button"), 
-						((Role) role).getUuid(), 
-						((Role)role).getName(), 
-						"UserProxy.addRole(this.id)");
+		_log.debug("Available Roles size: " + availableRolesList.size() + 
+				" for user: " + user.getMail());
+		if(_log.isDebugEnabled()){
+			for(Role role:availableRolesList){
+				_log.debug("Available Roles name: " + role.getName());				
 			}
 		}
+		
+		result += generateBottons(availableRolesList, "UserProxy.addRole(this.id)");
 
 		return result;
-	}
-
-	@Override
-	public List<String> getColumnNames() {
-		_log.debug("-> getColumnNames");
-
-		String[] result = { "#", "Mail", "Created", "Updated" };
-		return Arrays.asList(result);
 	}
 
 	public String getCurrentRolesAsHTML(String inUuid) {
@@ -239,18 +229,46 @@ public class UserProxy extends ADBProxyObject<User> {
 
 		List<?> userRolesList = user.getRoles();
 
-		if (userRolesList.size() == 0) {
-			result += MessagesManager.getText("errors.data.not.found");
+		_log.debug("Current Roles size: " + userRolesList.size() + 
+				" for user: " + user.getMail());
+		
+		if(_log.isDebugEnabled()){
+			for(Object role:userRolesList){
+				_log.debug("Current Roles name: " + ((Role)role).getName());				
+			}
+		}		
+		
+		result += generateBottons(userRolesList, "UserProxy.removeRole(this.id)");
+		
+		return result;
+	}	
+	
+	private String generateBottons(List<?> inRolesList, String inJScript){
+		String result = "";
+		if (inRolesList == null 
+				|| inRolesList.size() == 0) {
+			result = MessagesManager.getText("errors.data.not.found");
 		} else {
-			for (Object role : userRolesList) {
+			for (int i = 0; i < inRolesList.size(); i++) {
+				Role role = (Role) inRolesList.get(i);
+				if(i != 0) result += " | ";
 				result += String.format(MessagesManager
-						.getText("template.input.button"), 
+						.getDefault("template.button.ID.ONCLICK.VALUE"), 
 						((Role) role).getUuid(), 
-						((Role)role).getName(), 
-						"UserProxy.removeRole(this.id)");
+						inJScript, 
+						((Role)role).getName());
 			}
 		}
+		
 		return result;
+	}
+	
+	@Override
+	public List<String> getColumnNames() {
+		_log.debug("-> getColumnNames");
+
+		String[] result = { "#", "Mail", "Created", "Updated" };
+		return Arrays.asList(result);
 	}
 
 	public String getFormUpdate(String inUuid) {
@@ -355,9 +373,7 @@ public class UserProxy extends ADBProxyObject<User> {
 	}
 
 	private List<Role> subRoles(List<Role> mainRoles, List<?> subRoles) {
-		_log
-				.debug(String.format("subRoles contains %s roles", subRoles
-						.size()));
+		_log.debug(String.format("subRoles contains %s roles", subRoles.size()));
 
 		List<Role> result = new ArrayList<Role>();
 
