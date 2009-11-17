@@ -166,6 +166,13 @@ public final class Utils {
 		return result; 
 	}
 
+	public static String normalizeText(String inText) {
+		if(inText == null ||
+				inText.trim().isEmpty())
+			return "---";
+		return inText.trim();
+	}
+
 
 
 }
