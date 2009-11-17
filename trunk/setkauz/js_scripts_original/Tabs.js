@@ -3,6 +3,7 @@ Namespace("Tabs");
 Tabs.mainContext = "context";
 Tabs.mainMenu = "menu";
 Tabs.stackId = "stack";
+Tabs.loaderId = "loader";
 
 Tabs.onClik = function(elem) {
 	return Tabs.onClickCommon(Tabs.mainMenu, Tabs.mainContext, elem);
@@ -39,8 +40,22 @@ Tabs.clearDivFromDiv = function(contextDivId){
 			dwr.util.byId("stack").appendChild(childDivNodes[i]);
 		}
 	}
-	
+	dwr.util.byId(contextDivId).innerHTML = "";
 	return false;
+};
+
+Tabs.showLoader = function(contextDivId){
+	var loader = dwr.util.byId(Tabs.loaderId);
+	if(loader){
+		dwr.util.byId(contextDivId).appendChild(loader);
+	}
+};
+
+Tabs.hideLoader = function(){
+	var loader = dwr.util.byId(Tabs.loaderId);
+	if(loader){
+		dwr.util.byId("stack").appendChild(loader);
+	}	
 };
 
 Tabs.onClickCommon = function(rootUlId, contextDivId, selectedMenuElement){
@@ -59,11 +74,16 @@ Tabs.onClickCommon = function(rootUlId, contextDivId, selectedMenuElement){
 	var stackedDiv = dwr.util.byId(resultDivId);
 	
 	if(!stackedDiv){ // ... or from server
+		Tabs.showLoader(contextDivId);
+	
 		Session.getTextByKey2(resultDivId, function(result) {
 			// Eval Part
 			if(result.eval){ eval(result.eval);	}
 			// Text Part
-			if(result.text){ dwr.util.byId(contextDivId).innerHTML = result.text; }						
+			if(result.text){
+				Tabs.hideLoader();
+				dwr.util.byId(contextDivId).innerHTML = result.text; 
+			}						
 		});
 	}else {
 		// Clear ALL
