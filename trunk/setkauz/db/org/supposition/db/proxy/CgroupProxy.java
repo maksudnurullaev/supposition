@@ -10,6 +10,7 @@ import org.supposition.db.Cgroup;
 import org.supposition.db.abstracts.ADBProxyObject;
 import org.supposition.utils.DBUtils;
 import org.supposition.utils.MessagesManager;
+import org.supposition.utils.SessionManager;
 import org.supposition.utils.Utils;
 
 public class CgroupProxy extends ADBProxyObject<Cgroup> {
@@ -34,6 +35,11 @@ public class CgroupProxy extends ADBProxyObject<Cgroup> {
 		if(cgroup == null){
 			return MessagesManager.getDefault("web.error.result.prefix")
 			+ MessagesManager.getText("errors.data.not.found");
+		}
+		
+		if(!SessionManager.isAdministrator()){
+			return MessagesManager.getDefault("web.error.result.prefix")
+			+ MessagesManager.getText("errors.user.has.not.access");			
 		}
 		
 		deleteObject(cgroup);
