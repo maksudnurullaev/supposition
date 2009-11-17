@@ -383,7 +383,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 					+ String.format(format, 
 							(currentItemIndex+1), 
 							ads.getText(),
-							ads.getPrice(),
+							Utils.normalizeText(ads.getPrice()),
 							(!isGrouped?getGroupLink(ads, isMedorator, isGrouped):""),
 							(isMedorator?getManageLinks(ads):"")
 							);
@@ -406,6 +406,8 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 					"")
 			+ result;
 	}		
+
+
 
 	private String getGroupLink(Ads ads, boolean isMedorator, boolean isGrouped) {
 		String result = "";

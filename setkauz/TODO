@@ -39,7 +39,8 @@
 *. (ОТЛОЖЕНО, создана учетка setka.uz@gmail.com) - Создать рабочие учетки с [info|support|admin|contact]@setka.uz
 *. (СДЕЛАНО) - Отработать обновление погоды
 *. Создать баннерную систему для компанию с возможностью создания баннеров для ролей >= manager
-
+*. Удалить запись "Цена" если не цены в объявления компании
+*. Добавить редактирование Группы (Компания - Группа)
 
 --- НОВЫЙ ДЕЗАЙН САЙТА ---
 *. (СДЕЛАНО) - Ввести разделители в списке компаний
@@ -69,6 +70,7 @@
 	2. echo "[SELECT *|DELETE] FROM ads WHERE delete_after < now() AND company_id is null;" | psql setkauz > file.txt 2> error.log
 	3. echo "SELECT COUNT(*) FROM ads WHERE delete_after < now() AND company_id is null;" | psql setkauz > result.log 2> error.log
 	4. echo "DELETE FROM ads WHERE delete_after < now() AND company_id is null;" | psql setkauz > result.log 2> error.log
+*. Проводить ежедневный архив базы
 	
 --- JS ЗАДАНИЯ ---
 *. (СДЕЛАНО) - Сделать проверку существования скриптов или закрузки класса скриптов
