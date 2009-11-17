@@ -28,6 +28,7 @@ Main.byId = function(id) {
 
 Main.loadInitialPageContext = function() {
 	Stack.clear();
+	Tabs.hideLoader();	
 	Main.getTextFromServerToDiv('INITIAL_NAV_AND_CONTEXT','NavAndContext', false);
 	return false;
 };
