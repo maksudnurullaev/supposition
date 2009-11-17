@@ -1,1 +1,99 @@
-eval(function(p,a,c,k,e,r){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('z("1");1.h="m";1.j="A";1.B="n";1.C=6(a){2 1.k(1.j,1.h,a)};1.D=6(){2 1.k(1.j,1.h,3.4.5("E"))};1.F=6(){2 1.k(1.j,1.h,3.4.5("G"))};1.o=6(a){7(!a.8){H("I: J K L M N O P!");2 g}7(a.p.8=="q"){2 g}2 Q};1.r=6(a){9 b=3.4.5(a).s(\'R\');t(9 i=0;i<b.u;i++){b[i].8=S}};1.v=6(a){9 b=3.4.5(a).s(\'T\');t(9 i=0;i<b.u;i++){7(b[i].8){3.4.5("n").w(b[i])}}2 g};1.k=6(b,c,d){7(!1.o(d)){2 g}1.r(b);1.v(c);9 e=d.8+".m";9 f=3.4.5(e);7(!f){U.V(e,6(a){7(a.l){l(a.l)}7(a.x){3.4.5(c).y=a.x}})}W{3.4.5(c).y="";3.4.5(c).w(f)}d.p.8="q";2 g};',59,59,'|Tabs|return|dwr|util|byId|function|if|id|var|||||||false|mainContext||mainMenu|onClickCommon|eval|context|stack|isValidMenu|parentNode|selected|clearSelection|getElementsByTagName|for|length|clearDivFromDiv|appendChild|text|innerHTML|Namespace|menu|stackId|onClik|showAgreement|agreement|showMain|main|alert|ERROR|Navigator|does|not|have|neccessary|ID|property|true|li|null|div|Session|getTextByKey2|else'.split('|'),0,{}))
+Namespace("Tabs");
+// Updated
+Tabs.mainContext = "context";
+Tabs.mainMenu = "menu";
+Tabs.stackId = "stack";
+Tabs.loaderId = "loader";
+
+Tabs.onClik = function(elem) {
+	return Tabs.onClickCommon(Tabs.mainMenu, Tabs.mainContext, elem);
+};
+
+Tabs.showAgreement = function() {
+	return Tabs.onClickCommon(Tabs.mainMenu, Tabs.mainContext, dwr.util.byId("agreement"));
+};
+
+Tabs.isValidMenu = function(selectedMenuElement){
+	// Check ID
+	if(!selectedMenuElement.id){
+		alert("ERROR: Navigator does not have neccessary ID property!");
+		return false;
+	}	
+	
+	// Check "selected" state
+	if(selectedMenuElement.parentNode.id == "selected"){ return false; }
+	
+	return true;
+};
+
+Tabs.clearSelection = function(rootUlId){
+	var childLiNodes = dwr.util.byId(rootUlId).getElementsByTagName('li');
+	for (var i = 0; i < childLiNodes.length; i++){
+		childLiNodes[i].id = null;
+	}	
+};
+
+Tabs.clearDivFromDiv = function(contextDivId){
+	var childDivNodes = dwr.util.byId(contextDivId).getElementsByTagName('div');
+	for (var i = 0; i < childDivNodes.length; i++){
+		if(childDivNodes[i].id){
+			dwr.util.byId("stack").appendChild(childDivNodes[i]);
+		}
+	}
+	dwr.util.byId(contextDivId).innerHTML = "";
+	return false;
+};
+
+Tabs.showLoader = function(contextDivId){
+	var loader = dwr.util.byId(Tabs.loaderId);
+	if(loader){
+		dwr.util.byId(contextDivId).appendChild(loader);
+	}
+};
+
+Tabs.hideLoader = function(){
+	var loader = dwr.util.byId(Tabs.loaderId);
+	if(loader){
+		dwr.util.byId("stack").appendChild(loader);
+	}	
+};
+
+Tabs.onClickCommon = function(rootUlId, contextDivId, selectedMenuElement){
+	if(!Tabs.isValidMenu(selectedMenuElement)){ return false; }
+	
+	// Clear "selected" state for each element
+	Tabs.clearSelection(rootUlId);	
+	
+	// Move child elements to stack & clear context
+	Tabs.clearDivFromDiv(contextDivId);
+	
+	// Generate Div ID
+	var resultDivId = selectedMenuElement.id + ".context";
+	
+	// Try to get element from local stack...
+	var stackedDiv = dwr.util.byId(resultDivId);
+	
+	if(!stackedDiv){ // ... or from server
+		Tabs.showLoader(contextDivId);
+	
+		Session.getTextByKey2(resultDivId, function(result) {
+			// Eval Part
+			if(result.eval){ eval(result.eval);	}
+			// Text Part
+			if(result.text){
+				Tabs.hideLoader();
+				dwr.util.byId(contextDivId).innerHTML = result.text; 
+			}						
+		});
+	}else {
+		// Clear ALL
+		dwr.util.byId(contextDivId).innerHTML = "";
+		// Append Child
+		dwr.util.byId(contextDivId).appendChild(stackedDiv);
+	}
+	
+	// Set Selected
+	selectedMenuElement.parentNode.id = "selected";
+	
+	return false;
+};
