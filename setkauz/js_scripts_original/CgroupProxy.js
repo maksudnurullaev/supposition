@@ -39,6 +39,8 @@ CgroupProxy.edit = function(id) {
 };
 
 CgroupProxy.remove = function(uuid) {
+	if(!confirm("Are you sure!? Вы уверены!?")){ return false; }
+	
 	CgroupProxy.removeDBO(uuid, function(result){
 		alert(result);
 		if (Main.isOK(result)) {

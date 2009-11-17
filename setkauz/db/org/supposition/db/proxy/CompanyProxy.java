@@ -261,7 +261,7 @@ public class CompanyProxy extends ADBProxyObject<Company> {
 					"CompanyProxy.groupDelete()", // onClick
 					MessagesManager.getText("text.remove")); // Value
 			// Ads records aprt
-			result += " | ";
+			result += "  &bull; ";
 			result += String.format(MessagesManager.getDefault("template.button.ID.ONCLICK.VALUE"),
 					"", // ID
 					"CompanyProxy.showAddAdsForm()", // onClick

@@ -130,7 +130,11 @@ public final class SessionManager {
 		return (SessionManager.hasRole(SessionManager.MANAGER_ROLE_DEF) 
 				|| SessionManager.hasRole(SessionManager.ADMIN_ROLE_DEF));
 	}
-
+	
+	public static boolean isAdministrator(){
+		return (SessionManager.hasRole(SessionManager.ADMIN_ROLE_DEF));
+	}
+	
 	public static boolean isUserLoggedIn(){
 		return 	isExist(MessagesManager.getDefault("session.userid.key"));
 	}
