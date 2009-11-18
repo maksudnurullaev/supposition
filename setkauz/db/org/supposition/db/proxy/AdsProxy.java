@@ -1,7 +1,6 @@
 package org.supposition.db.proxy;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.cayenne.access.DataContext;
@@ -178,7 +177,8 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 							(currentItemIndex+1), 
 							"<u>" + MessagesManager.getText(ads.getType()) + "</u> - " + ads.getText() + getAdditionalLinks(ads, isMedorator),
 							Utils.GetFormatedDate("yyyy.MM.dd", ads.getDeleteAfter()),
-							Utils.GetFormatedDate("yyyy.MM.dd HH:mm:ss.SSS", ads.getCreated()));
+							Utils.GetFormatedDate("yyyy.MM.dd HH:mm:ss.SSS", ads.getCreated()),
+							getCgroupLinks(ads));
 			// Final <hr />
 			if	((currentItemIndex+1) != endItemIndex 
 					&& (currentItemIndex+1) < adsList.size())
@@ -188,17 +188,38 @@ public class AdsProxy extends ADBProxyObject<Ads> {
 		return getHTMLPaginator(inPage, allItemCount) + result;
 	}
 
+	private String getCgroupLinks(Ads ads) {	
+		Cgroup cgroupRoot = (new CgroupProxy()).getRootElement();
+		if(ads.getCgroup().getUuid().equals(cgroupRoot.getUuid())){ // if company not grouped
+			return ads.getCgroup().getName();
+		}
+		// Create Group links
+		Cgroup cgroup = ads.getCgroup();
+		String result = createCgroupLink(cgroup);
+				
+		while ((cgroup = cgroup.getParent()) != null){
+			if(!cgroup.getUuid().equals(cgroupRoot.getUuid())){ // if it's not root group
+				result += " &bull; " + createCgroupLink(cgroup);
+			}
+		}
+		
+		return result;
+	}	
+	
+	private String createCgroupLink(Cgroup incGroup){
+		return String.format(MessagesManager.getDefault("template.link.ID.ONCLICK.VALUE"), 
+				incGroup.getUuid(),
+				"AdsProxy.changeCgroupSelection(this.id)",
+				incGroup.getName());
+	}
+	
+	
 	private String getAdditionalLinks(Ads ads, boolean isMedorator) {
 		if(!isMedorator) return "";
 		
-		return "&nbsp;" + String.format(MessagesManager.getDefault("template.link"),
+		return "&nbsp;" + String.format(MessagesManager.getDefault("template.link.ID.ONCLICK.VALUE"),
 				ads.getUuid(),
 				"AdsProxy.remove(this.id)",
 				MessagesManager.getText("text.remove"));
-	}
-	
-	private void cleanUpAds(){
-		addExpression(ExpressionFactory.lessExp("delete_after", (new Date())));		
-		deleteObjects(getAll());
 	}
 }

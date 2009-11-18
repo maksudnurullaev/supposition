@@ -10,6 +10,7 @@ CompanyProxy.showNewForm = function() {
 
 CompanyProxy.addNew = function(){
 	// Check fields
+	
 	if(!Main.isValidValue("company.name")){ return false; }
 	
 	Company = {name:null, additionals:null, www:null, guuid:null, city:null};
@@ -34,6 +35,21 @@ CompanyProxy.addNew = function(){
 	});
 	
 	return false;	
+};
+
+CompanyProxy.changeCgroupSelection = function(cgroupUuid){
+	var SelectObject = dwr.util.byId("company.guuid");
+	
+	for(index = 0;index < SelectObject.length;index++) {
+		if(SelectObject.options[index].value == cgroupUuid){
+			SelectObject.selectedIndex = index;
+			break;
+		}
+	}	
+	
+	CompanyProxy.updateTable();
+	
+	return false;
 };
 
 CompanyProxy.updateTable = function() {

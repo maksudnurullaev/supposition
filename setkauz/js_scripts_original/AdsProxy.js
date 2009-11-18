@@ -62,6 +62,22 @@ AdsProxy.updateTable = function() {
 	return false;
 };
 
+AdsProxy.changeCgroupSelection = function(cgroupUuid){
+	var SelectObject = dwr.util.byId("ads.guuid");
+	
+	for(index = 0;index < SelectObject.length;index++) {
+		if(SelectObject.options[index].value == cgroupUuid){
+			SelectObject.selectedIndex = index;
+			break;
+		}
+	}	
+	
+	AdsProxy.updateTable();
+	
+	return false;
+};
+
+
 AdsProxy.go2Page = function(inPage) {
 	GCFilter = {city:null, guuid:null};
 	
