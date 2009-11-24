@@ -18,7 +18,6 @@ Stack.setToStack = function (elemId){
 		return false;
 	}
 	
-	dwr.util.byId(elemId).style.display = "none";
 	dwr.util.byId(Stack.stackId).appendChild(dwr.util.byId(elemId));
 	
 	return false;
@@ -30,9 +29,6 @@ Stack.showInMainBody = function (elemId){
 		return false;
 	}
 	dwr.util.byId(Main.mainBodyId).appendChild(dwr.util.byId(elemId));
-	if(dwr.util.byId(elemId).style.display == "none"){
-		dwr.util.byId(elemId).style.display = "block";
-	}
 	
 	return false;
 };
