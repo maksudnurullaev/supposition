@@ -28,7 +28,7 @@ Tabs.clearDivFromDiv = function(contextDivId){
 	var childDivNodes = dwr.util.byId(contextDivId).getElementsByTagName('div');
 	for (var i = 0; i < childDivNodes.length; i++){
 		if(childDivNodes[i].id){
-			dwr.util.byId("stack").appendChild(childDivNodes[i]);
+			dwr.util.byId(Stack.stackId).appendChild(childDivNodes[i]);
 		}
 	}
 	dwr.util.byId(contextDivId).innerHTML = "";
