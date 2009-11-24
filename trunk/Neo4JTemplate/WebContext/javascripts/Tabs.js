@@ -1,7 +1,5 @@
 Namespace("Tabs");
 
-var Tabs = {};
-
 Tabs.onClik = function(elem) {
 	return Tabs.onClickCommon(Main.mainMenuId, Main.mainBodyId , elem);
 };

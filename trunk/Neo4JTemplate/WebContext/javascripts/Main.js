@@ -1,7 +1,5 @@
 Namespace("Main");
 
-var Main = {};
-
 Main.mainBodyId    = "mainBody";
 Main.loaderId      = "mainLoader";
 Main.mainMenuId    = "mainMenu";

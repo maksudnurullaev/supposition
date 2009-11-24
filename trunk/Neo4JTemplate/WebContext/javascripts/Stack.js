@@ -1,7 +1,5 @@
 Namespace ("Stack"); 
 
-// Initial values
-var Stack = {}; 
 Stack.stackId = "stack";
 
 //Updated
