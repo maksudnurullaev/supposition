@@ -567,6 +567,11 @@ table, td, th {
 	padding:5px;
 }
 
+table td{
+	text-align: left;	
+	vertical-align: top;	
+}
+
 table.form th {
 	font-weight:normal;
 	text-align:right;
@@ -591,6 +596,9 @@ table.plain td {
 .fieldname {
 	text-align: right;	
 	vertical-align: top;	
+}
+
+.fieldvalue {
 }
 
 table.plain th {
