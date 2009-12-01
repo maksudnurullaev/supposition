@@ -129,12 +129,7 @@ public class ParseXMLString {
 				nodeList = element.getElementsByTagName(PHENOMENA);
 				if(nodeList.getLength() == 1){
 					tempElement = (Element) nodeList.item(0);
-					tempString += String.format(", <u>text.cloudiness.%s</u>",tempElement.getAttribute(PHENOMENA_cloudiness));
-					if(!tempElement.getAttribute(PHENOMENA_precipitation).equals("0") 
-							&& tempElement.getAttribute(PHENOMENA_precipitation).equals("9")
-							&& tempElement.getAttribute(PHENOMENA_precipitation).equals("10")){
-						tempString += String.format(", <u>text.precipitation.%s</u>",tempElement.getAttribute(PHENOMENA_precipitation));
-					}
+					tempString += getWeatherDescriptions(tempElement);
 				}						
 				
 				
@@ -148,6 +143,51 @@ public class ParseXMLString {
 		
 		return result;
 
+	}
+		
+	private String getWeatherDescriptions(Element inElem){
+		String cloudiness = inElem.getAttribute(PHENOMENA_cloudiness);
+
+		if(cloudiness.equals("0")){// 0 - ясно
+			return ", <span class=\"weathersunny\">text.cloudiness.0</span>";
+		}else{		
+			String result = "";
+			String weatherClass = "";
+			
+			if(!inElem.getAttribute(PHENOMENA_precipitation).equals("9")){		// не - нет данных
+				result += "text.cloudiness." + cloudiness + ", ";
+				
+				if(inElem.getAttribute(PHENOMENA_precipitation).equals("8")){	// если это гроза
+					result += "text.spower." + inElem.getAttribute("spower");	// 0 - возможна гроза, 1 - гроза
+					weatherClass = "weatherlight";
+				}else{ // 4 - дождь, 6,7 – снег
+					if(inElem.getAttribute(PHENOMENA_precipitation).equals("4") ||
+							inElem.getAttribute(PHENOMENA_precipitation).equals("6") ||
+							inElem.getAttribute(PHENOMENA_precipitation).equals("7")){
+						if(inElem.getAttribute(PHENOMENA_rpower).equals("0"))
+							result += "text.rpower.0 ";
+					} 
+					if(inElem.getAttribute(PHENOMENA_precipitation).equals("4")){
+						weatherClass = "weatherrain";						
+					}else if(inElem.getAttribute(PHENOMENA_precipitation).equals("6") ||
+							inElem.getAttribute(PHENOMENA_precipitation).equals("7")){
+						weatherClass = "weathersnow";
+					}else if(inElem.getAttribute(PHENOMENA_precipitation).equals("5")){
+							weatherClass = "weatherrain";
+					}else if(cloudiness.equals("1") || cloudiness.equals("3")){
+							weatherClass = "weathercloudy";
+					}else if(cloudiness.equals("2")){
+							weatherClass = "weatherclouds";
+					}
+					
+					// 5 - ливень 
+					result += "text.precipitation." + inElem.getAttribute(PHENOMENA_precipitation);
+				}
+			}
+			return String.format(", <span class=\"%s\">%s</span>", 
+					weatherClass,
+					result);
+		}
 	}
 
 	private String normalize(String inTemperature) {

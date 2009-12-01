@@ -617,3 +617,33 @@ table.plain th {
 	font-size:12px;
 	line-height:120%;
 }
+
+.weathersnow {
+	background: url(snow.png) left no-repeat;
+	padding-left: 16px;
+}
+
+.weatherrain {
+	background: url(rain.png) left no-repeat;
+	padding-left: 18px;
+}
+
+.weathersunny {
+	background: url(sun.png) left no-repeat;
+	padding-left: 18px;
+}
+
+.weatherlight {
+	background: url(light.png) left no-repeat;
+	padding-left: 18px;
+}
+
+.weathercloudy {
+	background: url(cloudy.png) left no-repeat;
+	padding-left: 18px;
+}
+
+.weatherclouds {
+	background: url(clouds.png) left no-repeat;
+	padding-left: 18px;
+}
