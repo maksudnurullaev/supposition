@@ -129,9 +129,9 @@ Main.highlight = function(objName) {
 };
 
 // #### Kaptcha
-Main.reloadKaptcha = function() {
-	if (dwr.util.byId("kaptcha_img")) {
-		dwr.util.byId("kaptcha_img").src = ("kaptcha.jpg?" + Math.random() * 100);
+Main.reloadKaptcha = function(element) {
+	if (element && element.src) {
+		element.src = ("kaptcha.jpg?" + Math.random() * 100);
 	}
 
 	return false;
