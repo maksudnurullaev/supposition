@@ -8,6 +8,6 @@
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Tomcat-6.0.20"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/localibs"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/setka.local.libs"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
