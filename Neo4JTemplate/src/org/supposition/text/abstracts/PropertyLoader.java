@@ -197,8 +197,6 @@ public abstract class PropertyLoader {
 			String inValue) {
 		if ((inKey != null) && (inValue != null)) {
 			inProp.setProperty(inKey.trim(), inValue.trim());
-			_log.debug(String.format("KEY(%s) and VALUE(%s) found", inKey
-					.trim(), inValue.trim()));
 		}
 	}
 

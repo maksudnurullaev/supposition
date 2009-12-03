@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.context.ContextLoader;
 import org.supposition.text.TextManager;
+import org.supposition.text.interfaces.ITextManager;
 
 public final class MessagesManager {
 	public static Log _log = LogFactory.getLog("org.supposition.utils.MessageFactory");
@@ -15,7 +16,7 @@ public final class MessagesManager {
 	private static final String _defaultBaseName = "messages";
 	private static final boolean _isTomcatContext = Utils.isWebContext();
 
-	private static TextManager _textManager = null;
+	private static ITextManager _textManager = null;
 
 	public static void changeLocale(String inLocale) {
 		checkInitTextManager();
@@ -27,7 +28,7 @@ public final class MessagesManager {
 		if (_textManager == null) {
 			// Get TextManager bean from spring framework
 			if(_isTomcatContext){
-				_textManager = (TextManager) ContextLoader
+				_textManager = (ITextManager) ContextLoader
 					.getCurrentWebApplicationContext().getBean(_beans_text_manager_id);
 			}else{
 				_textManager = new TextManager();

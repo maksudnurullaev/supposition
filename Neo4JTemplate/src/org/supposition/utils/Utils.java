@@ -1,5 +1,7 @@
 package org.supposition.utils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.util.WebUtils;
 /**
  * 
  * @author M.Nurullayev
@@ -132,6 +136,33 @@ public final class Utils {
 				inText.trim().isEmpty())
 			return "---";
 		return inText.trim();
+	}
+
+	public static String getWebAppRootPath() {
+		String result = null;
+		if(isWebContext()){
+			// send current application context root path
+			try {
+				result = WebUtils.getRealPath(ContextLoader.getCurrentWebApplicationContext().getServletContext(), "/");
+			} catch (FileNotFoundException e) {
+				result = System.getProperty("user.dir");
+				_log.error(e.getMessage());
+				_log.warn("Die error case, root application path setted up to: " + result);
+			}
+		}else{
+			//otherwise, send current root directory
+			result = System.getProperty("user.dir");
+		}
+		
+		if(!result.endsWith("/") ||
+				!result.endsWith("\\"))
+			result += "/";
+		
+		result = result.replace('/', File.separatorChar);
+		
+		_log.debug("Root application path is: " + result);
+		
+		return result;
 	}
 
 
