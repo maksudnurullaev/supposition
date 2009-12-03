@@ -7,5 +7,12 @@
 		<create creator="new" javascript="Session">
 			<param name="class" value="org.dwr.Session" />
 		</create>
-	</allow>	
+	</allow>
+		
+	<allow>
+		<create creator="new" javascript="NeoProxy">
+			<param name="class" value="org.neo.managers.NeoProxy" />
+		</create>
+	</allow>
+		
 </dwr>

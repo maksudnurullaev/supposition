@@ -12,4 +12,8 @@
 		</property>
 	</bean>
 	
+	<!-- Neo Manager -->
+	<bean id="neoDbManager" class="org.neo.managers.NeoDbManager">
+		<property name="dbPath" value="neo-db"/>
+	</bean>
 </beans>

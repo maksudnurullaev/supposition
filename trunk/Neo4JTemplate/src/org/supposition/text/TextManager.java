@@ -8,11 +8,12 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.supposition.text.abstracts.PropertyLoader;
+import org.supposition.text.interfaces.ITextManager;
 import org.supposition.utils.MessagesManager;
 import org.supposition.utils.SessionManager;
 import org.supposition.utils.Utils;
 
-public class TextManager extends PropertyLoader {
+public class TextManager extends PropertyLoader implements ITextManager {
 	private static final String DEFAULTS_KEY = "defaults";
 	private static final String DEFAULTS_FILE_NAME = "defaults.properties";
 	private static Log _log = LogFactory.getLog(TextManager.class);
@@ -24,14 +25,23 @@ public class TextManager extends PropertyLoader {
 		super();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#setBasename(java.lang.String)
+	 */
 	public void setBasename(String name) {
 		_currentBasename = name;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#getBasename()
+	 */
 	public String getBasename() {
 		return _currentBasename;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#getDefaultByKey(java.lang.String)
+	 */
 	public String getDefaultByKey(String inKey) {
 		_log.debug("getDefaultByKey for inKey:" + inKey);
 		
@@ -53,6 +63,9 @@ public class TextManager extends PropertyLoader {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#setDefaultByKey(java.lang.String, java.lang.String)
+	 */
 	public void setDefaultByKey(String inKey, String inValue) {
 		_log.debug("setDefaultByKey for inKey:" + inKey + " value:" + inValue);
 		
@@ -60,6 +73,9 @@ public class TextManager extends PropertyLoader {
 		
 	}	
 	
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#getTextByKey(java.lang.String, java.lang.String)
+	 */
 	public String getTextByKey(String inKey, String inLocale) {
 		_log.debug("getTextByKey for key " + inKey);
 		if (!hasKey(inKey, inLocale)){
@@ -118,22 +134,34 @@ public class TextManager extends PropertyLoader {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#hasLocale(java.lang.String)
+	 */
 	public boolean hasLocale(String inLocale) {
 		return _propertiesMap.containsKey(inLocale);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#hasKey(java.lang.String, java.lang.String)
+	 */
 	public boolean hasKey(String inKey, String inLocale) {
 		if (!hasLocale(inLocale))
 			tryToLoadPropertyFile(inLocale);
 		return _propertiesMap.get(inLocale).containsKey(inKey);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#hasDefaultKey(java.lang.String)
+	 */
 	public boolean hasDefaultKey(String inKey) {
 		if (!hasLocale(DEFAULTS_KEY))
 			tryToLoadDefaultsFile();
 		return _propertiesMap.get(DEFAULTS_KEY).containsKey(inKey);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#tryToLoadPropertyFile(java.lang.String)
+	 */
 	public synchronized void tryToLoadPropertyFile(String inLocale) {
 		if (!_propertiesMap.containsKey(inLocale)) {
 
@@ -158,6 +186,9 @@ public class TextManager extends PropertyLoader {
 		_propertiesMap.put(DEFAULTS_KEY, loadProperties(DEFAULTS_FILE_NAME));
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.supposition.text.ITextManager#getDefaults()
+	 */
 	public Properties getDefaults() {
 		//TODO Shuld be inplimented later return _propertiesMap.get(DEFAULTS_KEY);
 		return null;		
