@@ -4,6 +4,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.neo.managers.NeoDbManager;
+import org.neo4j.api.core.NeoService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,5 +33,7 @@ public class TestNeoSpringObjects extends AbstractJUnit4SpringContextTests {
 		Assert.assertNotNull(neoDbManager.getDbPath());
 		Assert.assertNotNull(neoDbManager.getFullPath2NeoDbFolder());
 		
+		Assert.assertTrue(neoDbManager.checkServices());
+		Assert.assertNotNull(neoDbManager.getNeoService());
 	}
 }
