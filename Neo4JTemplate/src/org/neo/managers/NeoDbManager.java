@@ -15,8 +15,8 @@ public class NeoDbManager implements INeoDbManager {
 
 	
 	private static String _dbPath = null;
-    private static NeoService _neo = null;
-    private static IndexService _indexService = null;	    
+    private static NeoService _neoService = null;
+    private static IndexService _neoIndexService = null;	    
     private static boolean _isShutDownHookInitilazed = false;
     
     public NeoDbManager() {
@@ -39,8 +39,8 @@ public class NeoDbManager implements INeoDbManager {
 	}
 	
 	public boolean checkServices(){
-		if(_neo == null){
-			_neo = new EmbeddedNeo(getFullPath2NeoDbFolder());
+		if(_neoService == null){
+			_neoService = new EmbeddedNeo(getFullPath2NeoDbFolder());
 			_log.debug("Setup neo database service done for path: " + getFullPath2NeoDbFolder());
 			if(!_isShutDownHookInitilazed){
 				registerShutdownHookForNeoAndIndexService();
@@ -48,15 +48,15 @@ public class NeoDbManager implements INeoDbManager {
 			}
 		}
 		
-		if(_indexService == null){
-			_indexService = new LuceneIndexService(_neo);
+		if(_neoIndexService == null){
+			_neoIndexService = new LuceneIndexService(_neoService);
 			_log.debug("Setup neo index service: DONE!");
 			if(!_isShutDownHookInitilazed){
 				registerShutdownHookForNeoAndIndexService();
 				_log.debug("Registering shutdown hook for Neo and Index service: DONE!");
 			}
 		}
-		return _neo != null && _indexService != null;
+		return _neoService != null && _neoIndexService != null;
 	}
 	
     public String getFullPath2NeoDbFolder() {
@@ -82,11 +82,22 @@ public class NeoDbManager implements INeoDbManager {
     
     private static void shutdown()
     {
-        if(_indexService != null) 
-        	_indexService.shutdown();
-        if(_neo != null) 
-        	_neo.shutdown();
+        if(_neoIndexService != null) 
+        	_neoIndexService.shutdown();
+        if(_neoService != null) 
+        	_neoService.shutdown();
         
         _log.debug("Neo and Index services shutted down!");
-    }    
+    }
+
+	public NeoService getNeoService() {
+		if(checkServices()){
+			return _neoService;
+		}else if(_neoService == null){
+			throw new NullPointerException("error.neo.service.is.null");
+		}else if(_neoIndexService == null){
+			throw new NullPointerException("error.neo.index.service.is.null");
+		}
+		return null;
+	}    
 }
