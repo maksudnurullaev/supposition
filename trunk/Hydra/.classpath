@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="src/|conf/|doc/|logs/|WebContext/|tests/|db/|templates/html/|templates/html/css/|templates/html/img/|templates/" kind="src" path=""/>
+	<classpathentry excluding="*.js|doc/|src/" including="*.java" kind="src" path=""/>
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hydra.local.libs">
 		<attributes>
