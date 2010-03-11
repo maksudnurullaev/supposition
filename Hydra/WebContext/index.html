@@ -14,6 +14,18 @@ http://creativecommons.org/licenses/by-nc/2.5/
 <meta name="description" content="Hydra framework = Spring + DWR + Ajile + Hydra pipes and processors" />
 <meta name="keywords" content="java, spring, dwr, ajile, hydra" />
 
+<!-- Default scripts -->
+<script type="text/javascript" src="scripts/com.iskitz.ajile.js"></script>
+
+<!-- DWR scripts -->
+<script type="text/javascript" src="dwr/engine.js"></script>
+<script type="text/javascript" src="dwr/util.js"></script>
+
+<!-- Other scripts -->
+<script type="text/javascript" src="scripts/Globals.js"></script>
+<script type="text/javascript" src="scripts/GlobalTabs.js"></script>
+
+
 <!-- Site Title -->
 <title>Hydra | Simple Template</title>
 
@@ -22,7 +34,7 @@ http://creativecommons.org/licenses/by-nc/2.5/
 
 </head>
 
-<body>
+<body onload="javascipt:void(Globals.initializeAll());">
 
 <div id="page_wrapper">
 
@@ -51,7 +63,7 @@ http://creativecommons.org/licenses/by-nc/2.5/
 <div id="content">
 
 <h3>Заголовок тестовой страницы</h3>
-
+<input type="submit" value="Test" onclick="javascipt:void(GlobalTabs.Test());"/>
 <div class='featurebox_center'>
 Lorem ipsum summo nominavi pri et. Stet eruditi perfecto at sed, ad 
 enim <a href="#">constituto deseruisse</a> quo, mea no quem eros munere. 
@@ -120,7 +132,7 @@ accusata ex.
 <a href="#">Link Five</a>
 <br />
 Designed by: 
-<a href="http://www.setka.uz" target="_blank">Max Micro Systems LLC.</a>
+<a href="http://www.setka.uz" target="_blank">Max Micro Systems L.L.C.</a>
 </div>
 
 </div>
