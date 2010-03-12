@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="db"/>
-	<classpathentry excluding="src/|conf/|doc/|logs/|WebContext/|tests/|db/|dbbackups/|js_scripts_original/|html_templates/Xenlog/|html_templates/" kind="src" path=""/>
+	<classpathentry excluding="*.js|doc/|src/" including="*.java" kind="src" path=""/>
 	<classpathentry kind="src" path="tests"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hydra.local.libs">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Supposition2/WebContext/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jetty"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Tomcat-6.0.20"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/setka.local.libs"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
