@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+
+<project name="Hydra" basedir="." default="usage">
+	<property file="build.properties" />
+
+	<property name="src.dir.name" value="src" />
+	<property name="src.test.dir.name" value="tests" />
+	<property name="web.dir" value="WebContext" />
+	<property name="web.inf.dir" value="${web.dir}/WEB-INF" />
+	<property name="build.dir" value="${web.dir}/WEB-INF/classes" />
+	<property name="name" value="${application.name}-${application.version}" />
+
+	<path id="master-classpath">
+		<pathelement path="${build.dir}"/>
+		<pathelement path="${web.dir}/WEB-INF"/>
+		<fileset dir="${web.dir}/WEB-INF/lib">
+			<include name="*.jar" />
+		</fileset>
+		<!-- We need the servlet API classes: -->
+		<!--  * for Tomcat 5/6 use servlet-api.jar -->
+		<!--  * for other app servers - check the docs -->
+		<fileset dir="${appserver.lib}">
+			<include name="servlet*.jar" />
+		</fileset>
+		<!-- AspectJ libs -->
+		<fileset dir="${aspectj.home}/lib">
+			<include name="*.jar" />
+		</fileset>		
+	</path>
+
+	
+	<path id="sources-path">
+		<pathelement path="${basedir}/${src.dir.name}"/>
+		<pathelement path="${basedir}/${src.test.dir.name}"/>
+	</path>
+	
+	<taskdef classpath="${aspectj.home}/lib/aspectjtools.jar" resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties"/>
+	
+	<target name="usage">
+		<echo message="" />
+		<echo message="${name} build file" />
+		<echo message="-----------------------------------" />
+		<echo message="application.build" />
+	</target>
+
+	<target name="application.build" description="Compile main source tree java files">
+		<mkdir dir="${build.dir}" />
+		<javac destdir="${build.dir}" source="1.5" target="1.5" debug="true"
+			deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir.name}" />
+			<src path="${src.test.dir.name}" />
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+
+	<target name="delete.webcontext.web-inf.classes.org.dir" description="Clear compiled classes">
+		<delete dir="${build.dir}/org" />
+		<delete dir="${basedir}/doc" />
+	</target>	
+	
+	<target name="deploy.to.web.server" depends="application.build" description="Deploy application">
+		<copy todir="${deploy.path}/${name}" preservelastmodified="true">
+			<fileset dir="${web.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="create.war.file.and.deploy.to.server" depends="application.build"
+		description="Deploy application as a WAR file">
+		<war destfile="${name}.war" webxml="${web.dir}/WEB-INF/web.xml">
+			<fileset dir="${web.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</war>
+		<copy todir="${deploy.path}" preservelastmodified="true">
+			<fileset dir=".">
+				<include name="*.war" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- ============================================================== -->
+	<!-- Tomcat tasks - remove these if you don't have Tomcat installed -->
+	<!-- ============================================================== -->
+
+	<path id="catalina-ant-classpath">
+		<!-- We need the Catalina jars for Tomcat -->
+		<!--  * for other app servers - check the docs -->
+		<fileset dir="${appserver.lib}">
+			<include name="catalina-ant.jar" />
+		</fileset>
+	</path>
+
+	<target name="run.all.tests" depends="application.build" description="Run tests">
+		<junit printsummary="on" fork="false" haltonfailure="false"
+			failureproperty="tests.failed" showoutput="true">
+			<classpath refid="master-classpath" />
+			<formatter type="brief" usefile="false" />
+
+			<batchtest>
+				<fileset dir="${build.dir}">
+					<include name="**/Test*.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<fail if="tests.failed">
+tests.failed=${tests.failed}
+***********************************************************
+***********************************************************
+**** One or more tests failed! Check the output ... ****
+***********************************************************
+***********************************************************
+        </fail>
+	</target>
+	
+	<target name="application.build.javadoc" depends="application.build" description="Create Javadoc API documentation">
+
+		<mkdir dir="./doc/api" />
+		<javadoc sourcepath="${src.dir.name}" destdir="./doc/api" packagenames="*">
+			<classpath refid="master-classpath" />
+		</javadoc>
+
+	</target>	
+
+</project>
